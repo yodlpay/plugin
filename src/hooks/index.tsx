@@ -33,6 +33,7 @@ import {
   theme,
 } from "@hiropay/common";
 import { ColorScheme } from "@mantine/core";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { TokenInfo, TokenListTagNames, getChain } from "@yodlpay/tokenlists";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -1892,4 +1893,19 @@ export const useCountdown = (
   return {
     secondsLeft: shouldRun ? secondsLeft : null,
   };
+};
+
+export const useConnectModalClose = (onClose: () => void) => {
+  const { connectModalOpen } = useConnectModal();
+  // Use a ref to store the previous state of `connectModalOpen`
+  const prevModalOpenRef = useRef(connectModalOpen);
+
+  useEffect(() => {
+    // Check if the modal has just closed (was open before, but now closed)
+    if (prevModalOpenRef.current && !connectModalOpen) {
+      onClose(); // Execute the callback
+    }
+    // Update the ref with the current state for the next effect execution
+    prevModalOpenRef.current = connectModalOpen;
+  }, [connectModalOpen, onClose]); // Depend on `connectModalOpen` and `onClose`
 };

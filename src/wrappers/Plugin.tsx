@@ -4,7 +4,9 @@ import { ModalsProvider } from "@mantine/modals";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { SnackbarProvider } from "notistack";
 import { ReactNode, useCallback, useEffect, useState } from "react";
+import { useAccount } from "wagmi";
 import { useMainStore } from "../contexts/useMainStore";
+import { useConnectModalClose } from "../hooks";
 
 export type YodlSDKPluginProps = {
   children: ReactNode;
@@ -23,14 +25,15 @@ export default function YodlSDKPlugin({
 
   const { preferredColorScheme, dynamicTheme } = useCustomTheme(colorScheme);
 
-  const { connectModalOpen } = useConnectModal();
+  const { connectModalOpen, openConnectModal } = useConnectModal();
+  const { isConnected } = useAccount();
 
   const toggleColorScheme = () => {
     const newColorScheme = colorScheme === "dark" ? "light" : "dark";
     setColorScheme(newColorScheme);
   };
 
-  const handleClose = useCallback(
+  const handleModalClose = useCallback(
     (shouldTerminate = true) => {
       setTransitionedOpen(false);
       if (shouldTerminate) {
@@ -40,27 +43,33 @@ export default function YodlSDKPlugin({
     [onClose]
   );
 
-  const handleOpen = useCallback(() => {
+  const handleModalOpen = useCallback(() => {
     if (flowInitiated) {
       setTransitionedOpen(true);
     }
   }, [flowInitiated]);
+
+  const handleRainbowClose = () => {
+    if (!isConnected) {
+      handleModalClose();
+    }
+  };
 
   useEffect(() => {
     setColorScheme(preferredColorScheme);
   }, [preferredColorScheme, setColorScheme]);
 
   useEffect(() => {
-    handleOpen();
-  }, [flowInitiated, handleOpen]);
+    handleModalOpen();
+  }, [flowInitiated, handleModalOpen]);
 
   useEffect(() => {
-    if (connectModalOpen) {
-      handleClose(false);
-    } else {
-      handleOpen();
+    if (flowInitiated) {
+      openConnectModal?.();
     }
-  }, [connectModalOpen, handleClose, handleOpen]);
+  }, [flowInitiated, openConnectModal]);
+
+  useConnectModalClose(handleRainbowClose);
 
   return (
     <Portal>
@@ -72,9 +81,9 @@ export default function YodlSDKPlugin({
           <ModalsProvider>
             <SnackbarProvider autoHideDuration={3000} preventDuplicate>
               <Modal
-                opened={transitionedOpen}
+                opened={transitionedOpen && !connectModalOpen}
                 withCloseButton={false}
-                onClose={handleClose}
+                onClose={handleModalClose}
                 centered
                 transitionProps={{ transition: "slide-up" }}
                 overlayProps={{ opacity: 0.3 }}

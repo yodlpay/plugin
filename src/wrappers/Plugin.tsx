@@ -4,7 +4,6 @@ import { ModalsProvider } from "@mantine/modals";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { SnackbarProvider } from "notistack";
 import { ReactNode, useCallback, useEffect, useState } from "react";
-import { useAccount } from "wagmi";
 import { useMainStore } from "../contexts/useMainStore";
 
 export type YodlSDKPluginProps = {
@@ -25,7 +24,6 @@ export default function YodlSDKPlugin({
   const { preferredColorScheme, dynamicTheme } = useCustomTheme(colorScheme);
 
   const { connectModalOpen } = useConnectModal();
-  const { isConnected } = useAccount();
 
   const toggleColorScheme = () => {
     const newColorScheme = colorScheme === "dark" ? "light" : "dark";
@@ -62,7 +60,7 @@ export default function YodlSDKPlugin({
     } else {
       handleOpen();
     }
-  }, [connectModalOpen, handleClose, handleOpen, isConnected]);
+  }, [connectModalOpen, handleClose, handleOpen]);
 
   return (
     <Portal>

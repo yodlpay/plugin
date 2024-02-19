@@ -1,7 +1,6 @@
 import {
   AddressZero,
   CHAINS,
-  COLOR_SCHEME,
   CoinConfig,
   Currency,
   DESIRED_NUMBER_OF_CONFIRMATIONS,
@@ -10,8 +9,6 @@ import {
   IChainDataAPI,
   Invoice,
   LoadingState,
-  MOBILE_BREAKPOINT,
-  MOBILE_HEADING_SIZES,
   NATIVE_TOKEN_ADDRESS,
   NON_STABLECOIN_SLIPPAGE,
   OnCompleteActionType,
@@ -30,9 +27,7 @@ import {
   fetchToken,
   getPriceFromFeed,
   sleep,
-  theme,
 } from "@hiropay/common";
-import { ColorScheme } from "@mantine/core";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { TokenInfo, TokenListTagNames, getChain } from "@yodlpay/tokenlists";
 import { enqueueSnackbar } from "notistack";
@@ -524,30 +519,6 @@ export const useAvailableChains = () => {
   );
 
   return { availableChains };
-};
-
-export const useCustomTheme = (preferredColorScheme: ColorScheme = "dark") => {
-  // const preferredColorScheme = useColorScheme();
-  // TODO remove this when we introduce light mode support
-
-  const width = typeof window !== "undefined" ? window.innerWidth : 0;
-
-  const dynamicTheme = {
-    ...theme,
-    colorScheme: preferredColorScheme,
-    headings: {
-      ...theme.headings,
-      sizes: {
-        ...theme.headings?.sizes,
-        ...(width < MOBILE_BREAKPOINT && {
-          ...MOBILE_HEADING_SIZES,
-        }),
-      },
-    },
-    colors: { ...theme.colors, ...COLOR_SCHEME[preferredColorScheme] },
-  };
-
-  return { preferredColorScheme, dynamicTheme };
 };
 
 export const useBlockConfirmations = () => {

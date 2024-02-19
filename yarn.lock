@@ -4784,9 +4784,9 @@ __metadata:
   linkType: hard
 
 "@sindresorhus/merge-streams@npm:^2.1.0":
-  version: 2.2.1
-  resolution: "@sindresorhus/merge-streams@npm:2.2.1"
-  checksum: bc22d5bf3a28c098e161a11646123dc1f672b4e7ad1da9cc9430a4851e29ef978ff4ea1d14e5e91a71f6d272619a746ba710e588f20bc53de1bbe5f1e416e578
+  version: 2.3.0
+  resolution: "@sindresorhus/merge-streams@npm:2.3.0"
+  checksum: 69ee906f3125fb2c6bb6ec5cdd84e8827d93b49b3892bce8b62267116cc7e197b5cccf20c160a1d32c26014ecd14470a72a5e3ee37a58f1d6dadc0db1ccf3894
   languageName: node
   linkType: hard
 
@@ -5458,21 +5458,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-core@npm:5.21.7":
-  version: 5.21.7
-  resolution: "@tanstack/query-core@npm:5.21.7"
-  checksum: 21a49588a444cfe63a7f5d063b14e93c3f1d9f16fb4d5fce48817e9001f4463ed564df1139afb8f073123cc300f3f95f83bb150ef2fa2b116e76511c220739b1
+"@tanstack/query-core@npm:5.22.2":
+  version: 5.22.2
+  resolution: "@tanstack/query-core@npm:5.22.2"
+  checksum: 78bd7a70f99c0f8a4d158f061aa5008ab7866cffdccb1b0d61ac89a0821fa016dfb321d9dd04939ad5e2efcd9a0d07a295cc33b538e0c9fd0520c418294d30d3
   languageName: node
   linkType: hard
 
 "@tanstack/react-query@npm:^5.20.5":
-  version: 5.21.7
-  resolution: "@tanstack/react-query@npm:5.21.7"
+  version: 5.22.2
+  resolution: "@tanstack/react-query@npm:5.22.2"
   dependencies:
-    "@tanstack/query-core": "npm:5.21.7"
+    "@tanstack/query-core": "npm:5.22.2"
   peerDependencies:
     react: ^18.0.0
-  checksum: c519af3361f25675bd4923b990f3726b0f5c72ebb0a02a281b0c8bfc60969eb6badb6ee5dbe63174b0896f30dcf92ce6fc1c21e430cda1485da8deca52dccbdf
+  checksum: fa5ae61aba4f0d9636f616fa7aaa278f2f96063c1943a4a2c2f33d44dd7de85aaf1d14127a9fc5616799bee64dba8e90e633edffad964ee25f6e37fa9295300d
   languageName: node
   linkType: hard
 
@@ -9428,39 +9428,39 @@ __metadata:
   linkType: hard
 
 "embla-carousel-autoplay@npm:^8.0.0-rc13":
-  version: 8.0.0-rc22
-  resolution: "embla-carousel-autoplay@npm:8.0.0-rc22"
+  version: 8.0.0-rc23
+  resolution: "embla-carousel-autoplay@npm:8.0.0-rc23"
   peerDependencies:
-    embla-carousel: 8.0.0-rc22
-  checksum: 7601f613ced708ae6af87985e0569d00e59512d739d87dbfc96b91d0fb434370a954819f1ce97d612c6202920d3548ab16158a8f732d59b3412f0fb69cc7c863
+    embla-carousel: 8.0.0-rc23
+  checksum: 03b30acb141875d5972e2daa7d17c6c494e8467138c65c44d022dea253be389d15bbd45af95b0a5a1db812e3fae264240c40c0aad00f725d0a41fcf57560cf0d
   languageName: node
   linkType: hard
 
 "embla-carousel-react@npm:^8.0.0-rc13":
-  version: 8.0.0-rc22
-  resolution: "embla-carousel-react@npm:8.0.0-rc22"
+  version: 8.0.0-rc23
+  resolution: "embla-carousel-react@npm:8.0.0-rc23"
   dependencies:
-    embla-carousel: "npm:8.0.0-rc22"
-    embla-carousel-reactive-utils: "npm:8.0.0-rc22"
+    embla-carousel: "npm:8.0.0-rc23"
+    embla-carousel-reactive-utils: "npm:8.0.0-rc23"
   peerDependencies:
     react: ^16.8.0 || ^17.0.1 || ^18.0.0
-  checksum: eeb545f39c6cf9f00e658eb9d858d26050f1a26dc914a503133ea4ca015fef5d0ceea884b10ecf9b1b3fe2d421de777f7060bc570452de11cbd8a28e63ed4976
+  checksum: 033dca1cd2e953f83ba89d084a5a553e0a560a8817375f7fc284c04424b7ca22857dcc5ebd83e0985ea681827c804a5c7b0f85726e1d12cae7ee88d564aeb6a3
   languageName: node
   linkType: hard
 
-"embla-carousel-reactive-utils@npm:8.0.0-rc22":
-  version: 8.0.0-rc22
-  resolution: "embla-carousel-reactive-utils@npm:8.0.0-rc22"
+"embla-carousel-reactive-utils@npm:8.0.0-rc23":
+  version: 8.0.0-rc23
+  resolution: "embla-carousel-reactive-utils@npm:8.0.0-rc23"
   peerDependencies:
-    embla-carousel: 8.0.0-rc22
-  checksum: 747cfbf4ed1f9cfd632256cc345c7eabba6dfa024044b10ce058d4165164e1bb85ae863ac20d245a787e8e09728ed0d4aea8041ea906462d5a9090a54a6f12a4
+    embla-carousel: 8.0.0-rc23
+  checksum: d8943c3c111d0e6c623b255eeeb0d378b2cf6586c1a7535295daa4737f2259ec87559bf5d281f89ccc4024a9523b1381d39cbf70cd42040d807a3f24ffa819df
   languageName: node
   linkType: hard
 
-"embla-carousel@npm:8.0.0-rc22":
-  version: 8.0.0-rc22
-  resolution: "embla-carousel@npm:8.0.0-rc22"
-  checksum: ec23cc8171fc0d5561a74a6e10988d438ba77a11cca122cc51971974be859832402e20b3b07de59763245a2025fad3ef7223d395d923873a464345f1f1626e36
+"embla-carousel@npm:8.0.0-rc23":
+  version: 8.0.0-rc23
+  resolution: "embla-carousel@npm:8.0.0-rc23"
+  checksum: b41e3a538d98fb46ecce61716011191c4b841a9123ae567581add61c2697a4e3e1b0c701a8a3b5711ee2ff634d5b3bdd48b1f59cd054bc623d2ed490b1113036
   languageName: node
   linkType: hard
 
@@ -11938,9 +11938,9 @@ __metadata:
   linkType: hard
 
 "ip@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "ip@npm:2.0.0"
-  checksum: 8d186cc5585f57372847ae29b6eba258c68862055e18a75cc4933327232cb5c107f89800ce29715d542eef2c254fbb68b382e780a7414f9ee7caf60b7a473958
+  version: 2.0.1
+  resolution: "ip@npm:2.0.1"
+  checksum: cab8eb3e88d0abe23e4724829621ec4c4c5cb41a7f936a2e626c947128c1be16ed543448d42af7cca95379f9892bfcacc1ccd8d09bc7e8bea0e86d492ce33616
   languageName: node
   linkType: hard
 
@@ -15582,8 +15582,8 @@ __metadata:
   linkType: hard
 
 "react-remove-scroll-bar@npm:^2.3.3, react-remove-scroll-bar@npm:^2.3.4":
-  version: 2.3.4
-  resolution: "react-remove-scroll-bar@npm:2.3.4"
+  version: 2.3.5
+  resolution: "react-remove-scroll-bar@npm:2.3.5"
   dependencies:
     react-style-singleton: "npm:^2.2.1"
     tslib: "npm:^2.0.0"
@@ -15593,7 +15593,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 2262750dc1022c56d2c79e8d865c00045881c57bcaca74810ae8adac35cfdf723ff7d6b3b0e95c85eb9a0cff90bb4b1e0af801bd703ce8c0a2e35ab14ff1babb
+  checksum: 21b2b02818b04f2c755c5062c90385420adb244107ac90ec87d43cd338760d3cc1cae6eeb59ab198bbc9e388e1a5909551e0b8a708b0d87ce221cf50951bb1fc
   languageName: node
   linkType: hard
 
@@ -17263,8 +17263,8 @@ __metadata:
   linkType: hard
 
 "terser@npm:^5.10.0, terser@npm:^5.26.0":
-  version: 5.27.1
-  resolution: "terser@npm:5.27.1"
+  version: 5.27.2
+  resolution: "terser@npm:5.27.2"
   dependencies:
     "@jridgewell/source-map": "npm:^0.3.3"
     acorn: "npm:^8.8.2"
@@ -17272,7 +17272,7 @@ __metadata:
     source-map-support: "npm:~0.5.20"
   bin:
     terser: bin/terser
-  checksum: 90357abb6849f6d8edf43620de341e05d4995b215d81ffe88168535e06eb8d7af364698f1789ec58b5c87a1cb87ca103f80b83ecdf1dbbd96190aea956dc2a4a
+  checksum: 027b2499bbb07b427681e50e77ffed1285138b279a845db4ca2128204654e536b251455776a4e9453ef598db7b06f41c12edb46ed9cc7667da635272a08eb502
   languageName: node
   linkType: hard
 
@@ -18439,8 +18439,8 @@ __metadata:
   linkType: hard
 
 "webpack@npm:^5.90.2":
-  version: 5.90.2
-  resolution: "webpack@npm:5.90.2"
+  version: 5.90.3
+  resolution: "webpack@npm:5.90.3"
   dependencies:
     "@types/eslint-scope": "npm:^3.7.3"
     "@types/estree": "npm:^1.0.5"
@@ -18471,7 +18471,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 8ade2720dd91b6bcfa22ff4fabfeef474c9ab4cf716c4b6501dc0b0b1dfcaedb54d50f71b9e643c0e831f0996f0d8c1fc23d3faf9fb2d860c04b3b843358704e
+  checksum: f737aa871cadbbae89833eb85387f1bf9ee0768f039100a3c8134f2fdcc78c3230ca775c373b1aa467b272f74c6831e119f7a8a1c14dcac97327212be9c93eeb
   languageName: node
   linkType: hard
 

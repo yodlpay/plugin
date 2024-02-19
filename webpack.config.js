@@ -10,6 +10,11 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
+    library: {
+      name: "YodlPlugin",
+      type: "umd",
+    },
+    globalObject: "this",
   },
   devServer: {
     static: {

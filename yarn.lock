@@ -2680,9 +2680,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hiropay/common@npm:^0.1.6":
-  version: 0.1.6
-  resolution: "@hiropay/common@npm:0.1.6"
+"@hiropay/common@npm:^0.1.7":
+  version: 0.1.7
+  resolution: "@hiropay/common@npm:0.1.7"
   dependencies:
     "@chainlink/contracts": "npm:^0.6.1"
     "@heroicons/react": "npm:^2.0.13"
@@ -2706,7 +2706,7 @@ __metadata:
     viem: "npm:2.x"
     wagmi: "npm:^2.5.7"
     zod: "npm:^3.22.2"
-  checksum: 563a02034f86ec1d9c4ee58b4bfa178a32570f1f0419a942eca75a1aea6fc6b4ceeee76ed8f0e963a8f43e60135def1eb1176e2c354646918d06fb69929c74e2
+  checksum: b7818891ad8eda05e6ddc9b82b7814d81bb0cb90df165dc3d3b89820818dd2379a1f7ef2ac93aeb0f1927b3bae0cee2ce8806558983ed9f53c6e9da52c51df31
   languageName: node
   linkType: hard
 
@@ -2722,7 +2722,7 @@ __metadata:
     "@curvefi/api": "github:yodlpay/curve-js#c62afed12b282d90989f6120b93aa5932e226c7d"
     "@emotion/react": "npm:^11.11.3"
     "@heroicons/react": "npm:^2.0.13"
-    "@hiropay/common": "npm:^0.1.6"
+    "@hiropay/common": "npm:^0.1.7"
     "@mantine/core": "npm:^6.0.17"
     "@mantine/hooks": "npm:^6.0.17"
     "@mantine/modals": "npm:^6.0.17"

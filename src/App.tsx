@@ -6,11 +6,11 @@ import {
   OnCompleteAction,
   OnCompleteActionType,
   coinIdsToCoinConfig,
+  parseExcludedVenues,
   validateSearchParams,
 } from "@hiropay/common";
 import { useEffect, useState } from "react";
 import { useMainStore } from "./contexts/useMainStore";
-import { parseExcludedVenues } from "./utils/helpers";
 import { YodlSDKProvider, useYodlSDK } from "./wrappers/Provider";
 
 function Content() {

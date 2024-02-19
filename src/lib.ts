@@ -1,11 +1,13 @@
+export { Amounts } from "./components/Amounts";
+export { Autoswap } from "./components/Autoswap";
+export { ConnectorButton } from "./components/ConnectorButton";
 export { YodlSDKProvider, useYodlSDK } from "./wrappers/Provider";
-
 export type {
-  OpenArgs,
-  CallbackPage,
-  CallbackCategory,
+  Analytics,
   CallbackAction,
+  CallbackCategory,
+  CallbackPage,
   EventCallback,
   Logger,
-  Analytics,
+  OpenArgs,
 } from "./wrappers/Provider";

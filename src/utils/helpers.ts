@@ -107,13 +107,6 @@ export function abiForToken(symbol: string, chainId: number) {
   }
 }
 
-export const getTxUrl = (chain: Chain | null, txHash: string | undefined) => {
-  if (!chain?.id || !chain?.blockExplorers?.default.url || !txHash) return "";
-  // Use ChainInfo instead of Chain because we have selected specific explorers
-  const chainInfo = getChain(chain?.id);
-  return `${chainInfo.explorerUrl}/tx/${txHash}`;
-};
-
 export const getReceiptUrl = (
   chain: Chain | null,
   txHash: string | undefined
@@ -1489,16 +1482,6 @@ export const getEstimatedTime = (
   return AVERAGE_BLOCK_TIMES[chainId]
     ? AVERAGE_BLOCK_TIMES[chainId] * numberOfConfirmations
     : DEFAULT_DURATION;
-};
-
-export const parseExcludedVenues = (searchParams: URLSearchParams) => {
-  const excludedVenuesString = searchParams.get("excluded_venues");
-  return !!excludedVenuesString
-    ? (excludedVenuesString
-        .split(",")
-        .map((excludedVenue) => excludedVenue.toUpperCase())
-        .filter((excludedVenue) => excludedVenue in SwapVenue) as SwapVenue[])
-    : [];
 };
 
 export const areCurrenciesEqual = (invoice: Invoice, token: TokenHeld | null) =>

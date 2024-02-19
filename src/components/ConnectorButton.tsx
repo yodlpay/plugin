@@ -1,8 +1,11 @@
 import { ChevronRightIcon, NoSymbolIcon } from "@heroicons/react/20/solid";
-import { NavLink, useNavLinkStyles } from "@hiropay/common";
+import {
+  NavLink,
+  connectorWalletIcon,
+  useNavLinkStyles,
+} from "@hiropay/common";
 import { useEffect, useMemo, useState } from "react";
 import { Connector } from "wagmi";
-import { connectorWalletIcon } from "../constants/icons";
 
 export type StrippedConnector = {
   id: string;

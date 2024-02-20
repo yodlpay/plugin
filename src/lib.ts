@@ -1,3 +1,5 @@
+"use client";
+
 export { Amounts } from "./components/Amounts";
 export { Autoswap } from "./components/Autoswap";
 export { ConnectorButton } from "./components/ConnectorButton";

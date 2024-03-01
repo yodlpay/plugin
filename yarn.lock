@@ -2680,9 +2680,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hiropay/common@npm:^0.2.2":
-  version: 0.2.2
-  resolution: "@hiropay/common@npm:0.2.2"
+"@hiropay/common@npm:^0.2.3":
+  version: 0.2.3
+  resolution: "@hiropay/common@npm:0.2.3"
   dependencies:
     "@chainlink/contracts": "npm:^0.6.1"
     "@heroicons/react": "npm:^2.0.13"
@@ -2699,15 +2699,14 @@ __metadata:
     embla-carousel-react: "npm:^8.0.0-rc13"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
+    react-hook-form: "npm:^7.40.0"
     react-web3-icons: "npm:^1.7.0"
     storybook-dark-mode: "npm:^3.0.3"
     viem: "npm:2.x"
     vite: "npm:^5.1.3"
     wagmi: "npm:^2.5.7"
     zod: "npm:^3.22.2"
-  peerDependencies:
-    react-hook-form: ^7.40.0
-  checksum: ac9ae05dc9a1cfc25ce33ad9d2a962a6ce1ea9b4f39ba6898148688900e7cf5f8fe0de02ee263822e5a4fe5a4ef5a246fffdf3f9732192a6e0377c8a009714c9
+  checksum: 54b9fdbcb9afbf196e6c9d842ef390be66ff976c5eecd263bc8f1d856f2d25abe2984ccc2493099ad0f0903432f88a34ccc44b9ec3c73d8bf76f4e75515dac88
   languageName: node
   linkType: hard
 
@@ -2723,7 +2722,7 @@ __metadata:
     "@curvefi/api": "github:yodlpay/curve-js#c62afed12b282d90989f6120b93aa5932e226c7d"
     "@emotion/react": "npm:^11.11.3"
     "@heroicons/react": "npm:^2.0.13"
-    "@hiropay/common": "npm:^0.2.2"
+    "@hiropay/common": "npm:^0.2.3"
     "@mantine/core": "npm:^6.0.17"
     "@mantine/hooks": "npm:^6.0.17"
     "@mantine/modals": "npm:^6.0.17"
@@ -15377,6 +15376,15 @@ __metadata:
     react: ^0.14.8 || ^15.0.1 || ^16.0.0 || ^17.0.1 || ^18.0.0
     react-dom: ^0.14.8 || ^15.0.1 || ^16.0.0 || ^17.0.1 || ^18.0.0
   checksum: 0d60a0ea758529c32a706d0c69d70b69fb94de3c46442fffdee34f08f51ffceddbb5395b41dfd1565895653e9f60f98ca525835be9d5db1f16d6b22be12f4cd4
+  languageName: node
+  linkType: hard
+
+"react-hook-form@npm:^7.40.0":
+  version: 7.50.1
+  resolution: "react-hook-form@npm:7.50.1"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18
+  checksum: 4905c33afbea67dc817e8be53c360d5c009dfd5c5a93f6ac632e1fc258a8a59587add364842b2d39f7bf126e4e20b1883e90f9c3a2f916c5b79173ce4cf30491
   languageName: node
   linkType: hard
 

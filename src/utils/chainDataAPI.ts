@@ -23,7 +23,7 @@ export class ChainDataAPI implements IChainDataAPI {
 
   async isConnected(): Promise<boolean> {
     const mainStoreState = mainStore.getState();
-    const url = `${this.url}/api/healthcheck`;
+    const url = `${this.url}/healthcheck`;
     try {
       const res = await fetch(url, { method: "GET" });
       if (!res.ok) {

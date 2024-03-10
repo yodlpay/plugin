@@ -1,5 +1,6 @@
 import {
   InvoiceConfig,
+  LOCAL_DATA_API_URL,
   LOCAL_RPC_URL,
   PickEnum,
   RudderStackJSEvents,
@@ -26,7 +27,7 @@ const DEFAULT_CONFIG = {
   isDemo: false,
   isTest: false,
   testnetMode: false,
-  dataApiUrl: "http://localhost:3003",
+  dataApiUrl: LOCAL_DATA_API_URL,
   rpcUrl: LOCAL_RPC_URL,
   excludedVenues: [],
   eventCallback: () => {},

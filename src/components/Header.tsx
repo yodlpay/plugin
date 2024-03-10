@@ -256,6 +256,7 @@ export const Header = ({
                     image: chain.logoUri,
                     label: chain.chainName,
                     value: chain.chainId.toString(),
+                    disabled: chain.isDisabled,
                   }))}
                   onChange={handleNetworkChange}
                   isLoading={chainLoading}

@@ -510,13 +510,55 @@ export const useViewBasedState = (
 export const useAvailableChains = () => {
   const { invoice } = usePayment();
 
+  const chainsWithBalance = useMainStore((state) => state.chainsWithBalance);
+
   const chainIds = invoice.coins.map(
     (coinConfig: CoinConfig) => coinConfig.chainId
   );
 
   const availableChains = CHAINS.filter((chain) =>
     chainIds.includes(chain.chainId)
-  );
+  ).map((chain) => {
+    const chainConfig = invoice.coins.find(
+      (config) => config.chainId === chain.chainId
+    );
+    const hasTokens = !!chainConfig?.tokens.length;
+    const isDisabled =
+      !hasTokens ||
+      !chainConfig?.tokens.some((token) => {
+        try {
+          // Any non-error response from getPriceFeeds indicates that a
+          // payment can be made for the invoice's currency and tokens
+          const tokenInfo = coinIdToToken(
+            `${token.symbol}-${chainConfig.chainId}`
+          ) as TokenInfo;
+          return !!tokenInfo
+            ? !!getPriceFeeds(
+                chain,
+                invoice.currency as Currency,
+                tokenInfo,
+                PaymentType.DIRECT
+              ).length
+            : false;
+        } catch (err) {
+          return false;
+        }
+      });
+    const hasBalance = chainsWithBalance?.data?.includes(chain.chainId);
+    let tooltip = "";
+    if (!hasTokens) {
+      tooltip = "Insufficient recipient accepted token(s)";
+    } else if (isDisabled) {
+      tooltip = "Invoice currency unsupported";
+    } else if (!hasBalance) {
+      tooltip = "Insufficient funds";
+    }
+    return {
+      ...chain,
+      isDisabled: isDisabled || !hasBalance,
+      tooltip,
+    };
+  });
 
   return { availableChains };
 };

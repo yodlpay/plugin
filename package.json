@@ -1,6 +1,6 @@
 {
   "name": "@hiropay/plugin",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Yodl plugin payment modal.",
   "main": "dist/lib.js",
   "types": "dist/lib.d.ts",
@@ -41,7 +41,7 @@
     "@curvefi/api": "github:yodlpay/curve-js#c62afed12b282d90989f6120b93aa5932e226c7d",
     "@emotion/react": "^11.11.3",
     "@heroicons/react": "^2.0.13",
-    "@hiropay/common": "^0.2.6",
+    "@hiropay/common": "^0.2.7",
     "@mantine/core": "^6.0.17",
     "@mantine/hooks": "^6.0.17",
     "@mantine/modals": "^6.0.17",

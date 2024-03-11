@@ -538,7 +538,7 @@ export const useAvailableChains = () => {
                 invoice.currency as Currency,
                 tokenInfo,
                 PaymentType.DIRECT
-              ).length
+              )
             : false;
         } catch (err) {
           return false;

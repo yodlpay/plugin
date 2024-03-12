@@ -7,21 +7,21 @@ import {
   THEME_COLOR_SCHEME,
   TokenHeld,
   TransactionState,
-} from "@hiropay/common";
-import { ColorScheme } from "@mantine/core";
-import { Address } from "viem";
-import { Config } from "wagmi";
-import { create } from "zustand";
-import { BrowserChainDataAPI } from "../utils/browserChainDataAPI";
+} from '@hiropay/common'
+import { ColorScheme } from '@mantine/core'
+import { Address } from 'viem'
+import { Config } from 'wagmi'
+import { create } from 'zustand'
+import { BrowserChainDataAPI } from '../utils/browserChainDataAPI'
 import {
   Analytics,
   CallbackAction,
   CallbackCategory,
   CallbackPage,
   Logger,
-} from "../wrappers/Provider";
-import { useInvoiceStore } from "./useInvoiceStore";
-import { usePaymentStore } from "./usePaymentStore";
+} from '../wrappers/Provider'
+import { useInvoiceStore } from './useInvoiceStore'
+import { usePaymentStore } from './usePaymentStore'
 
 const initialState = {
   wagmiConfig: null,
@@ -35,7 +35,7 @@ const initialState = {
     error: null,
   },
   curveLoading: false,
-  routerVersion: "0.1",
+  routerVersion: '0.1',
   routerAddress: AddressZero,
   colorScheme: THEME_COLOR_SCHEME as ColorScheme,
   skippedWelcome: true,
@@ -49,78 +49,78 @@ const initialState = {
   isDemo: false,
   isTest: false,
   testnetMode: false,
-  rpcUrl: "",
-  dataApiUrl: "",
+  rpcUrl: '',
+  dataApiUrl: '',
   logger: null,
   analytics: null,
   eventCallback: () => {},
   pageCallback: () => {},
-};
+}
 
 type MainStoreType = {
-  wagmiConfig: Config | null;
-  token: TokenHeld | null;
-  transaction: TransactionState | null;
-  chainLoading: boolean;
-  chainSelected: boolean;
-  chainsWithBalance: ChainsWithBalanceState | null;
-  curveLoading: boolean;
-  routerVersion: string;
-  routerAddress: Address;
-  colorScheme: ColorScheme;
-  skippedWelcome: boolean;
-  flowInitiated: boolean;
-  chainDataAPI: IChainDataAPI;
-  isDemo: boolean;
-  isTest: boolean;
-  testnetMode: boolean;
-  rpcUrl: string;
-  dataApiUrl: string;
-  logger: Logger | null;
-  analytics: Analytics | null;
-  setLogger: (logger: Logger) => void;
-  setAnalytics: (analytics: Analytics) => void;
+  wagmiConfig: Config | null
+  token: TokenHeld | null
+  transaction: TransactionState | null
+  chainLoading: boolean
+  chainSelected: boolean
+  chainsWithBalance: ChainsWithBalanceState | null
+  curveLoading: boolean
+  routerVersion: string
+  routerAddress: Address
+  colorScheme: ColorScheme
+  skippedWelcome: boolean
+  flowInitiated: boolean
+  chainDataAPI: IChainDataAPI
+  isDemo: boolean
+  isTest: boolean
+  testnetMode: boolean
+  rpcUrl: string
+  dataApiUrl: string
+  logger: Logger | null
+  analytics: Analytics | null
+  setLogger: (logger: Logger) => void
+  setAnalytics: (analytics: Analytics) => void
   eventCallback: (
     action: CallbackAction,
-    params?: Record<string, unknown>
-  ) => void;
+    params?: Record<string, unknown>,
+  ) => void
   pageCallback: (
     category: CallbackCategory,
     page: CallbackPage,
-    params?: Record<string, unknown>
-  ) => void;
-  setWagmiConfig: (wagmiConfig: Config) => void;
-  setEnv: (envData: EnvData) => void;
-  setToken: (token: TokenHeld | null) => void;
-  setTransaction: (transaction: TransactionState) => void;
-  setTransactionConfirmed: (confirmed: boolean) => void;
-  setChainLoading: (loading: boolean) => void;
-  setChainSelected: (selected: boolean) => void;
-  setChainsWithBalance: (chainsWithBalance: ChainsWithBalanceState) => void;
-  setCurveLoading: (loading: boolean) => void;
-  setRouterVersion: (version: string) => void;
-  setRouterAddress: (address: Address) => void;
-  setSkippedWelcome: (skipped: boolean) => void;
-  setColorScheme: (scheme: "dark" | "light") => void;
-  setFlowInitiated: (open: boolean) => void;
-  setChainDataAPI: (chainDataAPI: IChainDataAPI) => void;
+    params?: Record<string, unknown>,
+  ) => void
+  setWagmiConfig: (wagmiConfig: Config) => void
+  setEnv: (envData: EnvData) => void
+  setToken: (token: TokenHeld | null) => void
+  setTransaction: (transaction: TransactionState) => void
+  setTransactionConfirmed: (confirmed: boolean) => void
+  setChainLoading: (loading: boolean) => void
+  setChainSelected: (selected: boolean) => void
+  setChainsWithBalance: (chainsWithBalance: ChainsWithBalanceState) => void
+  setCurveLoading: (loading: boolean) => void
+  setRouterVersion: (version: string) => void
+  setRouterAddress: (address: Address) => void
+  setSkippedWelcome: (skipped: boolean) => void
+  setColorScheme: (scheme: 'dark' | 'light') => void
+  setFlowInitiated: (open: boolean) => void
+  setChainDataAPI: (chainDataAPI: IChainDataAPI) => void
   setEventCallback: (
     eventCallback: (
       action: CallbackAction,
-      params?: Record<string, unknown>
-    ) => void
-  ) => void;
+      params?: Record<string, unknown>,
+    ) => void,
+  ) => void
   setPageCallback: (
     pageCallback: (
       category: CallbackCategory,
       page: CallbackPage,
-      params?: Record<string, unknown>
-    ) => void
-  ) => void;
-  setCloseModal: () => void;
-  resetTransaction: () => void;
-  resetMainState: () => void;
-};
+      params?: Record<string, unknown>,
+    ) => void,
+  ) => void
+  setCloseModal: () => void
+  resetTransaction: () => void
+  resetMainState: () => void
+}
 
 export const useMainStore = create<MainStoreType>((set) => ({
   ...initialState,
@@ -158,13 +158,13 @@ export const useMainStore = create<MainStoreType>((set) => ({
   setEventCallback: (eventCallback) => set({ eventCallback }),
   setPageCallback: (pageCallback) => set({ pageCallback }),
   setCloseModal: () => {
-    set({ flowInitiated: false });
-    useInvoiceStore.getState().resetInvoiceState();
-    useMainStore.getState().resetMainState();
-    usePaymentStore.getState().dispatch({ type: "RESET_PAYMENT_STATE" });
+    set({ flowInitiated: false })
+    useInvoiceStore.getState().resetInvoiceState()
+    useMainStore.getState().resetMainState()
+    usePaymentStore.getState().dispatch({ type: 'RESET_PAYMENT_STATE' })
   },
   resetTransaction: () => set({ transaction: null }),
   resetMainState: () => set({ ...initialState }),
-}));
+}))
 
-export const mainStore = useMainStore;
+export const mainStore = useMainStore

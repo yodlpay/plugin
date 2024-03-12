@@ -1,5 +1,5 @@
-import { Text } from "@hiropay/common";
-import { clsx, createStyles } from "@mantine/core";
+import { Text } from '@hiropay/common'
+import { clsx, createStyles } from '@mantine/core'
 import {
   ReactNode,
   RefObject,
@@ -8,102 +8,102 @@ import {
   useMemo,
   useRef,
   useState,
-} from "react";
-import { useViewBasedState } from "../hooks";
-import { ContainerWrapper } from "./Container";
+} from 'react'
+import { useViewBasedState } from '../hooks'
+import { ContainerWrapper } from './Container'
 
 const useStyles = createStyles((theme, { opacityTop, opacityBottom }: any) => ({
   container: {
-    position: "relative",
-    overflowY: "auto",
-    display: "flex",
-    flexDirection: "column",
+    position: 'relative',
+    overflowY: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
     flexGrow: 1,
   },
   shadow: {
-    height: "1px",
-    width: "90%",
-    background: "#000",
-    boxShadow: "0px -70px 35px 60px rgba(0,0,0,0.5)",
-    margin: "0 auto",
-    position: "sticky",
-    borderRadius: "50%",
-    transitionProperty: "opacity",
-    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-    transitionDuration: "300ms",
-    pointerEvents: "none",
+    height: '1px',
+    width: '90%',
+    background: '#000',
+    boxShadow: '0px -70px 35px 60px rgba(0,0,0,0.5)',
+    margin: '0 auto',
+    position: 'sticky',
+    borderRadius: '50%',
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '300ms',
+    pointerEvents: 'none',
     zIndex: 2,
   },
   bottomTop: {
-    top: "0",
+    top: '0',
     opacity: opacityTop ? 1 : 0,
   },
   bottomShadow: {
-    bottom: "15px",
-    transform: "rotate(180deg)",
+    bottom: '15px',
+    transform: 'rotate(180deg)',
     opacity: opacityBottom ? 1 : 0,
   },
-}));
+}))
 
 export interface ScrollShadowWrapperProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
 export const ScrollShadowWrapper = ({ children }: ScrollShadowWrapperProps) => {
-  const [scrollTop, setScrollTop] = useState(0);
-  const [scrollHeight, setScrollHeight] = useState(0);
-  const [clientHeight, setClientHeight] = useState(0);
-  const [wrapperHeight, setWrapperHeight] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0)
+  const [scrollHeight, setScrollHeight] = useState(0)
+  const [clientHeight, setClientHeight] = useState(0)
+  const [wrapperHeight, setWrapperHeight] = useState(0)
 
-  const { subheading } = useViewBasedState(children as JSX.Element);
+  const { subheading } = useViewBasedState(children as JSX.Element)
 
   const wrapper =
-    document.getElementsByClassName("container-wrapper")?.[0] ?? null;
+    document.getElementsByClassName('container-wrapper')?.[0] ?? null
 
   const getVisibleSides = useMemo((): { top: boolean; bottom: boolean } => {
-    const isBottom = Math.abs(scrollHeight - clientHeight - scrollTop) <= 1;
-    const isTop = scrollTop === 0;
-    const isBetween = !isTop && !isBottom;
+    const isBottom = Math.abs(scrollHeight - clientHeight - scrollTop) <= 1
+    const isTop = scrollTop === 0
+    const isBetween = !isTop && !isBottom
 
     return {
       top: (isBottom || isBetween) && !(isTop && isBottom),
       bottom: (isTop || isBetween) && !(isTop && isBottom),
-    };
-  }, [clientHeight, scrollHeight, scrollTop]);
+    }
+  }, [clientHeight, scrollHeight, scrollTop])
 
   const { classes } = useStyles({
     opacityTop: getVisibleSides.top,
     opacityBottom: getVisibleSides.bottom,
-  });
+  })
 
   const onScrollHandler = (event: WheelEvent<HTMLDivElement>) => {
-    setScrollTop(event.currentTarget.scrollTop);
-    setScrollHeight(event.currentTarget.scrollHeight);
-    setClientHeight(event.currentTarget.clientHeight);
-  };
+    setScrollTop(event.currentTarget.scrollTop)
+    setScrollHeight(event.currentTarget.scrollHeight)
+    setClientHeight(event.currentTarget.clientHeight)
+  }
 
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const resetRefSizes = (ref: RefObject<HTMLDivElement>) => {
-      if (!ref.current) return;
+      if (!ref.current) return
 
-      setScrollTop(ref.current.scrollTop);
-      setScrollHeight(ref.current.scrollHeight);
-      setClientHeight(ref.current.clientHeight);
-    };
+      setScrollTop(ref.current.scrollTop)
+      setScrollHeight(ref.current.scrollHeight)
+      setClientHeight(ref.current.clientHeight)
+    }
 
-    resetRefSizes(wrapperRef);
-  }, [wrapperHeight, wrapperRef?.current?.clientHeight]);
+    resetRefSizes(wrapperRef)
+  }, [wrapperHeight, wrapperRef?.current?.clientHeight])
 
   useEffect(() => {
-    if (!wrapper) return;
+    if (!wrapper) return
     const resizeObserver = new ResizeObserver((element) => {
-      setWrapperHeight(element?.[0]?.contentRect?.height ?? 0);
-    });
-    resizeObserver.observe(wrapper);
-    return () => resizeObserver.disconnect(); // clean up
-  }, [wrapper]);
+      setWrapperHeight(element?.[0]?.contentRect?.height ?? 0)
+    })
+    resizeObserver.observe(wrapper)
+    return () => resizeObserver.disconnect() // clean up
+  }, [wrapper])
 
   return (
     <div
@@ -122,5 +122,5 @@ export const ScrollShadowWrapper = ({ children }: ScrollShadowWrapperProps) => {
       </ContainerWrapper>
       <div className={clsx(classes.shadow, classes.bottomShadow)} />
     </div>
-  );
-};
+  )
+}

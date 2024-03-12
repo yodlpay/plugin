@@ -4,40 +4,38 @@ import {
   Text,
   formatPaymentAmount,
   usePaymentStyles,
-} from "@hiropay/common";
-import { clsx } from "@mantine/core";
-import { getTokenBySymbol } from "@yodlpay/tokenlists";
-import { useMemo } from "react";
-import { useAccount } from "wagmi";
-import { usePaymentStore } from "../../contexts/usePaymentStore";
-import { normalizeBigInt } from "../../utils/helpers";
+} from '@hiropay/common'
+import { clsx } from '@mantine/core'
+import { getTokenBySymbol } from '@yodlpay/tokenlists'
+import { useMemo } from 'react'
+import { useAccount } from 'wagmi'
+import { usePaymentStore } from '../../contexts/usePaymentStore'
+import { normalizeBigInt } from '../../utils/helpers'
 
 export const PaymentFooter = () => {
   const allowanceOk = usePaymentStore(
-    (state) => state.state.allowanceDetails?.data
-  );
-  const gasLoading = usePaymentStore(
-    (state) => state.state.gasDetails?.loading
-  );
-  const gasError = usePaymentStore((state) => state.state.gasDetails?.error);
-  const gasDetails = usePaymentStore(({ state }) => state.gasDetails?.data);
+    (state) => state.state.allowanceDetails?.data,
+  )
+  const gasLoading = usePaymentStore((state) => state.state.gasDetails?.loading)
+  const gasError = usePaymentStore((state) => state.state.gasDetails?.error)
+  const gasDetails = usePaymentStore(({ state }) => state.gasDetails?.data)
 
-  const { chain } = useAccount();
+  const { chain } = useAccount()
 
-  const nativeToken = getTokenBySymbol(chain?.nativeCurrency.symbol ?? "");
+  const nativeToken = getTokenBySymbol(chain?.nativeCurrency.symbol ?? '')
 
-  const { classes } = usePaymentStyles();
+  const { classes } = usePaymentStyles()
 
   const calculatedGasInNativeCurrency = gasDetails?.gas
     ? normalizeBigInt(
         gasDetails?.gas * gasDetails?.gasPrice,
-        chain?.nativeCurrency.decimals ?? 0
+        chain?.nativeCurrency.decimals ?? 0,
       )
-    : 0;
+    : 0
 
   const calculatedGasInUsd = gasDetails?.gas
     ? normalizeBigInt(gasDetails?.gasInUsd, gasDetails?.tokenOut?.decimals ?? 0)
-    : 0;
+    : 0
 
   const gasInNativeCurrency = useMemo(
     () =>
@@ -47,35 +45,35 @@ export const PaymentFooter = () => {
             currency: chain?.nativeCurrency.symbol,
             isFiatOrStablecoin: false,
           })}`
-        : "",
+        : '',
     [
       calculatedGasInNativeCurrency,
       chain?.nativeCurrency.symbol,
       gasDetails?.gas,
-    ]
-  );
+    ],
+  )
 
   const formattedGasInNativeCurrency = useMemo(
     () =>
       gasInNativeCurrency
         ? gasInNativeCurrency
         : allowanceOk || gasError
-        ? "Failed to determine gas fees"
-        : "Requires token to be approved",
-    [allowanceOk, gasInNativeCurrency, gasError]
-  );
+        ? 'Failed to determine gas fees'
+        : 'Requires token to be approved',
+    [allowanceOk, gasInNativeCurrency, gasError],
+  )
 
   const formattedGasInUsd = useMemo(
     () =>
       calculatedGasInUsd
         ? `~${formatPaymentAmount({
             amount: calculatedGasInUsd,
-            currency: "USD",
+            currency: 'USD',
             isFiatOrStablecoin: true,
           })}`
-        : "",
-    [calculatedGasInUsd]
-  );
+        : '',
+    [calculatedGasInUsd],
+  )
 
   return (
     <Flex direction="column" w="100%">
@@ -108,7 +106,7 @@ export const PaymentFooter = () => {
               }
             >
               {gasLoading
-                ? "Estimating gas fees"
+                ? 'Estimating gas fees'
                 : formattedGasInNativeCurrency}
             </Text>
           </Flex>
@@ -148,5 +146,5 @@ export const PaymentFooter = () => {
         </Flex>
       </Flex> */}
     </Flex>
-  );
-};
+  )
+}

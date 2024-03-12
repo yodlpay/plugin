@@ -1,4 +1,4 @@
-import { ChevronRightIcon, NoSymbolIcon } from "@heroicons/react/20/solid";
+import { ChevronRightIcon, NoSymbolIcon } from '@heroicons/react/20/solid'
 import {
   ErrorIndicator,
   Flex,
@@ -8,62 +8,62 @@ import {
   RudderStackJSPageCategories,
   RudderStackJSPageNames,
   useNavLinkStyles,
-} from "@hiropay/common";
-import { useEffect } from "react";
-import { useAccount } from "wagmi";
-import { useMainStore } from "../contexts/useMainStore";
-import { useAvailableChains } from "../hooks";
+} from '@hiropay/common'
+import { useEffect } from 'react'
+import { useAccount } from 'wagmi'
+import { useMainStore } from '../contexts/useMainStore'
+import { useAvailableChains } from '../hooks'
 
 export type ChainDialogProps = {
-  selectChain: (nid: number | undefined) => void;
-};
+  selectChain: (nid: number | undefined) => void
+}
 
 export default function ChainDialog({ selectChain }: ChainDialogProps) {
-  const { chain: currentChain } = useAccount();
-  const chainsWithBalance = useMainStore((state) => state.chainsWithBalance);
-  const eventCallback = useMainStore((state) => state.eventCallback);
-  const pageCallback = useMainStore((state) => state.pageCallback);
+  const { chain: currentChain } = useAccount()
+  const chainsWithBalance = useMainStore((state) => state.chainsWithBalance)
+  const eventCallback = useMainStore((state) => state.eventCallback)
+  const pageCallback = useMainStore((state) => state.pageCallback)
 
-  const { classes } = useNavLinkStyles();
+  const { classes } = useNavLinkStyles()
 
   // Disallow chains that do not have a price feed for the invoice currency
-  const { availableChains } = useAvailableChains();
+  const { availableChains } = useAvailableChains()
 
   const sortedChains = availableChains.sort((a, b) => {
     // Sort by disabled status
     if (a.isDisabled && !b.isDisabled) {
-      return 1;
+      return 1
     }
     if (!a.isDisabled && b.isDisabled) {
-      return -1;
+      return -1
     }
 
     // Otherwise, they're equal
-    return 0;
-  });
+    return 0
+  })
 
   const handleClick = (chainId: number) => {
-    selectChain(chainId);
+    selectChain(chainId)
     eventCallback?.(RudderStackJSEvents.NetworkChosen, {
       networkId: chainId,
-    });
-  };
+    })
+  }
 
   useEffect(() => {
     pageCallback?.(
       RudderStackJSPageCategories.Payment,
       RudderStackJSPageNames.NetworkDialog,
-      { chains: sortedChains.map((chain) => chain.chainName) }
-    );
+      { chains: sortedChains.map((chain) => chain.chainName) },
+    )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   if (chainsWithBalance?.loading) {
-    return <LoadingIndicator label="Loading chain balance details..." />;
+    return <LoadingIndicator label="Loading chain balance details..." />
   }
 
   if (chainsWithBalance?.error) {
-    return <ErrorIndicator error={chainsWithBalance?.error} />;
+    return <ErrorIndicator error={chainsWithBalance?.error} />
   }
 
   // STATE: SELECT BLOCKCHAIN
@@ -73,7 +73,7 @@ export default function ChainDialog({ selectChain }: ChainDialogProps) {
         {sortedChains.map((chain) => (
           <NavLink
             withIndicator={currentChain?.id === chain.chainId}
-            indicatorProps={{ inline: true, color: "green.6", offset: 5 }}
+            indicatorProps={{ inline: true, color: 'green.6', offset: 5 }}
             key={chain.chainName}
             data-testid={`chain-${chain.chainId}`}
             size="md"
@@ -95,5 +95,5 @@ export default function ChainDialog({ selectChain }: ChainDialogProps) {
         ))}
       </Flex>
     </>
-  );
+  )
 }

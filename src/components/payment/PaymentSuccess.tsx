@@ -1,4 +1,4 @@
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid'
 import {
   Button,
   Flex,
@@ -9,19 +9,19 @@ import {
   RudderStackJSPageCategories,
   RudderStackJSPageNames,
   Text,
-} from "@hiropay/common";
-import { createStyles, rem } from "@mantine/core";
-import { useCallback, useEffect, useState } from "react";
-import { useMainStore } from "../../contexts/useMainStore";
-import { useOnCompleteAction } from "../../hooks";
-import { getReceiptUrl } from "../../utils/helpers";
+} from '@hiropay/common'
+import { createStyles, rem } from '@mantine/core'
+import { useCallback, useEffect, useState } from 'react'
+import { useMainStore } from '../../contexts/useMainStore'
+import { useOnCompleteAction } from '../../hooks'
+import { getReceiptUrl } from '../../utils/helpers'
 
 const useStyles = createStyles((theme) => ({
   status: {
-    marginBottom: "44px",
+    marginBottom: '44px',
   },
   icon: {
-    marginLeft: "-6px",
+    marginLeft: '-6px',
     fill: theme.colors?.indigo?.[9],
   },
   label: {
@@ -37,20 +37,20 @@ const useStyles = createStyles((theme) => ({
     },
   },
   cta: {
-    minHeight: "136px",
-    padding: "24px 16px",
+    minHeight: '136px',
+    padding: '24px 16px',
     background: theme.colors?.level?.[1],
     borderRadius: theme.radius.xl,
     marginTop: rem(40),
     marginBottom: rem(24),
     [theme.fn.smallerThan(MOBILE_BREAKPOINT)]: {
-      padding: "12px 16px",
+      padding: '12px 16px',
       marginTop: rem(16),
       marginBottom: rem(16),
     },
   },
   ctaLabel: {
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: rem(16),
     [theme.fn.smallerThan(MOBILE_BREAKPOINT)]: {
       fontSize: rem(15),
@@ -58,7 +58,7 @@ const useStyles = createStyles((theme) => ({
   },
   button: {
     marginTop: rem(24),
-    "& .mantine-Button-label": {
+    '& .mantine-Button-label': {
       color: `${theme.colors?.onColor} !important`,
     },
     [theme.fn.smallerThan(MOBILE_BREAKPOINT)]: {
@@ -68,17 +68,17 @@ const useStyles = createStyles((theme) => ({
   receiptLink: {
     color: theme.colors?.brand?.[0],
   },
-}));
+}))
 
 export const PaymentSuccess = () => {
-  const analytics = useMainStore((state) => state.analytics);
-  const transaction = useMainStore((state) => state.transaction);
-  const setCloseModal = useMainStore((state) => state.setCloseModal);
+  const analytics = useMainStore((state) => state.analytics)
+  const transaction = useMainStore((state) => state.transaction)
+  const setCloseModal = useMainStore((state) => state.setCloseModal)
 
-  const chain = transaction?.data?.chain ?? null;
-  const receiptUrl = getReceiptUrl(chain, transaction?.data?.hash);
+  const chain = transaction?.data?.chain ?? null
+  const receiptUrl = getReceiptUrl(chain, transaction?.data?.hash)
 
-  const [origin, setOrigin] = useState("");
+  const [origin, setOrigin] = useState('')
 
   // TODO - commented out for now since footnote is not needed
   // const finalityDuration = chain ? AVERAGE_FINALITY_DURATION[chain.id] : null;
@@ -92,47 +92,47 @@ export const PaymentSuccess = () => {
   //   action === PaymentLinkAction.TEST && isValidAction;
 
   const handleClose = useCallback(() => {
-    setCloseModal();
-  }, [setCloseModal]);
+    setCloseModal()
+  }, [setCloseModal])
 
   const { secondsLeft, actionType, actionText } =
-    useOnCompleteAction(handleClose);
+    useOnCompleteAction(handleClose)
 
   const formattedActionText =
     actionText
-      ?.replace(REDIRECT_COUNTDOWN_KEYWORD, secondsLeft?.toString() ?? "0")
+      ?.replace(REDIRECT_COUNTDOWN_KEYWORD, secondsLeft?.toString() ?? '0')
       .replace(
         REDIRECT_UNIT_KEYWORD,
-        `second${secondsLeft === 1 ? "" : "s"}`
-      ) ?? "";
+        `second${secondsLeft === 1 ? '' : 's'}`,
+      ) ?? ''
 
   const actionLabel = {
     [OnCompleteActionType.REDIRECT]:
       formattedActionText ??
       `Redirecting you back to merchant in ${secondsLeft} second${
-        secondsLeft === 1 ? "" : "s"
+        secondsLeft === 1 ? '' : 's'
       }...`,
     [OnCompleteActionType.CLOSE_WINDOW]:
       formattedActionText ??
       `The modal will close in ${secondsLeft} second${
-        secondsLeft === 1 ? "" : "s"
+        secondsLeft === 1 ? '' : 's'
       }...`,
-    [OnCompleteActionType.NOTHING]: "",
-  }[actionType as string];
+    [OnCompleteActionType.NOTHING]: '',
+  }[actionType as string]
 
-  const { classes } = useStyles();
+  const { classes } = useStyles()
 
   useEffect(() => {
     analytics?.page(
       RudderStackJSPageCategories.Payment,
       RudderStackJSPageNames.SuccessDialog,
-      { receiptUrl }
-    );
-  }, [analytics, receiptUrl]);
+      { receiptUrl },
+    )
+  }, [analytics, receiptUrl])
 
   useEffect(() => {
-    setOrigin(window.location.origin);
-  }, []);
+    setOrigin(window.location.origin)
+  }, [])
 
   return (
     <Flex
@@ -145,7 +145,7 @@ export const PaymentSuccess = () => {
       mx="auto"
     >
       <img
-        src={"/assets/images/status/success.svg"}
+        src={'/assets/images/status/success.svg'}
         aria-hidden="true"
         alt="Payment successful"
         className={classes.status}
@@ -213,5 +213,5 @@ export const PaymentSuccess = () => {
         </Text>
       )} */}
     </Flex>
-  );
-};
+  )
+}

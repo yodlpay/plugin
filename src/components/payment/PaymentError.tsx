@@ -4,36 +4,36 @@ import {
   RudderStackJSPageCategories,
   RudderStackJSPageNames,
   Text,
-} from "@hiropay/common";
-import { createStyles } from "@mantine/core";
-import { useEffect } from "react";
-import { useMainStore } from "../../contexts/useMainStore";
+} from '@hiropay/common'
+import { createStyles } from '@mantine/core'
+import { useEffect } from 'react'
+import { useMainStore } from '../../contexts/useMainStore'
 
 const useStyles = createStyles(() => ({
   status: {
-    marginBottom: "44px",
+    marginBottom: '44px',
   },
   icon: {
-    marginLeft: "-6px",
+    marginLeft: '-6px',
   },
-}));
+}))
 
 export const PaymentError = () => {
-  const analytics = useMainStore((state) => state.analytics);
-  const transaction = useMainStore((state) => state.transaction);
+  const analytics = useMainStore((state) => state.analytics)
+  const transaction = useMainStore((state) => state.transaction)
 
-  const resetTransaction = useMainStore((state) => state.resetTransaction);
+  const resetTransaction = useMainStore((state) => state.resetTransaction)
 
-  const { classes } = useStyles();
+  const { classes } = useStyles()
 
   useEffect(() => {
     analytics?.page(
       RudderStackJSPageCategories.Payment,
       RudderStackJSPageNames.ErrorDialog,
-      { error: transaction?.error ?? "Unknown error" }
-    );
+      { error: transaction?.error ?? 'Unknown error' },
+    )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   return (
     <Flex
@@ -46,7 +46,7 @@ export const PaymentError = () => {
       mx="auto"
     >
       <img
-        src={"/assets/images/status/error.svg"}
+        src={'/assets/images/status/error.svg'}
         aria-hidden="true"
         alt="Payment failed"
         className={classes.status}
@@ -58,7 +58,7 @@ export const PaymentError = () => {
         The payment could not be completed for the following reason:
       </Text>
       <Text c="primary.0" size={16} weight={600} mb={16} align="center">
-        {transaction?.error ?? "Something went wrong"}
+        {transaction?.error ?? 'Something went wrong'}
       </Text>
       <Button
         c="onColor.0"
@@ -70,5 +70,5 @@ export const PaymentError = () => {
         Go back
       </Button>
     </Flex>
-  );
-};
+  )
+}

@@ -6,29 +6,29 @@ import {
   Text,
   Tooltip,
   usePaymentStyles,
-} from "@hiropay/common";
-import { clsx } from "@mantine/core";
+} from '@hiropay/common'
+import { clsx } from '@mantine/core'
 import {
   ArrowsOutSimple,
   Info,
   LinkBreak,
   Shuffle,
-} from "@phosphor-icons/react";
-import { ReactNode } from "react";
+} from '@phosphor-icons/react'
+import { ReactNode } from 'react'
 
 export type AutoswapProps = {
-  swapPath: ReactNode;
-  swapRate?: string;
-  swapVenue: string;
-  slippage?: string;
-  priceImpact?: string;
-  opened?: boolean;
-  handleChange?: (value: boolean) => void;
-  isError?: string | null;
-  isLoading?: boolean;
-  renderSwapPath?: (withLabel?: boolean) => ReactNode;
-  withPopover?: boolean;
-};
+  swapPath: ReactNode
+  swapRate?: string
+  swapVenue: string
+  slippage?: string
+  priceImpact?: string
+  opened?: boolean
+  handleChange?: (value: boolean) => void
+  isError?: string | null
+  isLoading?: boolean
+  renderSwapPath?: (withLabel?: boolean) => ReactNode
+  withPopover?: boolean
+}
 
 export const Autoswap = ({
   swapPath,
@@ -43,9 +43,9 @@ export const Autoswap = ({
   renderSwapPath = () => null,
   withPopover = true,
 }: AutoswapProps) => {
-  const isErrorOrLoading = !!isError || !!isLoading;
+  const isErrorOrLoading = !!isError || !!isLoading
 
-  const { classes } = usePaymentStyles();
+  const { classes } = usePaymentStyles()
 
   const button = (
     <Button
@@ -57,7 +57,7 @@ export const Autoswap = ({
       className={clsx(
         classes.autoswapButton,
         opened && classes.autoswapButtonOpened,
-        !withPopover && classes.autoswapButtonNoPopover
+        !withPopover && classes.autoswapButtonNoPopover,
       )}
       onClick={() => handleChange(!opened)}
     >
@@ -67,7 +67,7 @@ export const Autoswap = ({
         justify="space-between"
         className={clsx(
           classes.autoswapContainer,
-          !withPopover && classes.autoswapContainerNoPopover
+          !withPopover && classes.autoswapContainerNoPopover,
         )}
       >
         <Flex>
@@ -80,7 +80,7 @@ export const Autoswap = ({
         </Flex>
         <Flex>
           <Text
-            c={"subtle.0"}
+            c={'subtle.0'}
             size={14}
             weight={500}
             align="right"
@@ -100,7 +100,7 @@ export const Autoswap = ({
         </Flex>
       </Flex>
     </Button>
-  );
+  )
 
   return withPopover ? (
     <Popover
@@ -219,5 +219,5 @@ export const Autoswap = ({
     </Popover>
   ) : (
     button
-  );
-};
+  )
+}

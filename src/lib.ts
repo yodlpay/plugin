@@ -1,9 +1,9 @@
-"use client";
+'use client'
 
-export { Amounts } from "./components/Amounts";
-export { Autoswap } from "./components/Autoswap";
-export { ConnectorButton } from "./components/ConnectorButton";
-export { YodlSDKProvider, useYodlSDK } from "./wrappers/Provider";
+export { Amounts } from './components/Amounts'
+export { Autoswap } from './components/Autoswap'
+export { ConnectorButton } from './components/ConnectorButton'
+export { YodlSDKProvider, useYodlSDK } from './wrappers/Provider'
 export type {
   Analytics,
   CallbackAction,
@@ -12,4 +12,4 @@ export type {
   EventCallback,
   Logger,
   OpenArgs,
-} from "./wrappers/Provider";
+} from './wrappers/Provider'

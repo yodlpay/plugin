@@ -2,7 +2,7 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
   NoSymbolIcon,
-} from "@heroicons/react/20/solid";
+} from '@heroicons/react/20/solid'
 import {
   Accordion,
   Button,
@@ -22,142 +22,142 @@ import {
   coinIdToToken,
   useNavLinkStyles,
   usePaymentStyles,
-} from "@hiropay/common";
-import { clsx, createStyles } from "@mantine/core";
+} from '@hiropay/common'
+import { clsx, createStyles } from '@mantine/core'
 import {
   ArrowBendUpLeft,
   Info,
   LinkBreak,
   Shuffle,
-} from "@phosphor-icons/react";
-import { TokenInfo, getTokens } from "@yodlpay/tokenlists";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Address } from "viem";
-import { useAccount, useDisconnect } from "wagmi";
-import { useMainStore } from "../contexts/useMainStore";
-import { useTokenStore } from "../contexts/useTokenStore";
+} from '@phosphor-icons/react'
+import { TokenInfo, getTokens } from '@yodlpay/tokenlists'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Address } from 'viem'
+import { useAccount, useDisconnect } from 'wagmi'
+import { useMainStore } from '../contexts/useMainStore'
+import { useTokenStore } from '../contexts/useTokenStore'
 import {
   useAvailableTokens,
   usePayment,
   useTokenBalances,
   useTokenPrices,
-} from "../hooks";
+} from '../hooks'
 import {
   areCurrenciesEqual,
   formatBalance,
   formatConvertedBalance,
   isBalanceSufficient,
-} from "../utils/helpers";
+} from '../utils/helpers'
 
 const useStyles = createStyles((theme) => ({
   accordion: {
-    marginTop: "16px",
-    height: "100%",
-    transition: "max-height 500ms ease",
-    "& > :nth-of-type(1)": {
-      "& .mantine-Accordion-label": {
+    marginTop: '16px',
+    height: '100%',
+    transition: 'max-height 500ms ease',
+    '& > :nth-of-type(1)': {
+      '& .mantine-Accordion-label': {
         paddingTop: 0,
       },
     },
-    "& > :nth-of-type(2)": {
-      transition: "transform 500ms ease",
+    '& > :nth-of-type(2)': {
+      transition: 'transform 500ms ease',
       background: theme.colors?.level?.[0],
       [theme.fn.smallerThan(MOBILE_BREAKPOINT)]: {
-        padding: "6px 12px",
+        padding: '6px 12px',
       },
-      "& > .mantine-Accordion-control": {
+      '& > .mantine-Accordion-control': {
         [theme.fn.smallerThan(MOBILE_BREAKPOINT)]: {
-          padding: "0px",
+          padding: '0px',
         },
       },
-      "& > .mantine-Accordion-panel": {
-        "& .mantine-Accordion-content": {
+      '& > .mantine-Accordion-panel': {
+        '& .mantine-Accordion-content': {
           [theme.fn.smallerThan(MOBILE_BREAKPOINT)]: {
-            paddingLeft: "0px",
-            paddingRight: "0px",
+            paddingLeft: '0px',
+            paddingRight: '0px',
           },
         },
       },
     },
-    "& .mantine-Accordion-control": {
-      height: "54px",
-      padding: "15px 8px",
+    '& .mantine-Accordion-control': {
+      height: '54px',
+      padding: '15px 8px',
       borderRadius: theme.radius.md,
-      background: "transparent",
-      justifyContent: "center",
-      alignItems: "center",
+      background: 'transparent',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
-    "& .mantine-Accordion-label": {
+    '& .mantine-Accordion-label': {
       paddingBottom: 0,
-      flex: "none",
+      flex: 'none',
     },
-    "& .mantine-Accordion-chevron": {
-      marginLeft: "0.75rem",
+    '& .mantine-Accordion-chevron': {
+      marginLeft: '0.75rem',
     },
-    "& .mantine-Accordion-item[data-active]": {
-      background: "transparent",
+    '& .mantine-Accordion-item[data-active]': {
+      background: 'transparent',
     },
   },
   tooltipIcon: {
-    marginLeft: "4px",
+    marginLeft: '4px',
     fill: theme.colors?.subtle?.[0],
   },
   chevronIcon: {
-    minWidth: "32px",
+    minWidth: '32px',
     fill: theme.colors?.disabled?.[0],
   },
   leftLine: {
-    height: "1px",
+    height: '1px',
     flex: 1,
     backgroundImage:
-      "linear-gradient(to right, rgba(10, 80, 255, 0), rgba(232, 89, 12, 1))",
+      'linear-gradient(to right, rgba(10, 80, 255, 0), rgba(232, 89, 12, 1))',
   },
   rightLine: {
-    height: "1px",
+    height: '1px',
     flex: 1,
     backgroundImage:
-      "linear-gradient(to right, rgba(0, 73, 255, 1), rgba(232, 139, 12, 0))",
+      'linear-gradient(to right, rgba(0, 73, 255, 1), rgba(232, 139, 12, 0))',
   },
   infoIcon: {
-    color: "rgba(0, 73, 255, 1)",
-    stroke: "rgba(0, 73, 255, 1)",
-    strokeWidth: "6px",
+    color: 'rgba(0, 73, 255, 1)',
+    stroke: 'rgba(0, 73, 255, 1)',
+    strokeWidth: '6px',
   },
   avatar: {
-    backgroundColor: "transparent",
-    border: "0.125rem solid transparent",
+    backgroundColor: 'transparent',
+    border: '0.125rem solid transparent',
   },
   avatarIndicator: {
     background: theme.colors?.level?.[0],
   },
   shuffleLabel: {
-    marginLeft: "4px",
+    marginLeft: '4px',
   },
   shuffleIndicator: {
-    marginLeft: "4px",
+    marginLeft: '4px',
   },
-}));
+}))
 
 export default function TokenDialog() {
   const [expandedItem, setExpandedItem] = useState<string | undefined>(
-    undefined
-  );
+    undefined,
+  )
 
-  const { invoice } = usePayment();
-  const { address, chain } = useAccount();
-  const { disconnectAsync } = useDisconnect();
+  const { invoice } = usePayment()
+  const { address, chain } = useAccount()
+  const { disconnectAsync } = useDisconnect()
 
-  const { classes } = useStyles();
-  const { classes: paymentClasses } = usePaymentStyles();
-  const { classes: navLinkClasses } = useNavLinkStyles();
+  const { classes } = useStyles()
+  const { classes: paymentClasses } = usePaymentStyles()
+  const { classes: navLinkClasses } = useNavLinkStyles()
 
-  const setToken = useMainStore((state) => state.setToken);
+  const setToken = useMainStore((state) => state.setToken)
 
-  const exchangeRates = useTokenStore((state) => state.exchangeRates);
-  const routerVersion = useMainStore((state) => state.routerVersion);
-  const chainDataAPI = useMainStore((state) => state.chainDataAPI);
-  const eventCallback = useMainStore((state) => state.eventCallback);
-  const pageCallback = useMainStore((state) => state.pageCallback);
+  const exchangeRates = useTokenStore((state) => state.exchangeRates)
+  const routerVersion = useMainStore((state) => state.routerVersion)
+  const chainDataAPI = useMainStore((state) => state.chainDataAPI)
+  const eventCallback = useMainStore((state) => state.eventCallback)
+  const pageCallback = useMainStore((state) => state.pageCallback)
 
   const noDataSharedProps = {
     labelSize: 14,
@@ -166,42 +166,42 @@ export default function TokenDialog() {
     horizontal: true,
     horizontalMargin: 16,
     verticalMargin: 0,
-    padding: "8px 16px",
+    padding: '8px 16px',
     backgroundShade: 0,
-  };
+  }
 
-  const { acceptedTokens, swappableTokens } = useAvailableTokens();
+  const { acceptedTokens, swappableTokens } = useAvailableTokens()
 
   const chainTokens = useMemo(
     () => (chain?.id ? getTokens(chain?.id) : []),
-    [chain?.id]
-  );
+    [chain?.id],
+  )
 
   const invoiceTokens = useMemo(() => {
     const chainConfig = invoice.coins.find(
-      (coinConfig) => coinConfig.chainId == chain?.id
-    );
+      (coinConfig) => coinConfig.chainId == chain?.id,
+    )
     if (chainConfig) {
       return chainConfig.tokens.map((token) =>
-        coinIdToToken(`${token.symbol}-${chain?.id}`)
-      ) as TokenInfo[];
+        coinIdToToken(`${token.symbol}-${chain?.id}`),
+      ) as TokenInfo[]
     } else {
-      return [];
+      return []
     }
-  }, [chain?.id, invoice.coins]);
+  }, [chain?.id, invoice.coins])
 
   const filteredTokens = useMemo(
     () =>
-      routerVersion == "0.1" // we do not support swaps in v0.1
+      routerVersion == '0.1' // we do not support swaps in v0.1
         ? chainTokens.filter((tokenInfo) =>
             invoiceTokens.some(
               (invoiceToken: TokenInfo) =>
-                invoiceToken.address == tokenInfo.address
-            )
+                invoiceToken.address == tokenInfo.address,
+            ),
           )
         : chainTokens,
-    [chainTokens, invoiceTokens, routerVersion]
-  );
+    [chainTokens, invoiceTokens, routerVersion],
+  )
 
   const renderConvertedBalance = useCallback(
     (token: TokenHeld) => {
@@ -215,15 +215,15 @@ export default function TokenDialog() {
             {`${
               CURRENCY_TO_SYMBOL[
                 invoice.currency as keyof typeof CURRENCY_TO_SYMBOL
-              ]?.symbol || ""
+              ]?.symbol || ''
             }_.__`}
           </Text>
-        );
+        )
       const { isLoading, formattedAmount } = formatConvertedBalance(
         token,
         exchangeRates?.data?.[token.tokenInfo.symbol],
-        invoice
-      );
+        invoice,
+      )
       if (isLoading) {
         return (
           <LoadingIndicator
@@ -235,63 +235,58 @@ export default function TokenDialog() {
             labelSize={14}
             spinnerSize={14}
           />
-        );
+        )
       }
-      return <>{formattedAmount}</>;
+      return <>{formattedAmount}</>
     },
-    [exchangeRates, invoice]
-  );
+    [exchangeRates, invoice],
+  )
 
   const handleItemChange = (value: string | null | unknown) => {
-    setExpandedItem(value as string);
-  };
+    setExpandedItem(value as string)
+  }
 
   const handleNetworkClick = async () => {
-    await disconnectAsync();
-  };
+    await disconnectAsync()
+  }
 
   const handleNavlinkClick = (token: TokenHeld) => {
     if (isBalanceSufficient(token, invoice, exchangeRates)) {
-      setToken(token);
+      setToken(token)
       eventCallback?.(RudderStackJSEvents.TokenChosen, {
         token: token.tokenInfo.symbol,
-      });
+      })
     }
-  };
+  }
 
   const { isLoading: isLoadingPrices, error: isPricesError } =
-    useTokenPrices(filteredTokens);
+    useTokenPrices(filteredTokens)
 
   const { isLoading: isLoadingBalances, error: isBalancesError } =
-    useTokenBalances(
-      chainDataAPI,
-      chain?.id,
-      address as Address,
-      invoiceTokens
-    );
+    useTokenBalances(chainDataAPI, chain?.id, address as Address, invoiceTokens)
 
   const tokensWithInsufficientBalance = [
     ...(acceptedTokens ?? []),
     ...(swappableTokens ?? []),
-  ].filter((token) => !isBalanceSufficient(token, invoice, exchangeRates));
+  ].filter((token) => !isBalanceSufficient(token, invoice, exchangeRates))
 
   const acceptedTokensWithSufficientBalance = acceptedTokens?.filter(
-    (token) => !!isBalanceSufficient(token, invoice, exchangeRates)
-  );
+    (token) => !!isBalanceSufficient(token, invoice, exchangeRates),
+  )
   const swappableTokensWithSufficientBalance = swappableTokens?.filter(
-    (token) => !!isBalanceSufficient(token, invoice, exchangeRates)
-  );
+    (token) => !!isBalanceSufficient(token, invoice, exchangeRates),
+  )
 
   const containsAcceptedTokens =
-    (acceptedTokensWithSufficientBalance?.length ?? 0) > 0;
+    (acceptedTokensWithSufficientBalance?.length ?? 0) > 0
   const containsSwappableTokens =
-    (swappableTokensWithSufficientBalance?.length ?? 0) > 0;
+    (swappableTokensWithSufficientBalance?.length ?? 0) > 0
 
   const isLoading =
     isLoadingBalances ||
     isLoadingPrices ||
     !exchangeRates ||
-    exchangeRates?.loading;
+    exchangeRates?.loading
 
   useEffect(() => {
     if (!isLoading && !isBalancesError && !isPricesError) {
@@ -301,21 +296,21 @@ export default function TokenDialog() {
         {
           preferredTokens:
             acceptedTokensWithSufficientBalance?.map(
-              (token) => token.tokenInfo.symbol
+              (token) => token.tokenInfo.symbol,
             ) ?? [],
           swappableTokens:
             swappableTokensWithSufficientBalance?.map(
-              (token) => token.tokenInfo.symbol
+              (token) => token.tokenInfo.symbol,
             ) ?? [],
           insufficientBalanceTokens:
             tokensWithInsufficientBalance?.map(
-              (token) => token.tokenInfo.symbol
+              (token) => token.tokenInfo.symbol,
             ) ?? [],
-        }
-      );
+        },
+      )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading]);
+  }, [isLoading])
 
   return (
     <Flex grow={1} direction="column" gap="16px">
@@ -332,8 +327,8 @@ export default function TokenDialog() {
                   const isDisabled = !isBalanceSufficient(
                     token,
                     invoice,
-                    exchangeRates
-                  );
+                    exchangeRates,
+                  )
 
                   return (
                     <NavLink
@@ -353,7 +348,7 @@ export default function TokenDialog() {
                       rightLabel={formatBalance(
                         token.balance,
                         token.tokenInfo.decimals,
-                        token.tokenInfo.symbol
+                        token.tokenInfo.symbol,
                       )}
                       rightDescription={
                         !areCurrenciesEqual(invoice, token) &&
@@ -370,7 +365,7 @@ export default function TokenDialog() {
                       }
                       onClick={() => handleNavlinkClick(token)}
                     />
-                  );
+                  )
                 })
               ) : (
                 <Flex direction="column">
@@ -405,8 +400,8 @@ export default function TokenDialog() {
                   const isDisabled = !isBalanceSufficient(
                     token,
                     invoice,
-                    exchangeRates
-                  );
+                    exchangeRates,
+                  )
 
                   return (
                     <NavLink
@@ -436,7 +431,7 @@ export default function TokenDialog() {
                       rightLabel={formatBalance(
                         token.balance,
                         token.tokenInfo.decimals,
-                        token.tokenInfo.symbol
+                        token.tokenInfo.symbol,
                       )}
                       rightDescription={
                         !areCurrenciesEqual(invoice, token) &&
@@ -453,7 +448,7 @@ export default function TokenDialog() {
                       }
                       onClick={() => handleNavlinkClick(token)}
                     />
-                  );
+                  )
                 })
               ) : (
                 <Flex direction="column">
@@ -498,7 +493,7 @@ export default function TokenDialog() {
                 className={classes.accordion}
                 data={[
                   {
-                    value: "insufficient",
+                    value: 'insufficient',
                     label: (
                       <Flex align="center" justify="space-between">
                         <Flex
@@ -543,7 +538,7 @@ export default function TokenDialog() {
                             rightLabel={formatBalance(
                               token.balance,
                               token.tokenInfo.decimals,
-                              token.tokenInfo.symbol
+                              token.tokenInfo.symbol,
                             )}
                             rightDescription={
                               !areCurrenciesEqual(invoice, token) &&
@@ -560,5 +555,5 @@ export default function TokenDialog() {
         </Flex>
       )}
     </Flex>
-  );
+  )
 }

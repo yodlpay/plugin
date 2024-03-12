@@ -1,4 +1,4 @@
-import { DeepPartial, THEME_COLOR_SCHEME } from "@hiropay/common";
+import { DeepPartial, THEME_COLOR_SCHEME } from '@hiropay/common'
 import {
   CSSObject,
   ColorScheme,
@@ -9,7 +9,7 @@ import {
   getStylesRef,
   px,
   rem,
-} from "@mantine/core";
+} from '@mantine/core'
 
 type Color =
   | DeepPartial<
@@ -25,37 +25,37 @@ type Color =
           string,
           string,
           string,
-          string
+          string,
         ]
       >
     >
-  | undefined;
+  | undefined
 
-export const MOBILE_BREAKPOINT = 452;
-export const TABLET_BREAKPOINT = 768;
-export const DESKTOP_BREAKPOINT = 1024;
+export const MOBILE_BREAKPOINT = 452
+export const TABLET_BREAKPOINT = 768
+export const DESKTOP_BREAKPOINT = 1024
 
-export const CONTENT_PADDING = 32;
-export const MOBILE_CONTENT_PADDING = 16;
+export const CONTENT_PADDING = 32
+export const MOBILE_CONTENT_PADDING = 16
 
 export const CUSTOM_COLORS = {
-  modayOverlay: "rgba(16, 17, 19, 0.9)",
-  positiveLight: "rgba(43, 138, 62, 1)",
-  positiveDark: "rgba(211, 249, 216, 1)",
-  positiveBase: "rgba(43, 138, 62, 0.25)",
-  positiveLightInactive: "rgba(138, 43, 62, 1)",
-  positiveDarkInactive: "rgba(249, 211, 216, 1)",
-  positiveBaseInactive: "rgba(138, 43, 62, 0.25)",
-};
+  modayOverlay: 'rgba(16, 17, 19, 0.9)',
+  positiveLight: 'rgba(43, 138, 62, 1)',
+  positiveDark: 'rgba(211, 249, 216, 1)',
+  positiveBase: 'rgba(43, 138, 62, 0.25)',
+  positiveLightInactive: 'rgba(138, 43, 62, 1)',
+  positiveDarkInactive: 'rgba(249, 211, 216, 1)',
+  positiveBaseInactive: 'rgba(138, 43, 62, 0.25)',
+}
 
-export const CUSTOM_ACCESSIBILITY_SPACING = 4;
+export const CUSTOM_ACCESSIBILITY_SPACING = 4
 
-export const SIZE_OPTIONS = ["xs", "sm", "md", "lg", "xl"];
-export const MINIMAL_SIZE_OPTIONS = ["sm", "md", "lg"];
+export const SIZE_OPTIONS = ['xs', 'sm', 'md', 'lg', 'xl']
+export const MINIMAL_SIZE_OPTIONS = ['sm', 'md', 'lg']
 
 export const LIGHT_MODE_COLORS: Color = {
   brand: [DEFAULT_THEME.colors.indigo[9]],
-  base: ["#FFFFFF"],
+  base: ['#FFFFFF'],
   level: [
     DEFAULT_THEME.colors.gray[0],
     DEFAULT_THEME.colors.gray[1],
@@ -65,11 +65,11 @@ export const LIGHT_MODE_COLORS: Color = {
   positiveBase: [CUSTOM_COLORS.positiveBase],
   primary: [DEFAULT_THEME.colors.gray[9]],
   subtle: [DEFAULT_THEME.colors.gray[6]],
-  onColor: ["#FFFFFF"],
+  onColor: ['#FFFFFF'],
   disabled: [DEFAULT_THEME.colors.gray[5]],
   error: [DEFAULT_THEME.colors.red[7]],
   positive: [CUSTOM_COLORS.positiveLight],
-};
+}
 
 export const DARK_MODE_COLORS: Color = {
   brand: [DEFAULT_THEME.colors.indigo[9]],
@@ -83,11 +83,11 @@ export const DARK_MODE_COLORS: Color = {
   positiveBase: [CUSTOM_COLORS.positiveBase],
   primary: [DEFAULT_THEME.colors.gray[0]],
   subtle: [DEFAULT_THEME.colors.gray[6]],
-  onColor: ["#FFFFFF"],
+  onColor: ['#FFFFFF'],
   disabled: [DEFAULT_THEME.colors.gray[7]],
   error: [DEFAULT_THEME.colors.red[6]],
   positive: [CUSTOM_COLORS.positiveDark],
-};
+}
 
 export const MOBILE_HEADING_SIZES = {
   h1: { fontSize: rem(36) },
@@ -96,12 +96,12 @@ export const MOBILE_HEADING_SIZES = {
   h4: { fontSize: rem(24) },
   h5: { fontSize: rem(20) },
   h6: { fontSize: rem(18) },
-};
+}
 
 export const COLOR_SCHEME = {
   light: LIGHT_MODE_COLORS,
   dark: DARK_MODE_COLORS,
-} as Record<ColorScheme, Color>;
+} as Record<ColorScheme, Color>
 
 export const theme: MantineThemeOverride = {
   colorScheme: THEME_COLOR_SCHEME,
@@ -109,7 +109,7 @@ export const theme: MantineThemeOverride = {
     ...DEFAULT_THEME.colors,
     ...DARK_MODE_COLORS,
   },
-  defaultRadius: "md",
+  defaultRadius: 'md',
   radius: {
     xl: rem(16),
     lg: rem(12),
@@ -135,89 +135,89 @@ export const theme: MantineThemeOverride = {
     },
   },
   globalStyles: (theme) => ({
-    ".container-wrapper": {
+    '.container-wrapper': {
       flexGrow: 1,
       padding: `${rem(CONTENT_PADDING)} ${rem(CONTENT_PADDING)}`,
       [theme.fn.smallerThan(MOBILE_BREAKPOINT)]: {
         padding: `${rem(CONTENT_PADDING)} ${rem(MOBILE_CONTENT_PADDING)}`,
       },
     },
-    ".layout-wrapper": {
-      padding: "0 16px",
+    '.layout-wrapper': {
+      padding: '0 16px',
       [theme.fn.smallerThan(MOBILE_BREAKPOINT)]: {
-        padding: "0 8px",
+        padding: '0 8px',
       },
     },
-    ".mantine-Tooltip-tooltip": {
-      fontSize: "12px",
+    '.mantine-Tooltip-tooltip': {
+      fontSize: '12px',
     },
-    ".mantine-NavLink-icon": {
-      alignSelf: "auto",
+    '.mantine-NavLink-icon': {
+      alignSelf: 'auto',
     },
-    "@keyframes fadeAndScaleIn": {
+    '@keyframes fadeAndScaleIn': {
       from: {
         opacity: 0,
-        transform: "scale(0.9)",
+        transform: 'scale(0.9)',
       },
       to: {
         opacity: 1,
-        transform: "scale(1)",
+        transform: 'scale(1)',
       },
     },
-    "@keyframes animatedGradient": {
-      "0%": {
-        backgroundPosition: "0% 50%",
+    '@keyframes animatedGradient': {
+      '0%': {
+        backgroundPosition: '0% 50%',
       },
-      "50%": {
-        backgroundPosition: "100% 50%",
+      '50%': {
+        backgroundPosition: '100% 50%',
       },
-      "100%": {
-        backgroundPosition: "0% 50%",
+      '100%': {
+        backgroundPosition: '0% 50%',
       },
     },
-    "@keyframes rotate": {
+    '@keyframes rotate': {
       from: {
-        transform: "translate(-50%, -50%) scale(1.4) rotate(0turn)",
+        transform: 'translate(-50%, -50%) scale(1.4) rotate(0turn)',
       },
       to: {
-        transform: "translate(-50%, -50%) scale(1.4) rotate(1turn)",
+        transform: 'translate(-50%, -50%) scale(1.4) rotate(1turn)',
       },
     },
   }),
-};
+}
 
 export const useNavLinkStyles = createStyles((theme) => ({
   icon: {
-    height: "32px",
-    width: "32px",
+    height: '32px',
+    width: '32px',
     fill: theme.colors?.subtle?.[0],
   },
   disabledIcon: {
-    height: "24px",
-    width: "32px",
+    height: '24px',
+    width: '32px',
     fill: theme.colors?.subtle?.[0],
-    transform: "rotate(90deg)",
+    transform: 'rotate(90deg)',
   },
-}));
+}))
 
 export const usePaymentStyles = createStyles((theme) => {
-  const BORDER_WIDTH = 1;
+  const BORDER_WIDTH = 1
 
   const sharedHoverStyles = {
     background: theme.colors?.level?.[1],
-    "&::before": {
-      animation: "rotate 2s linear infinite",
+    '&::before': {
+      animation: 'rotate 2s linear infinite',
     },
-  };
+  }
 
   return {
     modalContainer: {
-      display: "flex",
-      maxWidth: "450px",
-      width: "100%",
-      margin: "0 auto",
+      display: 'flex',
+      maxWidth: '450px',
+      width: '100%',
+      margin: '0 auto',
       background: theme.colors?.onColor?.[0],
-      minHeight: "560px",
+      minHeight: '560px',
       // full-height rendering
       // height: "100%",
       borderRadius: theme.radius.md,
@@ -228,11 +228,11 @@ export const usePaymentStyles = createStyles((theme) => {
       borderTopLeftRadius: theme.radius.md,
     },
     flex: {
-      display: "flex",
-      justifyContent: "flex-start",
-      alignItems: "center",
+      display: 'flex',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
       flexGrow: 1,
-      width: "100%",
+      width: '100%',
     },
     noGrow: {
       flexGrow: 0,
@@ -246,64 +246,64 @@ export const usePaymentStyles = createStyles((theme) => {
       marginBottom: `${rem(24)}`,
     },
     icon: {
-      marginLeft: "4px",
-      transition: "transform 200ms ease",
+      marginLeft: '4px',
+      transition: 'transform 200ms ease',
       fill: theme.colors?.subtle?.[0],
     },
     iconActivated: {
-      marginLeft: "4px",
-      transform: "rotate(180deg)",
-      transition: "transform 200ms ease",
+      marginLeft: '4px',
+      transform: 'rotate(180deg)',
+      transition: 'transform 200ms ease',
       fill: theme.colors?.subtle?.[0],
     },
     collapseButton: {
-      width: "100%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
+      width: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
       fontWeight: 400,
-      height: "auto",
+      height: 'auto',
     },
     paymentContainer: {
-      position: "relative",
+      position: 'relative',
     },
     paymentWindow: {
-      width: "100%",
-      minHeight: "86px",
+      width: '100%',
+      minHeight: '86px',
       background: theme.colors?.level?.[0],
       border: `1px solid ${theme.colors?.level?.[1]}`,
       borderRadius: theme.radius.md,
-      padding: "12px",
+      padding: '12px',
     },
     paymentArrow: {
-      position: "absolute",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      width: "32px",
-      height: "24px",
+      position: 'absolute',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '32px',
+      height: '24px',
       background: theme.colors?.level?.[1],
       border: `1px solid ${theme.colors?.base?.[0]}`,
       borderRadius: theme.radius.md,
-      margin: "auto",
+      margin: 'auto',
       top: 0,
       right: 0,
       bottom: 0,
       left: 0,
     },
     address: {
-      marginTop: "8px",
-      display: "flex",
-      alignItems: "center",
-      cursor: "pointer",
+      marginTop: '8px',
+      display: 'flex',
+      alignItems: 'center',
+      cursor: 'pointer',
     },
     clickButton: {
-      height: "auto",
+      height: 'auto',
     },
     paymentArrowIcon: {
       stroke: theme.colors?.subtle?.[0],
       color: theme.colors?.subtle?.[0],
-      strokeWidth: "8px",
+      strokeWidth: '8px',
     },
     copyExternalIcon: {
       stroke: theme.colors?.primary?.[0],
@@ -319,79 +319,79 @@ export const usePaymentStyles = createStyles((theme) => {
       minWidth: rem(16),
     },
     autoswapButton: {
-      cursor: "auto",
-      [`& .${getStylesRef("autoswapContainerRef")}`]: {
+      cursor: 'auto',
+      [`& .${getStylesRef('autoswapContainerRef')}`]: {
         borderRadius: theme.radius.md,
         background: theme.colors?.level?.[0],
-        position: "relative",
+        position: 'relative',
         borderWidth: `${BORDER_WIDTH}px`,
-        overflow: "hidden",
+        overflow: 'hidden',
 
-        "&::before": {
+        '&::before': {
           borderRadius: theme.radius.md,
           content: '""',
           background: `linear-gradient(90deg, #E8590C, #0A50FF)`,
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          aspectRatio: "1",
-          width: "100%",
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          aspectRatio: '1',
+          width: '100%',
         },
 
-        "&::after": {
+        '&::after': {
           content: '""',
-          background: "inherit",
+          background: 'inherit',
           borderRadius: `${px(theme.radius.md) - BORDER_WIDTH}px`,
-          position: "absolute",
+          position: 'absolute',
           inset: `${BORDER_WIDTH}px`,
           height: `calc(100% - 2 * ${BORDER_WIDTH}px)`,
           width: `calc(100% - 2 * ${BORDER_WIDTH}px)`,
-          transition: "all 0.1s ease",
+          transition: 'all 0.1s ease',
         },
       },
-      "&:not(:disabled)": {
-        cursor: "pointer",
-        [`& .${getStylesRef("autoswapContainerRef")}`]: {
-          "&:hover": {
+      '&:not(:disabled)': {
+        cursor: 'pointer',
+        [`& .${getStylesRef('autoswapContainerRef')}`]: {
+          '&:hover': {
             ...sharedHoverStyles,
           },
         },
       },
     },
     autoswapButtonNoPopover: {
-      cursor: "auto !important",
+      cursor: 'auto !important',
     },
     autoswapButtonOpened: {
-      "&:not(:disabled)": {
-        [`& .${getStylesRef("autoswapContainerRef")}`]: {
+      '&:not(:disabled)': {
+        [`& .${getStylesRef('autoswapContainerRef')}`]: {
           ...sharedHoverStyles,
-          "&::after": {
+          '&::after': {
             opacity: 0.9,
           },
         },
       },
     },
     autoswapContainer: {
-      ref: getStylesRef("autoswapContainerRef"),
-      height: "47px",
-      padding: "12px",
-      "& > div": {
+      ref: getStylesRef('autoswapContainerRef'),
+      height: '47px',
+      padding: '12px',
+      '& > div': {
         zIndex: 1,
       },
     },
     autoswapContainerNoPopover: {
-      "&::before": {
-        animation: "rotate 2s linear infinite",
+      '&::before': {
+        animation: 'rotate 2s linear infinite',
       },
-      "&:hover": {
+      '&:hover': {
         background: `${theme.colors?.level?.[0]} !important`,
       },
     },
     shuffleIcon: {
-      color: "rgba(232, 89, 12, 1)",
-      stroke: "rgba(232, 89, 12, 1)",
-      strokeWidth: "6px",
+      color: 'rgba(232, 89, 12, 1)',
+      stroke: 'rgba(232, 89, 12, 1)',
+      strokeWidth: '6px',
     },
     linkBreakIcon: {
       color: theme.colors?.subtle?.[0],
@@ -401,15 +401,15 @@ export const usePaymentStyles = createStyles((theme) => {
     },
     autoswapLabel: {
       backgroundImage:
-        "linear-gradient(to right, rgba(232, 89, 12, 1), rgba(0, 73, 255, 1))",
-      WebkitBackgroundClip: "text",
-      WebkitTextFillColor: "transparent",
+        'linear-gradient(to right, rgba(232, 89, 12, 1), rgba(0, 73, 255, 1))',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
       fontWeight: 600,
-      margin: "0 4px",
+      margin: '0 4px',
     },
     swapArrowIcon: {
       fill: theme.colors?.subtle?.[0],
-      margin: "0 4px",
+      margin: '0 4px',
     },
     popover: {
       background: theme.colors?.level?.[0],
@@ -420,37 +420,37 @@ export const usePaymentStyles = createStyles((theme) => {
       fill: theme.colors?.subtle?.[0],
     },
     badge: {
-      height: "22px",
-      padding: "2px 8px",
-      "& .mantine-Badge-inner": {
+      height: '22px',
+      padding: '2px 8px',
+      '& .mantine-Badge-inner': {
         fontSize: rem(13),
         fontWeight: 500,
       },
     },
-  };
-});
+  }
+})
 
 export const getColorFromProp = (colorProp: string) => {
-  const [colorName, shade] = colorProp.split(".");
+  const [colorName, shade] = colorProp.split('.')
 
-  const actualShade = shade ? parseInt(shade) : 0;
+  const actualShade = shade ? parseInt(shade) : 0
 
-  const colorValue = theme.colors?.[colorName]?.[actualShade];
+  const colorValue = theme.colors?.[colorName]?.[actualShade]
 
-  return colorValue ?? "";
-};
+  return colorValue ?? ''
+}
 
 export const addLineClamp = (numberOfLines = 1): CSSObject => ({
-  whiteSpace: "nowrap",
-  textOverflow: "ellipsis",
-  overflow: "hidden",
-  display: "block",
+  whiteSpace: 'nowrap',
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
+  display: 'block',
 
-  "@supports (-webkit-line-clamp: 1)": {
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "initial",
+  '@supports (-webkit-line-clamp: 1)': {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'initial',
     WebkitLineClamp: numberOfLines,
-    WebkitBoxOrient: "vertical",
+    WebkitBoxOrient: 'vertical',
   },
-});
+})

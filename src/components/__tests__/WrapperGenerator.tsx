@@ -1,8 +1,8 @@
-import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Config, WagmiProvider } from "wagmi";
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Config, WagmiProvider } from 'wagmi'
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient()
 
 export default function WrapperGenerator(config: Config) {
   return function TestWagmiProvider(props: any) {
@@ -12,6 +12,6 @@ export default function WrapperGenerator(config: Config) {
           <RainbowKitProvider>{null}</RainbowKitProvider>
         </QueryClientProvider>
       </WagmiProvider>
-    );
-  };
+    )
+  }
 }

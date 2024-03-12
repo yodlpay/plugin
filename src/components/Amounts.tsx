@@ -1,25 +1,25 @@
-import { CheckIcon, Square2StackIcon } from "@heroicons/react/24/outline";
+import { CheckIcon, Square2StackIcon } from '@heroicons/react/24/outline'
 import {
   Button,
   Flex,
   Text,
   useCopyToClipboard,
   usePaymentStyles,
-} from "@hiropay/common";
-import { Repeat } from "@phosphor-icons/react";
-import truncateEthAddress from "truncate-eth-address";
+} from '@hiropay/common'
+import { Repeat } from '@phosphor-icons/react'
+import truncateEthAddress from 'truncate-eth-address'
 
 type PaymentWindowProps = {
-  label: string;
-  secondaryLabel: string;
-  address?: string;
-  amount: string;
-  amountSize?: number;
-  icon?: string;
-  convertedAmount?: string;
-  convertedAmountWeight?: number;
-  isSameCurrency?: boolean;
-};
+  label: string
+  secondaryLabel: string
+  address?: string
+  amount: string
+  amountSize?: number
+  icon?: string
+  convertedAmount?: string
+  convertedAmountWeight?: number
+  isSameCurrency?: boolean
+}
 
 const PaymentWindow = ({
   label,
@@ -32,13 +32,13 @@ const PaymentWindow = ({
   convertedAmountWeight = 400,
   isSameCurrency,
 }: PaymentWindowProps) => {
-  const { classes } = usePaymentStyles();
+  const { classes } = usePaymentStyles()
 
-  const [isCopied, copy] = useCopyToClipboard();
+  const [isCopied, copy] = useCopyToClipboard()
 
   const handleCopy = (address: string) => {
-    copy(address);
-  };
+    copy(address)
+  }
 
   return (
     <Flex className={classes.paymentWindow}>
@@ -100,29 +100,29 @@ const PaymentWindow = ({
         ) : null}
       </Flex>
     </Flex>
-  );
-};
+  )
+}
 
 export type AmountsProps = {
-  amountOut: string;
-  convertedAmountOut?: string;
-  amountOutIcon?: string;
-  amountIn: string;
-  convertedAmountIn?: string;
-  amountInIcon?: string;
-  isSameCurrency: boolean;
-  receiverAddress?: string;
-  senderAddress?: string;
-  receiverLabel?: string;
-  receiverSecondaryLabel?: string;
-  receiverAmountSize?: number;
-  receiverConvertedAmountWeight?: number;
-  senderLabel?: string;
-  senderSecondaryLabel?: string;
-  senderAmountSize?: number;
-  senderConvertedAmountWeight?: number;
-  withExchange?: boolean;
-};
+  amountOut: string
+  convertedAmountOut?: string
+  amountOutIcon?: string
+  amountIn: string
+  convertedAmountIn?: string
+  amountInIcon?: string
+  isSameCurrency: boolean
+  receiverAddress?: string
+  senderAddress?: string
+  receiverLabel?: string
+  receiverSecondaryLabel?: string
+  receiverAmountSize?: number
+  receiverConvertedAmountWeight?: number
+  senderLabel?: string
+  senderSecondaryLabel?: string
+  senderAmountSize?: number
+  senderConvertedAmountWeight?: number
+  withExchange?: boolean
+}
 
 export const Amounts = ({
   amountOut,
@@ -134,17 +134,17 @@ export const Amounts = ({
   isSameCurrency,
   receiverAddress,
   senderAddress,
-  receiverLabel = "They receive:",
-  receiverSecondaryLabel = "",
+  receiverLabel = 'They receive:',
+  receiverSecondaryLabel = '',
   receiverAmountSize = 18,
   receiverConvertedAmountWeight = 400,
-  senderLabel = "You pay:",
-  senderSecondaryLabel = "",
+  senderLabel = 'You pay:',
+  senderSecondaryLabel = '',
   senderAmountSize = 22,
   senderConvertedAmountWeight = 500,
   withExchange = true,
 }: AmountsProps) => {
-  const { classes } = usePaymentStyles();
+  const { classes } = usePaymentStyles()
 
   return (
     <Flex
@@ -181,5 +181,5 @@ export const Amounts = ({
         isSameCurrency={isSameCurrency}
       />
     </Flex>
-  );
-};
+  )
+}

@@ -9,18 +9,18 @@ import {
   SwapVenue,
   generateWagmiConfig,
   getUniqueChainsForTokens,
-} from "@hiropay/common";
-import { ColorScheme } from "@mantine/core";
-import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactNode, createContext, useCallback, useContext } from "react";
-import { Config as WagmiConfig, WagmiProvider } from "wagmi";
-import { WAGMI_STORE } from "../constants/localStorage";
-import { invoiceStore } from "../contexts/useInvoiceStore";
-import { mainStore, useMainStore } from "../contexts/useMainStore";
-import { YodlSDKModal } from "./Modal";
+} from '@hiropay/common'
+import { ColorScheme } from '@mantine/core'
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactNode, createContext, useCallback, useContext } from 'react'
+import { Config as WagmiConfig, WagmiProvider } from 'wagmi'
+import { WAGMI_STORE } from '../constants/localStorage'
+import { invoiceStore } from '../contexts/useInvoiceStore'
+import { mainStore, useMainStore } from '../contexts/useMainStore'
+import { YodlSDKModal } from './Modal'
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient()
 
 const DEFAULT_CONFIG = {
   config: null,
@@ -32,19 +32,19 @@ const DEFAULT_CONFIG = {
   excludedVenues: [],
   eventCallback: () => {},
   pageCallback: () => {},
-  theme: "light",
-};
+  theme: 'light',
+}
 
 const SDKContext = createContext({
   openModal: (_: OpenArgs) => {},
   closeModal: () => {},
-});
+})
 
-export const useYodlSDK = () => useContext(SDKContext);
+export const useYodlSDK = () => useContext(SDKContext)
 
 export type YodlSDKProviderProps = {
-  children?: ReactNode;
-};
+  children?: ReactNode
+}
 
 export type CallbackPage = PickEnum<
   RudderStackJSPageNames,
@@ -56,12 +56,12 @@ export type CallbackPage = PickEnum<
   | RudderStackJSPageNames.SuccessDialog
   | RudderStackJSPageNames.PendingDialog
   | RudderStackJSPageNames.ErrorDialog
->;
+>
 
 export type CallbackCategory = PickEnum<
   RudderStackJSPageCategories,
   RudderStackJSPageCategories.Payment
->;
+>
 
 export type CallbackAction = PickEnum<
   RudderStackJSEvents,
@@ -76,61 +76,61 @@ export type CallbackAction = PickEnum<
   | RudderStackJSEvents.BackButtonClicked
   | RudderStackJSEvents.NetworkChanged
   | RudderStackJSEvents.WalletDisconnected
->;
+>
 
 export type EventCallback = {
-  action: CallbackAction;
-  params: Record<string, unknown>;
-};
+  action: CallbackAction
+  params: Record<string, unknown>
+}
 
 export type Logger = {
-  log: (...args: unknown[]) => void;
-  info: (...args: unknown[]) => void;
-  http: (...args: unknown[]) => void;
-  error: (...args: unknown[]) => void;
-  warn: (...args: unknown[]) => void;
-  debug: (...args: unknown[]) => void;
-};
+  log: (...args: unknown[]) => void
+  info: (...args: unknown[]) => void
+  http: (...args: unknown[]) => void
+  error: (...args: unknown[]) => void
+  warn: (...args: unknown[]) => void
+  debug: (...args: unknown[]) => void
+}
 
 export type Analytics = {
-  load: (...args: unknown[]) => void;
-  page: (...args: unknown[]) => void;
-  track: (...args: unknown[]) => void;
-  identify: (...args: unknown[]) => void;
-  alias: (...args: unknown[]) => void;
-  group: (...args: unknown[]) => void;
-  ready: (...args: unknown[]) => void;
-  reset: (...args: unknown[]) => void;
-  getAnonymousId: (...args: unknown[]) => void;
-  setAnonymousId: (...args: unknown[]) => void;
-};
+  load: (...args: unknown[]) => void
+  page: (...args: unknown[]) => void
+  track: (...args: unknown[]) => void
+  identify: (...args: unknown[]) => void
+  alias: (...args: unknown[]) => void
+  group: (...args: unknown[]) => void
+  ready: (...args: unknown[]) => void
+  reset: (...args: unknown[]) => void
+  getAnonymousId: (...args: unknown[]) => void
+  setAnonymousId: (...args: unknown[]) => void
+}
 
 export type OpenArgs = {
-  config: InvoiceConfig | null;
-  isDemo?: boolean;
-  isTest?: boolean;
-  testnetMode?: boolean;
-  dataApiUrl?: string;
-  rpcUrl?: string;
-  localStorage?: Storage;
-  excludedVenues?: SwapVenue[];
+  config: InvoiceConfig | null
+  isDemo?: boolean
+  isTest?: boolean
+  testnetMode?: boolean
+  dataApiUrl?: string
+  rpcUrl?: string
+  localStorage?: Storage
+  excludedVenues?: SwapVenue[]
   eventCallback?: (
     action: CallbackAction,
-    params?: Record<string, unknown>
-  ) => void;
+    params?: Record<string, unknown>,
+  ) => void
   pageCallback?: (
     category: CallbackCategory,
     page: CallbackPage,
-    params?: Record<string, unknown>
-  ) => void;
-  theme?: ColorScheme;
-  logger?: Logger;
-  analytics?: Analytics;
-};
+    params?: Record<string, unknown>,
+  ) => void
+  theme?: ColorScheme
+  logger?: Logger
+  analytics?: Analytics
+}
 
 export const YodlSDKProvider = ({ children }: YodlSDKProviderProps) => {
-  const wagmiConfig = useMainStore((state) => state.wagmiConfig);
-  const setFlowInitiated = useMainStore((state) => state.setFlowInitiated);
+  const wagmiConfig = useMainStore((state) => state.wagmiConfig)
+  const setFlowInitiated = useMainStore((state) => state.setFlowInitiated)
 
   const openModal = useCallback(
     ({
@@ -148,31 +148,31 @@ export const YodlSDKProvider = ({ children }: YodlSDKProviderProps) => {
       analytics,
     }: OpenArgs) => {
       if (config) {
-        const invoiceStoreState = invoiceStore.getState();
-        const mainStoreState = mainStore.getState();
+        const invoiceStoreState = invoiceStore.getState()
+        const mainStoreState = mainStore.getState()
 
         const invoice = {
           ...config,
           excludedVenues,
           isDemo,
-        };
+        }
 
-        invoiceStoreState.setInvoice(invoice);
-        mainStoreState.setEventCallback(eventCallback);
-        mainStoreState.setPageCallback(pageCallback);
+        invoiceStoreState.setInvoice(invoice)
+        mainStoreState.setEventCallback(eventCallback)
+        mainStoreState.setPageCallback(pageCallback)
         mainStoreState.setEnv({
           isDemo,
           isTest,
           testnetMode,
           rpcUrl,
           dataApiUrl,
-        });
-        if (!mainStoreState.logger && logger) mainStoreState.setLogger(logger);
+        })
+        if (!mainStoreState.logger && logger) mainStoreState.setLogger(logger)
         if (!mainStoreState.analytics && analytics)
-          mainStoreState.setAnalytics(analytics);
+          mainStoreState.setAnalytics(analytics)
 
         // Fixes the bug where disconnecting the wallet doesn't do anything
-        localStorage.removeItem(WAGMI_STORE);
+        localStorage.removeItem(WAGMI_STORE)
 
         const wagmiConfig = generateWagmiConfig({
           isTest,
@@ -180,19 +180,19 @@ export const YodlSDKProvider = ({ children }: YodlSDKProviderProps) => {
           rpcUrl,
           theme,
           supportedChains: getUniqueChainsForTokens(config.coins),
-        });
+        })
 
-        mainStoreState.setWagmiConfig(wagmiConfig);
+        mainStoreState.setWagmiConfig(wagmiConfig)
 
-        setFlowInitiated(true);
+        setFlowInitiated(true)
       }
     },
-    [setFlowInitiated]
-  );
+    [setFlowInitiated],
+  )
 
   const closeModal = useCallback(() => {
-    setFlowInitiated(false);
-  }, [setFlowInitiated]);
+    setFlowInitiated(false)
+  }, [setFlowInitiated])
 
   return (
     <SDKContext.Provider value={{ openModal, closeModal }}>
@@ -212,5 +212,5 @@ export const YodlSDKProvider = ({ children }: YodlSDKProviderProps) => {
         children
       )}
     </SDKContext.Provider>
-  );
-};
+  )
+}

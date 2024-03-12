@@ -1,4 +1,4 @@
-import { CheckIcon, ClockIcon } from "@heroicons/react/20/solid";
+import { CheckIcon, ClockIcon } from '@heroicons/react/20/solid'
 import {
   DESIRED_NUMBER_OF_CONFIRMATIONS,
   Flex,
@@ -7,71 +7,71 @@ import {
   RudderStackJSPageCategories,
   RudderStackJSPageNames,
   Text,
-} from "@hiropay/common";
-import { createStyles } from "@mantine/core";
-import { useEffect, useMemo } from "react";
-import { useAccount } from "wagmi";
-import { useMainStore } from "../../contexts/useMainStore";
-import { useBlockConfirmations, useDynamicLoadingLabel } from "../../hooks";
-import { getEstimatedTime } from "../../utils/helpers";
+} from '@hiropay/common'
+import { createStyles } from '@mantine/core'
+import { useEffect, useMemo } from 'react'
+import { useAccount } from 'wagmi'
+import { useMainStore } from '../../contexts/useMainStore'
+import { useBlockConfirmations, useDynamicLoadingLabel } from '../../hooks'
+import { getEstimatedTime } from '../../utils/helpers'
 
 const useStyles = createStyles((theme) => ({
   status: {
-    marginBottom: "44px",
+    marginBottom: '44px',
   },
   progressBar: {
     background: theme.colors?.level?.[2],
-    display: "flex",
+    display: 'flex',
     flexGrow: 1,
   },
   icon: {
-    marginRight: "4px",
+    marginRight: '4px',
     fill: theme.colors?.primary?.[0],
   },
-}));
+}))
 
 export const PaymentPending = () => {
-  const analytics = useMainStore((state) => state.analytics);
+  const analytics = useMainStore((state) => state.analytics)
 
-  const { confirmations } = useBlockConfirmations();
+  const { confirmations } = useBlockConfirmations()
 
-  const { chain } = useAccount();
+  const { chain } = useAccount()
 
   const confirmed = useMemo(
     () => confirmations >= DESIRED_NUMBER_OF_CONFIRMATIONS,
-    [confirmations]
-  );
+    [confirmations],
+  )
 
   const loadingLabel = useDynamicLoadingLabel({
     labels: [
-      "Awaiting block confirmations",
-      "Blocks are being mined",
-      "Climbing the block ladder",
-      "Miners are hard at work",
-      "Crossing the block bridge",
-      "Diving deeper into block depths",
-      "Moving up the blockchain ranks",
+      'Awaiting block confirmations',
+      'Blocks are being mined',
+      'Climbing the block ladder',
+      'Miners are hard at work',
+      'Crossing the block bridge',
+      'Diving deeper into block depths',
+      'Moving up the blockchain ranks',
       "Under the miner's hammer",
-      "Chain of blocks growing stronger",
-      "Bracing for the final block nod",
+      'Chain of blocks growing stronger',
+      'Bracing for the final block nod',
     ],
     shouldFallback: false,
     delay: 2000,
     shouldStop: confirmed,
-  });
+  })
 
   const estimatedTimeInMins = Math.ceil(
-    getEstimatedTime(chain?.id as number) / 60
-  );
+    getEstimatedTime(chain?.id as number) / 60,
+  )
 
-  const { classes } = useStyles();
+  const { classes } = useStyles()
 
   useEffect(() => {
     analytics?.page(
       RudderStackJSPageCategories.Payment,
-      RudderStackJSPageNames.PendingDialog
-    );
-  }, [analytics]);
+      RudderStackJSPageNames.PendingDialog,
+    )
+  }, [analytics])
 
   return (
     <Flex
@@ -84,7 +84,7 @@ export const PaymentPending = () => {
       mx="auto"
     >
       <img
-        src={"/assets/images/status/pending.svg"}
+        src={'/assets/images/status/pending.svg'}
         aria-hidden="true"
         alt="Payment pending"
         className={classes.status}
@@ -93,7 +93,7 @@ export const PaymentPending = () => {
         Payment in progress
       </Text>
       <Text c="subtle.0" size={16} align="center">
-        {confirmed ? "Payment confirmed" : loadingLabel}
+        {confirmed ? 'Payment confirmed' : loadingLabel}
       </Text>
       <Flex h={20} w="100%" gap={4} my={24}>
         {Array.from({ length: DESIRED_NUMBER_OF_CONFIRMATIONS }).map((_, i) => (
@@ -134,5 +134,5 @@ export const PaymentPending = () => {
         </Text>
       </Flex>
     </Flex>
-  );
-};
+  )
+}

@@ -1,6 +1,6 @@
 {
   "name": "@hiropay/plugin",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Yodl plugin payment modal.",
   "main": "dist/lib.js",
   "types": "dist/lib.d.ts",
@@ -19,11 +19,15 @@
     "prepublishOnly": "npm run build:lib",
     "jest": "jest",
     "jest:watch": "jest --watch",
-    "prettier:check": "prettier --check \"**/*.{ts,tsx}\"",
-    "prettier:write": "prettier --write \"**/*.{ts,tsx}\"",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prettier": "prettier --ignore-path .gitignore \"**/*.+(js|jsx|ts|tsx|json|css)\"",
+    "prevalidate": "yarn format:write",
+    "validate": "npm-run-all lint typecheck format:check",
+    "format:check": "yarn prettier --check",
+    "format:write": "yarn prettier --write",
+    "prepare": "husky"
   },
   "eslintConfig": {
     "extends": [
@@ -41,7 +45,7 @@
     "@curvefi/api": "github:yodlpay/curve-js#c62afed12b282d90989f6120b93aa5932e226c7d",
     "@emotion/react": "^11.11.3",
     "@heroicons/react": "^2.0.13",
-    "@hiropay/common": "^0.2.7",
+    "@hiropay/common": "^0.2.8",
     "@mantine/core": "^6.0.17",
     "@mantine/hooks": "^6.0.17",
     "@mantine/modals": "^6.0.17",
@@ -85,6 +89,7 @@
     "copy-webpack-plugin": "^12.0.2",
     "css-loader": "^6.10.0",
     "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-config-react": "^1.1.7",
     "eslint-config-react-app": "^7.0.1",
     "eslint-loader": "^4.0.2",
@@ -93,15 +98,14 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-webpack-plugin": "^4.0.1",
     "html-webpack-plugin": "^5.6.0",
+    "husky": "^9.0.11",
     "jest": "^29.7.0",
+    "npm-run-all": "^4.1.5",
     "style-loader": "^3.3.4",
     "vitest": "^1.2.2",
     "webpack": "^5.90.2",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.2"
-  },
-  "overrides": {
-    "typescript": "^5.3.3"
   },
   "packageManager": "yarn@4.0.1",
   "engines": {

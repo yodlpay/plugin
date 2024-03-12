@@ -1,5 +1,5 @@
-import { ArrowLeftIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
-import { PowerIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
+import { PowerIcon } from '@heroicons/react/24/outline'
 import {
   ActionIcon,
   Badge,
@@ -13,27 +13,27 @@ import {
   Select,
   Text,
   formatPaymentAmount,
-} from "@hiropay/common";
-import { createStyles, rem } from "@mantine/core";
-import { useMemo } from "react";
-import truncateEthAddress from "truncate-eth-address";
-import { useAccount, useDisconnect } from "wagmi";
-import { useMainStore } from "../contexts/useMainStore";
-import { useAvailableChains, usePayment, useViewBasedState } from "../hooks";
+} from '@hiropay/common'
+import { createStyles, rem } from '@mantine/core'
+import { useMemo } from 'react'
+import truncateEthAddress from 'truncate-eth-address'
+import { useAccount, useDisconnect } from 'wagmi'
+import { useMainStore } from '../contexts/useMainStore'
+import { useAvailableChains, usePayment, useViewBasedState } from '../hooks'
 
-const EXCLUDED_HEADER_VIEWS = ["WelcomeDialog", "StatusDialog"];
-const INCLUDED_CHAIN_VIEWS = ["TokenDialog", "PaymentDialog"];
+const EXCLUDED_HEADER_VIEWS = ['WelcomeDialog', 'StatusDialog']
+const INCLUDED_CHAIN_VIEWS = ['TokenDialog', 'PaymentDialog']
 
 type StylesProps = {
-  onBackButtonClick: (() => void) | null;
-};
+  onBackButtonClick: (() => void) | null
+}
 
 const useStyles = createStyles((theme, { onBackButtonClick }: StylesProps) => ({
   header: {
     background: theme.colors?.level?.[0],
-    height: "114px",
-    minHeight: "114px",
-    width: "auto",
+    height: '114px',
+    minHeight: '114px',
+    width: 'auto',
     padding: `${rem(20)} ${rem(27)}`,
     borderBottom: `1px solid ${theme.colors?.level?.[2]}`,
     [theme.fn.smallerThan(MOBILE_BREAKPOINT)]: {
@@ -41,26 +41,26 @@ const useStyles = createStyles((theme, { onBackButtonClick }: StylesProps) => ({
     },
   },
   walletConnectNetworks: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "stretch",
-    justifyContent: "center",
-    height: "28px",
-    boxSizing: "border-box",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    justifyContent: 'center',
+    height: '28px',
+    boxSizing: 'border-box',
     width: `${rem(52)} !important`,
-    borderRadius: "14px",
+    borderRadius: '14px',
     border: `1px solid ${theme.colors?.level?.[2]}`,
     background: theme.colors?.level?.[1],
     minHeight: 0,
     padding: 0,
     margin: 0,
-    "&:hover": {
+    '&:hover': {
       background: theme.colors?.level?.[1],
     },
   },
   wrapper: {
-    "&button:only-child": {
-      marginLeft: "auto",
+    '&button:only-child': {
+      marginLeft: 'auto',
     },
   },
   iconWrapper: {
@@ -70,7 +70,7 @@ const useStyles = createStyles((theme, { onBackButtonClick }: StylesProps) => ({
   icon: {
     fill: theme.colors?.subtle?.[0],
     stroke: theme.colors?.subtle?.[0],
-    strokeWidth: "0.8px",
+    strokeWidth: '0.8px',
   },
   label: {
     marginLeft: onBackButtonClick ? rem(16) : 0,
@@ -82,16 +82,16 @@ const useStyles = createStyles((theme, { onBackButtonClick }: StylesProps) => ({
     },
   },
   info: {
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
   address: {
-    whiteSpace: "nowrap",
+    whiteSpace: 'nowrap',
   },
   badge: {
-    height: "28px",
-    borderRadius: "14px",
+    height: '28px',
+    borderRadius: '14px',
     border: `1px solid ${theme.colors?.level?.[2]}`,
     background: theme.colors?.level?.[1],
     fontSize: rem(14),
@@ -101,39 +101,39 @@ const useStyles = createStyles((theme, { onBackButtonClick }: StylesProps) => ({
   badgeIcon: {
     width: rem(16),
     stroke: theme.colors?.subtle?.[0],
-    strokeWidth: "0.8px",
+    strokeWidth: '0.8px',
   },
   select: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "stretch",
-    justifyContent: "center",
-    height: "28px",
-    boxSizing: "border-box",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    justifyContent: 'center',
+    height: '28px',
+    boxSizing: 'border-box',
     width: `${rem(52)} !important`,
-    "& .mantine-Input-wrapper": {
-      height: "28px",
-      "&::before": {
-        width: "20px",
-        height: "20px",
+    '& .mantine-Input-wrapper': {
+      height: '28px',
+      '&::before': {
+        width: '20px',
+        height: '20px',
       },
     },
-    "& .mantine-Input-input": {
-      borderRadius: "14px",
+    '& .mantine-Input-input': {
+      borderRadius: '14px',
       border: `1px solid ${theme.colors?.level?.[2]}`,
       background: theme.colors?.level?.[1],
-      height: "28px",
+      height: '28px',
       minHeight: 0,
-      width: "100%",
+      width: '100%',
       padding: 0,
       margin: 0,
     },
-    "& .mantine-Select-input:focus, & .mantine-Select-input:focus-within": {
-      outline: "2px solid #228be6 !important",
-      outlineOffset: "2px !important",
+    '& .mantine-Select-input:focus, & .mantine-Select-input:focus-within': {
+      outline: '2px solid #228be6 !important',
+      outlineOffset: '2px !important',
       border: `1px solid ${theme.colors?.level?.[2]}`,
     },
-    "& > .mantine-Select-dropdown": {
+    '& > .mantine-Select-dropdown': {
       minWidth: `${rem(210)} !important`,
       [theme.fn.smallerThan(MOBILE_BREAKPOINT)]: {
         left: `${rem(42)} !important`,
@@ -141,32 +141,32 @@ const useStyles = createStyles((theme, { onBackButtonClick }: StylesProps) => ({
     },
   },
   menu: {
-    padding: "0.25rem",
-    "& .mantine-Menu-item": {
+    padding: '0.25rem',
+    '& .mantine-Menu-item': {
       padding: 0,
     },
   },
   disconnectButton: {
     borderRadius: theme.radius.lg,
     color: theme.colors?.primary?.[0],
-    height: "38px",
-    padding: "8px 12px",
+    height: '38px',
+    padding: '8px 12px',
     fontSize: rem(14),
     fontWeight: 400,
   },
   disconnectIcon: {
     width: rem(14),
     stroke: theme.colors?.primary?.[0],
-    strokeWidth: "2.5px",
+    strokeWidth: '2.5px',
   },
-}));
+}))
 
 export type HeaderProps = {
-  view: JSX.Element | null;
-  resetChain: () => void;
-  resetToken: () => void;
-  selectChain: (chainId: number) => void;
-};
+  view: JSX.Element | null
+  resetChain: () => void
+  resetToken: () => void
+  selectChain: (chainId: number) => void
+}
 
 export const Header = ({
   view,
@@ -174,28 +174,26 @@ export const Header = ({
   resetToken,
   selectChain,
 }: HeaderProps) => {
-  const { address, isConnected, chain } = useAccount();
-  const { disconnect } = useDisconnect();
+  const { address, isConnected, chain } = useAccount()
+  const { disconnect } = useDisconnect()
 
-  const { availableChains } = useAvailableChains();
+  const { availableChains } = useAvailableChains()
 
-  const chainLoading = useMainStore((state) => state.chainLoading);
-  const chainSelected = useMainStore((state) => state.chainSelected);
-  const eventCallback = useMainStore((state) => state.eventCallback);
+  const chainLoading = useMainStore((state) => state.chainLoading)
+  const chainSelected = useMainStore((state) => state.chainSelected)
+  const eventCallback = useMainStore((state) => state.eventCallback)
 
-  const { invoice } = usePayment();
+  const { invoice } = usePayment()
 
   const { key, onBackButtonClick } = useViewBasedState(
     view,
     resetChain,
-    resetToken
-  );
+    resetToken,
+  )
 
-  const { classes } = useStyles({ onBackButtonClick });
+  const { classes } = useStyles({ onBackButtonClick })
 
-  const isStablecoin = !CURRENCY_SYMBOL_SPECIAL_CASES.includes(
-    invoice.currency
-  );
+  const isStablecoin = !CURRENCY_SYMBOL_SPECIAL_CASES.includes(invoice.currency)
 
   const formattedPayAmount = useMemo(
     () =>
@@ -206,27 +204,27 @@ export const Header = ({
         currency: invoice.currency,
         isFiatOrStablecoin: isStablecoin,
       }),
-    [invoice.amountInMinor, invoice.currency, isStablecoin]
-  );
+    [invoice.amountInMinor, invoice.currency, isStablecoin],
+  )
 
   const handleNetworkChange = (chainId: string) => {
     eventCallback?.(RudderStackJSEvents.NetworkChanged, {
       networkId: chainId,
-    });
-    selectChain(parseInt(chainId));
-  };
+    })
+    selectChain(parseInt(chainId))
+  }
 
   const handleWalletDisconnect = () => {
-    eventCallback?.(RudderStackJSEvents.WalletDisconnected);
-    disconnect();
-  };
+    eventCallback?.(RudderStackJSEvents.WalletDisconnected)
+    disconnect()
+  }
 
   const handleBackButtonClick = () => {
-    eventCallback?.(RudderStackJSEvents.BackButtonClicked);
-    onBackButtonClick?.();
-  };
+    eventCallback?.(RudderStackJSEvents.BackButtonClicked)
+    onBackButtonClick?.()
+  }
 
-  if (EXCLUDED_HEADER_VIEWS.includes(key)) return null;
+  if (EXCLUDED_HEADER_VIEWS.includes(key)) return null
 
   return (
     <Flex
@@ -251,7 +249,7 @@ export const Header = ({
                 <Select
                   hideText
                   maxDropdownHeight={300}
-                  value={chain?.id?.toString() ?? ""}
+                  value={chain?.id?.toString() ?? ''}
                   data={availableChains.map((chain) => ({
                     image: chain.logoUri,
                     label: chain.chainName,
@@ -277,12 +275,12 @@ export const Header = ({
                       }
                       className={classes.badge}
                     >
-                      {address ? truncateEthAddress(address) : "Connect Wallet"}
+                      {address ? truncateEthAddress(address) : 'Connect Wallet'}
                     </Badge>
                   }
                   data={[
                     {
-                      id: "disconnect",
+                      id: 'disconnect',
                       item: (
                         <Button
                           leftIcon={
@@ -312,7 +310,7 @@ export const Header = ({
       </Flex>
       <Flex align="center" justify="space-between" h="30px" w="100%" gap="16px">
         <Text c="subtle.0" size={20} weight={500} className={classes.info}>
-          To:{" "}
+          To:{' '}
           <Text
             c="primary.0"
             span
@@ -331,5 +329,5 @@ export const Header = ({
         </Text>
       </Flex>
     </Flex>
-  );
-};
+  )
+}

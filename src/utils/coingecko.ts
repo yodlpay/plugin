@@ -1,6 +1,6 @@
-import { PricesResponse } from "@hiropay/common";
+import { PricesResponse } from '@hiropay/common'
 
-const BASE_URL = "https://api.coingecko.com/api/v3";
+const BASE_URL = 'https://api.coingecko.com/api/v3'
 
 /**
  * @param tokenIds CoinGecko ids as string
@@ -8,22 +8,22 @@ const BASE_URL = "https://api.coingecko.com/api/v3";
  */
 export async function getPrices(tokenIds: string[], currencies: string[]) {
   const searchParams = new URLSearchParams({
-    ids: tokenIds.join(","),
-    vs_currencies: currencies.join(","),
-  });
-  const url = `${BASE_URL}/simple/price?${searchParams.toString()}`;
+    ids: tokenIds.join(','),
+    vs_currencies: currencies.join(','),
+  })
+  const url = `${BASE_URL}/simple/price?${searchParams.toString()}`
   const res = await fetch(url, {
     headers: {
-      accept: "application/json",
+      accept: 'application/json',
     },
-    method: "GET",
-  });
+    method: 'GET',
+  })
 
   if (!res.ok) {
     throw new Error(
-      `Failed to call '/simple/price' with status ${res.status} - ${res.statusText}`
-    );
+      `Failed to call '/simple/price' with status ${res.status} - ${res.statusText}`,
+    )
   }
 
-  return (await res.json()) as PricesResponse;
+  return (await res.json()) as PricesResponse
 }

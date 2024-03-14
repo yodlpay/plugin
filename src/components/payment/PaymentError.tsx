@@ -4,10 +4,12 @@ import {
   RudderStackJSPageCategories,
   RudderStackJSPageNames,
   Text,
+  TransactionState,
 } from '@hiropay/common'
 import { createStyles } from '@mantine/core'
 import { useEffect } from 'react'
 import { useMainStore } from '../../contexts/useMainStore'
+import { Analytics } from '../../lib'
 
 const useStyles = createStyles(() => ({
   status: {
@@ -18,7 +20,25 @@ const useStyles = createStyles(() => ({
   },
 }))
 
-export const PaymentError = () => {
+export type PaymentErrorChildrenProps = {
+  transaction: TransactionState | null
+  analytics: Analytics | null
+  resetTransaction: () => void
+}
+
+export type PaymentErrorProps = {
+  customChildren?: boolean
+  children?: ({
+    transaction,
+    analytics,
+    resetTransaction,
+  }: PaymentErrorChildrenProps) => JSX.Element
+}
+
+export const PaymentError = ({
+  customChildren = false,
+  children = () => <></>,
+}: PaymentErrorProps) => {
   const analytics = useMainStore((state) => state.analytics)
   const transaction = useMainStore((state) => state.transaction)
 
@@ -35,7 +55,13 @@ export const PaymentError = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return (
+  return customChildren ? (
+    children({
+      transaction,
+      analytics,
+      resetTransaction,
+    })
+  ) : (
     <Flex
       direction="column"
       align="center"

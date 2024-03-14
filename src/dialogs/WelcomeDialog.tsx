@@ -9,6 +9,7 @@ import {
 import { createStyles } from '@mantine/core'
 import { useEffect } from 'react'
 import { useMainStore } from '../contexts/useMainStore'
+import { CallbackAction, CallbackPage } from '../lib'
 
 const useStyles = createStyles(() => ({
   flex: {
@@ -17,11 +18,34 @@ const useStyles = createStyles(() => ({
   },
 }))
 
-type WelcomeDialogProps = {
+export type WelcomeDialogChildrenProps = {
+  handleClick: () => void
+  eventCallback: (
+    action: CallbackAction,
+    params?: Record<string, unknown> | undefined,
+  ) => void
+  pageCallback: (
+    category: RudderStackJSPageCategories.Payment,
+    page: CallbackPage,
+    params?: Record<string, unknown> | undefined,
+  ) => void
+}
+
+export type WelcomeDialogProps = {
+  customChildren?: boolean
+  children?: ({
+    handleClick,
+    eventCallback,
+    pageCallback,
+  }: WelcomeDialogChildrenProps) => JSX.Element
   onContinue: () => void
 }
 
-export default function WelcomeDialog({ onContinue }: WelcomeDialogProps) {
+export default function WelcomeDialog({
+  customChildren = false,
+  children = () => <></>,
+  onContinue,
+}: WelcomeDialogProps) {
   const eventCallback = useMainStore((state) => state.eventCallback)
   const pageCallback = useMainStore((state) => state.pageCallback)
 
@@ -39,7 +63,13 @@ export default function WelcomeDialog({ onContinue }: WelcomeDialogProps) {
     )
   }, [pageCallback])
 
-  return (
+  return customChildren ? (
+    children({
+      handleClick,
+      eventCallback,
+      pageCallback,
+    })
+  ) : (
     <Flex grow={1} direction="column" gap="16px" justify="center">
       <Flex justify="center" align="center" className={classes.flex}>
         <img src={'/assets/images/logo.svg'} alt="Logo" width="220px" />

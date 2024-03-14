@@ -8,7 +8,9 @@ import {
   Button,
   CURRENCY_TO_SYMBOL,
   ErrorIndicator,
+  ExchangeRate,
   Flex,
+  Invoice,
   LoadingIndicator,
   MOBILE_BREAKPOINT,
   NavLink,
@@ -42,6 +44,7 @@ import {
   useTokenBalances,
   useTokenPrices,
 } from '../hooks'
+import { CallbackAction, CallbackPage } from '../lib'
 import {
   areCurrenciesEqual,
   formatBalance,
@@ -138,7 +141,60 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-export default function TokenDialog() {
+export type TokenDialogChildrenProps = {
+  isLoading: boolean
+  isBalancesError: string | null | undefined
+  containsAcceptedTokens: boolean
+  containsSwappableTokens: boolean
+  acceptedTokensWithSufficientBalance: TokenHeld[] | undefined
+  swappableTokensWithSufficientBalance: TokenHeld[] | undefined
+  invoice: Invoice
+  exchangeRates: ExchangeRate | null
+  tokensWithInsufficientBalance: TokenHeld[]
+  formatBalance: (balance: bigint, decimals: number, symbol?: string) => string
+  areCurrenciesEqual: (invoice: Invoice, token: TokenHeld | null) => boolean
+  renderConvertedBalance: (token: TokenHeld) => JSX.Element
+  handleNavlinkClick: (token: TokenHeld) => void
+  handleNetworkClick: () => Promise<void>
+  handleItemChange: (value: string | null | unknown) => void
+  eventCallback: (
+    action: CallbackAction,
+    params?: Record<string, unknown> | undefined,
+  ) => void
+  pageCallback: (
+    category: RudderStackJSPageCategories.Payment,
+    page: CallbackPage,
+    params?: Record<string, unknown> | undefined,
+  ) => void
+}
+
+export type TokenDialogProps = {
+  customChildren?: boolean
+  children?: ({
+    isLoading,
+    isBalancesError,
+    containsAcceptedTokens,
+    containsSwappableTokens,
+    acceptedTokensWithSufficientBalance,
+    swappableTokensWithSufficientBalance,
+    invoice,
+    exchangeRates,
+    tokensWithInsufficientBalance,
+    formatBalance,
+    areCurrenciesEqual,
+    renderConvertedBalance,
+    handleNavlinkClick,
+    handleNetworkClick,
+    handleItemChange,
+    eventCallback,
+    pageCallback,
+  }: TokenDialogChildrenProps) => JSX.Element
+}
+
+export default function TokenDialog({
+  customChildren = false,
+  children = () => <></>,
+}: TokenDialogProps) {
   const [expandedItem, setExpandedItem] = useState<string | undefined>(
     undefined,
   )
@@ -312,7 +368,27 @@ export default function TokenDialog() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading])
 
-  return (
+  return customChildren ? (
+    children({
+      isLoading,
+      isBalancesError,
+      containsAcceptedTokens,
+      containsSwappableTokens,
+      acceptedTokensWithSufficientBalance,
+      swappableTokensWithSufficientBalance,
+      invoice,
+      exchangeRates,
+      tokensWithInsufficientBalance,
+      formatBalance,
+      areCurrenciesEqual,
+      renderConvertedBalance,
+      handleNavlinkClick,
+      handleNetworkClick,
+      handleItemChange,
+      eventCallback,
+      pageCallback,
+    })
+  ) : (
     <Flex grow={1} direction="column" gap="16px">
       {isLoading ? (
         <LoadingIndicator label="Loading tokens..." />

@@ -25,6 +25,7 @@ import {
   usePayment,
   useSimulateTransaction,
 } from '../../hooks'
+import { CallbackAction } from '../../lib'
 import {
   abiForToken,
   formatWagmiError,
@@ -38,14 +39,39 @@ const useStyles = createStyles(() => ({
   },
 }))
 
-type ApproveButtonType = {
+export type ApproveButtonChildrenProps = {
+  isLoading: boolean
+  isPreparing: boolean
+  isDisabled: boolean
+  isUnavailable: boolean | undefined
+  handleClick: () => Promise<void>
+  eventCallback: (
+    action: CallbackAction,
+    params?: Record<string, unknown> | undefined,
+  ) => void
+}
+
+export type ApproveButtonProps = {
+  customChildren?: boolean
+  children?: ({
+    isLoading,
+    isPreparing,
+    isDisabled,
+    isUnavailable,
+    handleClick,
+    eventCallback,
+  }: ApproveButtonChildrenProps) => JSX.Element
   allowance: {
     isLoading: boolean
     refetch: () => void
   }
 }
 
-export const ApproveButton = ({ allowance }: ApproveButtonType) => {
+export const ApproveButton = ({
+  customChildren = false,
+  children = () => <></>,
+  allowance,
+}: ApproveButtonProps) => {
   const { invoice } = usePayment()
   const { address, chain } = useAccount()
 
@@ -187,7 +213,16 @@ export const ApproveButton = ({ allowance }: ApproveButtonType) => {
     }
   }, [isApprovalBalanceSufficient, isAllowanceLoading])
 
-  return (
+  return customChildren ? (
+    children({
+      isLoading,
+      isPreparing,
+      isDisabled,
+      isUnavailable,
+      handleClick,
+      eventCallback,
+    })
+  ) : (
     <Button
       c="onColor.0"
       color="brand.0"

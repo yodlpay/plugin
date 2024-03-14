@@ -16,9 +16,37 @@ import {
   getTokenOutInfo,
   normalizeBigInt,
 } from '../../utils/helpers'
-import { Amounts } from '../Amounts'
+import { Amounts } from '../common/Amounts'
 
-export const PaymentAmounts = () => {
+export type PaymentAmountsChildrenProps = {
+  formattedSettlementAmount: string
+  convertedAmountOut: string
+  isSwapPayment: boolean
+  formattedAmountIn: string
+  convertedAmountIn: string
+  tokenInfo: TokenInfo
+  tokenOut: TokenInfo
+  isSameCurrency: boolean
+}
+
+export type PaymentAmountsProps = {
+  customChildren?: boolean
+  children?: ({
+    formattedSettlementAmount,
+    convertedAmountOut,
+    isSwapPayment,
+    formattedAmountIn,
+    convertedAmountIn,
+    tokenInfo,
+    tokenOut,
+    isSameCurrency,
+  }: PaymentAmountsChildrenProps) => JSX.Element
+}
+
+export const PaymentAmounts = ({
+  customChildren = false,
+  children = () => <></>,
+}: PaymentAmountsProps) => {
   const bestSwap = usePaymentStore((state) => state.state.swapDetails?.bestSwap)
 
   const token = useMainStore((state) => state.token)
@@ -157,7 +185,18 @@ export const PaymentAmounts = () => {
     ],
   )
 
-  return (
+  return customChildren ? (
+    children({
+      formattedSettlementAmount,
+      convertedAmountOut,
+      isSwapPayment,
+      formattedAmountIn,
+      convertedAmountIn,
+      tokenInfo,
+      tokenOut,
+      isSameCurrency,
+    })
+  ) : (
     <Amounts
       amountOut={formattedSettlementAmount}
       convertedAmountOut={convertedAmountOut}

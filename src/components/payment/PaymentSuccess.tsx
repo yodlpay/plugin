@@ -70,7 +70,27 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-export const PaymentSuccess = () => {
+export type PaymentSuccessChildrenProps = {
+  origin: string
+  receiptUrl: string
+  secondsLeft: number | null
+  actionLabel: string | undefined
+}
+
+export type PaymentSuccessProps = {
+  customChildren?: boolean
+  children?: ({
+    origin,
+    receiptUrl,
+    secondsLeft,
+    actionLabel,
+  }: PaymentSuccessChildrenProps) => JSX.Element
+}
+
+export const PaymentSuccess = ({
+  customChildren = false,
+  children = () => <></>,
+}: PaymentSuccessProps) => {
   const analytics = useMainStore((state) => state.analytics)
   const transaction = useMainStore((state) => state.transaction)
   const setCloseModal = useMainStore((state) => state.setCloseModal)
@@ -134,7 +154,14 @@ export const PaymentSuccess = () => {
     setOrigin(window.location.origin)
   }, [])
 
-  return (
+  return customChildren ? (
+    children({
+      origin,
+      receiptUrl,
+      secondsLeft,
+      actionLabel,
+    })
+  ) : (
     <Flex
       direction="column"
       align="center"

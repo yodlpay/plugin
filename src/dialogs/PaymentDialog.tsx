@@ -12,8 +12,18 @@ import { clsx } from '@mantine/core'
 import { GetBalanceReturnType } from '@wagmi/core'
 import { TokenInfo } from '@yodlpay/tokenlists'
 import { useEffect, useMemo } from 'react'
-import { Address, erc20Abi } from 'viem'
-import { useAccount, useBalance, useReadContract } from 'wagmi'
+import {
+  Address,
+  GetBalanceErrorType,
+  ReadContractErrorType,
+  erc20Abi,
+} from 'viem'
+import {
+  UseBalanceReturnType,
+  useAccount,
+  useBalance,
+  useReadContract,
+} from 'wagmi'
 import { ApproveButton } from '../components/payment/ApproveButton'
 import { PaymentAmounts } from '../components/payment/PaymentAmounts'
 import { PaymentAutoswap } from '../components/payment/PaymentAutoswap'
@@ -31,14 +41,62 @@ import {
   useGetQuotes,
   useLoadingState,
 } from '../hooks'
+import { CallbackPage } from '../lib'
 import { actions } from '../reducers/payment'
 import { isAllowanceSufficient } from '../utils/helpers'
 
+export type PaymentDialogChildrenProps = {
+  state: string
+  rawAmountIn: bigint | undefined
+  allowance: {
+    isLoading: boolean
+    isFetching: boolean
+    data:
+      | { decimals: number; formatted: string; symbol: string; value: bigint }
+      | undefined
+      | bigint
+    error: GetBalanceErrorType | ReadContractErrorType | null
+  }
+  isCalculatingPayment: boolean
+  loadingLabel: string
+  nativeTokenPrice: bigint | undefined
+  tokenInfo: TokenInfo
+  allowanceNativeToken: UseBalanceReturnType<{
+    decimals: number
+    formatted: string
+    symbol: string
+    value: bigint
+  }>
+  renderedIndicator: JSX.Element
+  pageCallback: (
+    category: RudderStackJSPageCategories.Payment,
+    page: CallbackPage,
+    params?: Record<string, unknown> | undefined,
+  ) => void
+}
+
 export type PaymentDialogProps = {
+  customChildren?: boolean
+  children?: ({
+    state,
+    rawAmountIn,
+    allowance,
+    isCalculatingPayment,
+    loadingLabel,
+    nativeTokenPrice,
+    tokenInfo,
+    allowanceNativeToken,
+    renderedIndicator,
+    pageCallback,
+  }: PaymentDialogChildrenProps) => JSX.Element
   handleRetry: () => void
 }
 
-export default function PaymentDialog({ handleRetry }: PaymentDialogProps) {
+export default function PaymentDialog({
+  customChildren = false,
+  children = () => <></>,
+  handleRetry,
+}: PaymentDialogProps) {
   const directPaymentLoading = usePaymentStore(
     (state) => state.state.directPaymentDetails?.loading,
   )
@@ -213,22 +271,24 @@ export default function PaymentDialog({ handleRetry }: PaymentDialogProps) {
     )
   }
 
-  const loadingState = (
+  const loadingIndicator = (
     <LoadingIndicator
       label={isCalculatingPayment ? loadingLabel : 'Loading allowance'}
     />
   )
 
-  const renderedContent = {
-    [LoadingState.AllowanceLoading]: loadingState,
-    [LoadingState.DirectPaymentLoading]: loadingState,
-    [LoadingState.SwapsLoading]: loadingState,
-    [LoadingState.NoSwaps]: (
-      <WarningIndicator label={`No swaps available for ${tokenInfo.symbol}`} />
-    ),
+  const warningIndicator = (
+    <WarningIndicator label={`No swaps available for ${tokenInfo.symbol}`} />
+  )
+
+  const renderedIndicator = {
+    [LoadingState.AllowanceLoading]: loadingIndicator,
+    [LoadingState.DirectPaymentLoading]: loadingIndicator,
+    [LoadingState.SwapsLoading]: loadingIndicator,
+    [LoadingState.NoSwaps]: warningIndicator,
   }[state]
 
-  const renderedFallback = (
+  const renderedContent = (
     <>
       <Flex grow={1} direction="column">
         <Flex
@@ -266,9 +326,22 @@ export default function PaymentDialog({ handleRetry }: PaymentDialogProps) {
     </>
   )
 
-  return (
+  return customChildren ? (
+    children({
+      state,
+      rawAmountIn,
+      allowance,
+      isCalculatingPayment,
+      loadingLabel,
+      nativeTokenPrice,
+      tokenInfo,
+      allowanceNativeToken,
+      renderedIndicator,
+      pageCallback,
+    })
+  ) : (
     <Flex direction="column" grow={1}>
-      {renderedContent ?? renderedFallback}
+      {renderedIndicator ?? renderedContent}
     </Flex>
   )
 }

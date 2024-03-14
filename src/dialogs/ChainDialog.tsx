@@ -9,16 +9,66 @@ import {
   RudderStackJSPageNames,
   useNavLinkStyles,
 } from '@hiropay/common'
+import { TokenInfo } from '@yodlpay/tokenlists'
 import { useEffect } from 'react'
+import { Chain } from 'viem'
 import { useAccount } from 'wagmi'
 import { useMainStore } from '../contexts/useMainStore'
 import { useAvailableChains } from '../hooks'
+import { CallbackAction, CallbackPage } from '../lib'
+
+export type ChainDialogChildrenProps = {
+  currentChain: Chain | undefined
+  sortedChains: {
+    isDisabled: boolean
+    tooltip: string
+    tokens: TokenInfo[]
+    router: string
+    chainId: number
+    chainName: string
+    shortName: string
+    logoUri: string
+    explorerUrl: string
+    rpcUrls: string[]
+    wrappedNativeToken: string
+    feeTreasury?: string | undefined
+    testnet: boolean
+    priceFeeds?:
+      | {
+          readonly [key: string]: string | undefined
+        }
+      | undefined
+    curveRouterAddress?: string | undefined
+  }[]
+  handleClick: (chainId: number) => void
+  eventCallback: (
+    action: CallbackAction,
+    params?: Record<string, unknown> | undefined,
+  ) => void
+  pageCallback: (
+    category: RudderStackJSPageCategories.Payment,
+    page: CallbackPage,
+    params?: Record<string, unknown> | undefined,
+  ) => void
+}
 
 export type ChainDialogProps = {
+  customChildren?: boolean
+  children?: ({
+    currentChain,
+    sortedChains,
+    handleClick,
+    eventCallback,
+    pageCallback,
+  }: ChainDialogChildrenProps) => JSX.Element
   selectChain: (nid: number | undefined) => void
 }
 
-export default function ChainDialog({ selectChain }: ChainDialogProps) {
+export default function ChainDialog({
+  customChildren = false,
+  children = () => <></>,
+  selectChain,
+}: ChainDialogProps) {
   const { chain: currentChain } = useAccount()
   const chainsWithBalance = useMainStore((state) => state.chainsWithBalance)
   const eventCallback = useMainStore((state) => state.eventCallback)
@@ -66,8 +116,15 @@ export default function ChainDialog({ selectChain }: ChainDialogProps) {
     return <ErrorIndicator error={chainsWithBalance?.error} />
   }
 
-  // STATE: SELECT BLOCKCHAIN
-  return (
+  return customChildren ? (
+    children({
+      currentChain,
+      sortedChains,
+      handleClick,
+      eventCallback,
+      pageCallback,
+    })
+  ) : (
     <>
       <Flex gap="24px" direction="column">
         {sortedChains.map((chain) => (

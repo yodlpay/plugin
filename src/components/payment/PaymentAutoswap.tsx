@@ -16,9 +16,43 @@ import {
   getTokenOutInfo,
   normalizeBigInt,
 } from '../../utils/helpers'
-import { Autoswap } from '../Autoswap'
+import { Autoswap } from '../common/Autoswap'
 
-export const PaymentAutoswap = () => {
+export type PaymentAutoswapChildrenProps = {
+  opened: boolean
+  handleChange: (value: boolean) => void
+  formattedSwapPath: JSX.Element | string
+  formattedSwapRate: string
+  formattedSwapVenue: string
+  formattedPriceImpact: string
+  formattedSlippage: string
+  swapPathError: string | null
+  swapPathLoading: boolean
+  isSwapPayment: boolean
+  renderSwapPath: (withLabel?: boolean) => JSX.Element
+}
+
+export type PaymentAutoswapProps = {
+  customChildren?: boolean
+  children?: ({
+    opened,
+    handleChange,
+    formattedSwapPath,
+    formattedSwapRate,
+    formattedSwapVenue,
+    formattedPriceImpact,
+    formattedSlippage,
+    swapPathError,
+    swapPathLoading,
+    isSwapPayment,
+    renderSwapPath,
+  }: PaymentAutoswapChildrenProps) => JSX.Element
+}
+
+export const PaymentAutoswap = ({
+  customChildren = false,
+  children = () => <></>,
+}: PaymentAutoswapProps) => {
   const { invoice } = usePayment()
   const { chain } = useAccount()
 
@@ -141,20 +175,32 @@ export const PaymentAutoswap = () => {
       })} ${tokenOut.symbol}/${token?.tokenInfo.symbol}`
     : ''
 
-  return (
-    isSwapPayment && (
-      <Autoswap
-        opened={opened}
-        handleChange={handleChange}
-        swapPath={formattedSwapPath}
-        swapRate={formattedSwapRate}
-        swapVenue={formattedSwapVenue}
-        priceImpact={formattedPriceImpact}
-        slippage={formattedSlippage}
-        isError={swapPathError}
-        isLoading={swapPathLoading}
-        renderSwapPath={renderSwapPath}
-      />
-    )
-  )
+  return customChildren
+    ? children({
+        opened,
+        handleChange,
+        formattedSwapPath,
+        formattedSwapRate,
+        formattedSwapVenue,
+        formattedPriceImpact,
+        formattedSlippage,
+        swapPathError,
+        swapPathLoading,
+        isSwapPayment,
+        renderSwapPath,
+      })
+    : isSwapPayment && (
+        <Autoswap
+          opened={opened}
+          handleChange={handleChange}
+          swapPath={formattedSwapPath}
+          swapRate={formattedSwapRate}
+          swapVenue={formattedSwapVenue}
+          priceImpact={formattedPriceImpact}
+          slippage={formattedSlippage}
+          isError={swapPathError}
+          isLoading={swapPathLoading}
+          renderSwapPath={renderSwapPath}
+        />
+      )
 }

@@ -2,6 +2,7 @@ import {
   APPROXIMATE_RATE_DECIMALS,
   Decimal,
   Flex,
+  Invoice,
   Text,
   Tooltip,
   formatPaymentAmount,
@@ -20,7 +21,27 @@ import {
   normalizeBigInt,
 } from '../../utils/helpers'
 
-export const PaymentHeader = () => {
+export type PaymentHeaderChildrenProps = {
+  invoice: Invoice
+  formattedSettlementAmount: string
+  formattedExchangeRate: string
+  truncateEthAddress: (address: string) => string
+}
+
+export type PaymentHeaderProps = {
+  customChildren?: boolean
+  children?: ({
+    invoice,
+    formattedSettlementAmount,
+    formattedExchangeRate,
+    truncateEthAddress,
+  }: PaymentHeaderChildrenProps) => JSX.Element
+}
+
+export const PaymentHeader = ({
+  customChildren = false,
+  children = () => <></>,
+}: PaymentHeaderProps) => {
   const { invoice } = usePayment()
   const { chain } = useAccount()
 
@@ -92,46 +113,51 @@ export const PaymentHeader = () => {
     ],
   )
 
-  return (
-    formattedSettlementAmount && (
-      <Flex direction="column" w="100%" mb={16} gap={16}>
-        {invoice.recipientAddress && (
-          <Flex w="100%" direction="column">
-            <Flex w="100%" align="center" justify="space-between">
-              <Text c="subtle.0" size={14} align="left" mr={4}>
-                Recipient address
-              </Text>
-              <Tooltip label={invoice.recipientAddress}>
-                <Text c="primary.0" size={14} weight={500} align="right">
-                  {truncateEthAddress(invoice.recipientAddress)}
+  return customChildren
+    ? children({
+        invoice,
+        formattedSettlementAmount,
+        formattedExchangeRate,
+        truncateEthAddress,
+      })
+    : formattedSettlementAmount && (
+        <Flex direction="column" w="100%" mb={16} gap={16}>
+          {invoice.recipientAddress && (
+            <Flex w="100%" direction="column">
+              <Flex w="100%" align="center" justify="space-between">
+                <Text c="subtle.0" size={14} align="left" mr={4}>
+                  Recipient address
                 </Text>
-              </Tooltip>
+                <Tooltip label={invoice.recipientAddress}>
+                  <Text c="primary.0" size={14} weight={500} align="right">
+                    {truncateEthAddress(invoice.recipientAddress)}
+                  </Text>
+                </Tooltip>
+              </Flex>
             </Flex>
-          </Flex>
-        )}
-        {!!formattedExchangeRate && (
-          <Flex w="100%" direction="column">
-            <Flex w="100%" align="center" justify="space-between">
-              <Text
-                c="subtle.0"
-                size={14}
-                align="left"
-                mr={4}
-                rightIcon={
-                  <Tooltip label="Current conversion rate between different currencies, reliably sourced from Chainlink oracles">
-                    <Info size={16} className={classes.infoIcon} />
-                  </Tooltip>
-                }
-              >
-                Exchange rate
-              </Text>
-              <Text c="primary.0" size={14} weight={500} align="right">
-                {formattedExchangeRate}
-              </Text>
+          )}
+          {!!formattedExchangeRate && (
+            <Flex w="100%" direction="column">
+              <Flex w="100%" align="center" justify="space-between">
+                <Text
+                  c="subtle.0"
+                  size={14}
+                  align="left"
+                  mr={4}
+                  rightIcon={
+                    <Tooltip label="Current conversion rate between different currencies, reliably sourced from Chainlink oracles">
+                      <Info size={16} className={classes.infoIcon} />
+                    </Tooltip>
+                  }
+                >
+                  Exchange rate
+                </Text>
+                <Text c="primary.0" size={14} weight={500} align="right">
+                  {formattedExchangeRate}
+                </Text>
+              </Flex>
             </Flex>
-          </Flex>
-        )}
-      </Flex>
-    )
-  )
+          )}
+        </Flex>
+      )
 }

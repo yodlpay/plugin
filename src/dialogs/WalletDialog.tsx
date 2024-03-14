@@ -6,11 +6,11 @@ import {
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useEffect } from 'react'
 import { useConnect } from 'wagmi'
-import { ConnectorButton } from '../components/ConnectorButton'
+import { ConnectorButton } from '../components/common/ConnectorButton'
 import { useMainStore } from '../contexts/useMainStore'
 import { CallbackPage } from '../lib'
 
-export type WalletChildrenProps = {
+export type WalletDialogChildrenProps = {
   openConnectModal: (() => void) | undefined
   pageCallback: (
     category: RudderStackJSPageCategories.Payment,
@@ -21,12 +21,15 @@ export type WalletChildrenProps = {
 
 export type WalletDialogProps = {
   customChildren?: boolean
-  children?: ({ openConnectModal, pageCallback }: WalletChildrenProps) => void
+  children?: ({
+    openConnectModal,
+    pageCallback,
+  }: WalletDialogChildrenProps) => JSX.Element
 }
 
 export default function WalletDialog({
   customChildren = false,
-  children = () => null,
+  children = () => <></>,
 }: WalletDialogProps) {
   const { connectors } = useConnect()
 

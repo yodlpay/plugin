@@ -7,7 +7,7 @@ import { enqueueSnackbar } from 'notistack'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Address, Chain, createPublicClient, http } from 'viem'
 import { useAccount, useConnect, usePublicClient } from 'wagmi'
-import { Header } from '../components/Header'
+import { Header } from '../components/layout/Header'
 import {
   ROUTER_ADDRESS_LS_KEY,
   ROUTER_VERSION_LS_KEY,

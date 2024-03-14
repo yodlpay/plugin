@@ -1,8 +1,8 @@
 'use client'
 
-export { Amounts } from './components/Amounts'
-export { Autoswap } from './components/Autoswap'
-export { ConnectorButton } from './components/ConnectorButton'
+export { Amounts } from './components/common/Amounts'
+export { Autoswap } from './components/common/Autoswap'
+export { ConnectorButton } from './components/common/ConnectorButton'
 export { YodlSDKProvider, useYodlSDK } from './wrappers/Provider'
 export type {
   Analytics,

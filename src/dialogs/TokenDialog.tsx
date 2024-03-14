@@ -141,7 +141,7 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-export type TokenChildrenProps = {
+export type TokenDialogChildrenProps = {
   isLoading: boolean
   isBalancesError: string | null | undefined
   containsAcceptedTokens: boolean
@@ -188,12 +188,12 @@ export type TokenDialogProps = {
     handleItemChange,
     eventCallback,
     pageCallback,
-  }: TokenChildrenProps) => void
+  }: TokenDialogChildrenProps) => JSX.Element
 }
 
 export default function TokenDialog({
   customChildren = false,
-  children = () => null,
+  children = () => <></>,
 }: TokenDialogProps) {
   const [expandedItem, setExpandedItem] = useState<string | undefined>(
     undefined,

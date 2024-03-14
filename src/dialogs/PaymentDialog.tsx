@@ -45,7 +45,7 @@ import { CallbackPage } from '../lib'
 import { actions } from '../reducers/payment'
 import { isAllowanceSufficient } from '../utils/helpers'
 
-export type PaymentChildrenProps = {
+export type PaymentDialogChildrenProps = {
   state: string
   rawAmountIn: bigint | undefined
   allowance: {
@@ -67,6 +67,7 @@ export type PaymentChildrenProps = {
     symbol: string
     value: bigint
   }>
+  renderedIndicator: JSX.Element
   pageCallback: (
     category: RudderStackJSPageCategories.Payment,
     page: CallbackPage,
@@ -85,14 +86,15 @@ export type PaymentDialogProps = {
     nativeTokenPrice,
     tokenInfo,
     allowanceNativeToken,
+    renderedIndicator,
     pageCallback,
-  }: PaymentChildrenProps) => void
+  }: PaymentDialogChildrenProps) => JSX.Element
   handleRetry: () => void
 }
 
 export default function PaymentDialog({
   customChildren = false,
-  children = () => null,
+  children = () => <></>,
   handleRetry,
 }: PaymentDialogProps) {
   const directPaymentLoading = usePaymentStore(
@@ -269,22 +271,24 @@ export default function PaymentDialog({
     )
   }
 
-  const loadingState = (
+  const loadingIndicator = (
     <LoadingIndicator
       label={isCalculatingPayment ? loadingLabel : 'Loading allowance'}
     />
   )
 
-  const renderedContent = {
-    [LoadingState.AllowanceLoading]: loadingState,
-    [LoadingState.DirectPaymentLoading]: loadingState,
-    [LoadingState.SwapsLoading]: loadingState,
-    [LoadingState.NoSwaps]: (
-      <WarningIndicator label={`No swaps available for ${tokenInfo.symbol}`} />
-    ),
+  const warningIndicator = (
+    <WarningIndicator label={`No swaps available for ${tokenInfo.symbol}`} />
+  )
+
+  const renderedIndicator = {
+    [LoadingState.AllowanceLoading]: loadingIndicator,
+    [LoadingState.DirectPaymentLoading]: loadingIndicator,
+    [LoadingState.SwapsLoading]: loadingIndicator,
+    [LoadingState.NoSwaps]: warningIndicator,
   }[state]
 
-  const renderedFallback = (
+  const renderedContent = (
     <>
       <Flex grow={1} direction="column">
         <Flex
@@ -332,11 +336,12 @@ export default function PaymentDialog({
       nativeTokenPrice,
       tokenInfo,
       allowanceNativeToken,
+      renderedIndicator,
       pageCallback,
     })
   ) : (
     <Flex direction="column" grow={1}>
-      {renderedContent ?? renderedFallback}
+      {renderedIndicator ?? renderedContent}
     </Flex>
   )
 }

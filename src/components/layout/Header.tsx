@@ -7,6 +7,7 @@ import {
   CURRENCY_SYMBOL_SPECIAL_CASES,
   Decimal,
   Flex,
+  Invoice,
   MOBILE_BREAKPOINT,
   Menu,
   RudderStackJSEvents,
@@ -15,11 +16,13 @@ import {
   formatPaymentAmount,
 } from '@hiropay/common'
 import { createStyles, rem } from '@mantine/core'
+import { TokenInfo } from '@yodlpay/tokenlists'
 import { useMemo } from 'react'
 import truncateEthAddress from 'truncate-eth-address'
+import { Chain } from 'viem'
 import { useAccount, useDisconnect } from 'wagmi'
-import { useMainStore } from '../contexts/useMainStore'
-import { useAvailableChains, usePayment, useViewBasedState } from '../hooks'
+import { useMainStore } from '../../contexts/useMainStore'
+import { useAvailableChains, usePayment, useViewBasedState } from '../../hooks'
 
 const EXCLUDED_HEADER_VIEWS = ['WelcomeDialog', 'StatusDialog']
 const INCLUDED_CHAIN_VIEWS = ['TokenDialog', 'PaymentDialog']
@@ -161,7 +164,61 @@ const useStyles = createStyles((theme, { onBackButtonClick }: StylesProps) => ({
   },
 }))
 
+export type HeaderChildrenProps = {
+  onBackButtonClick: (() => void) | null
+  handleBackButtonClick: () => void
+  INCLUDED_CHAIN_VIEWS: string[]
+  chainSelected: boolean
+  chain: Chain | undefined
+  availableChains: {
+    isDisabled: boolean
+    tooltip: string
+    tokens: TokenInfo[]
+    router: string
+    chainId: number
+    chainName: string
+    shortName: string
+    logoUri: string
+    explorerUrl: string
+    rpcUrls: string[]
+    wrappedNativeToken: string
+    feeTreasury?: string | undefined
+    testnet: boolean
+    priceFeeds?:
+      | {
+          readonly [key: string]: string | undefined
+        }
+      | undefined
+    curveRouterAddress?: string | undefined
+  }[]
+  handleNetworkChange: (chainId: string) => void
+  chainLoading: boolean
+  isConnected: boolean
+  address: `0x${string}` | undefined
+  truncateEthAddress: (address: string) => string
+  handleWalletDisconnect: () => void
+  invoice: Invoice
+  formattedPayAmount: string
+}
+
 export type HeaderProps = {
+  customChildren?: boolean
+  children?: ({
+    onBackButtonClick,
+    handleBackButtonClick,
+    INCLUDED_CHAIN_VIEWS,
+    chainSelected,
+    chain,
+    availableChains,
+    handleNetworkChange,
+    chainLoading,
+    isConnected,
+    address,
+    truncateEthAddress,
+    handleWalletDisconnect,
+    invoice,
+    formattedPayAmount,
+  }: HeaderChildrenProps) => JSX.Element
   view: JSX.Element | null
   resetChain: () => void
   resetToken: () => void
@@ -169,6 +226,8 @@ export type HeaderProps = {
 }
 
 export const Header = ({
+  customChildren = false,
+  children = () => <></>,
   view,
   resetChain,
   resetToken,
@@ -226,7 +285,24 @@ export const Header = ({
 
   if (EXCLUDED_HEADER_VIEWS.includes(key)) return null
 
-  return (
+  return customChildren ? (
+    children({
+      onBackButtonClick,
+      handleBackButtonClick,
+      INCLUDED_CHAIN_VIEWS,
+      chainSelected,
+      chain,
+      availableChains,
+      handleNetworkChange,
+      chainLoading,
+      isConnected,
+      address,
+      truncateEthAddress,
+      handleWalletDisconnect,
+      invoice,
+      formattedPayAmount,
+    })
+  ) : (
     <Flex
       direction="column"
       align="center"

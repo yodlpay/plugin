@@ -18,7 +18,7 @@ const useStyles = createStyles(() => ({
   },
 }))
 
-export type WelcomeChildrenProps = {
+export type WelcomeDialogChildrenProps = {
   handleClick: () => void
   eventCallback: (
     action: CallbackAction,
@@ -37,13 +37,13 @@ export type WelcomeDialogProps = {
     handleClick,
     eventCallback,
     pageCallback,
-  }: WelcomeChildrenProps) => void
+  }: WelcomeDialogChildrenProps) => JSX.Element
   onContinue: () => void
 }
 
 export default function WelcomeDialog({
   customChildren = false,
-  children = () => null,
+  children = () => <></>,
   onContinue,
 }: WelcomeDialogProps) {
   const eventCallback = useMainStore((state) => state.eventCallback)

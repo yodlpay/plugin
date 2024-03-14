@@ -17,7 +17,7 @@ import { useMainStore } from '../contexts/useMainStore'
 import { useAvailableChains } from '../hooks'
 import { CallbackAction, CallbackPage } from '../lib'
 
-export type ChainChildrenProps = {
+export type ChainDialogChildrenProps = {
   currentChain: Chain | undefined
   sortedChains: {
     isDisabled: boolean
@@ -60,13 +60,13 @@ export type ChainDialogProps = {
     handleClick,
     eventCallback,
     pageCallback,
-  }: ChainChildrenProps) => void
+  }: ChainDialogChildrenProps) => JSX.Element
   selectChain: (nid: number | undefined) => void
 }
 
 export default function ChainDialog({
   customChildren = false,
-  children = () => null,
+  children = () => <></>,
   selectChain,
 }: ChainDialogProps) {
   const { chain: currentChain } = useAccount()

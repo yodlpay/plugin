@@ -6,13 +6,33 @@ import {
   usePaymentStyles,
 } from '@hiropay/common'
 import { clsx } from '@mantine/core'
-import { getTokenBySymbol } from '@yodlpay/tokenlists'
+import { TokenInfo, getTokenBySymbol } from '@yodlpay/tokenlists'
 import { useMemo } from 'react'
 import { useAccount } from 'wagmi'
 import { usePaymentStore } from '../../contexts/usePaymentStore'
 import { normalizeBigInt } from '../../utils/helpers'
 
-export const PaymentFooter = () => {
+export type PaymentFooterChildrenProps = {
+  gasLoading: boolean | undefined
+  nativeToken: TokenInfo | null
+  formattedGasInNativeCurrency: string
+  formattedGasInUsd: string
+}
+
+export type PaymentFooterProps = {
+  customChildren?: boolean
+  children?: ({
+    gasLoading,
+    nativeToken,
+    formattedGasInNativeCurrency,
+    formattedGasInUsd,
+  }: PaymentFooterChildrenProps) => JSX.Element
+}
+
+export const PaymentFooter = ({
+  customChildren = false,
+  children = () => <></>,
+}: PaymentFooterProps) => {
   const allowanceOk = usePaymentStore(
     (state) => state.state.allowanceDetails?.data,
   )
@@ -75,7 +95,14 @@ export const PaymentFooter = () => {
     [calculatedGasInUsd],
   )
 
-  return (
+  return customChildren ? (
+    children({
+      gasLoading,
+      nativeToken,
+      formattedGasInNativeCurrency,
+      formattedGasInUsd,
+    })
+  ) : (
     <Flex direction="column" w="100%">
       <Flex
         className={clsx(classes.flex, classes.noGrow)}

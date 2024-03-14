@@ -9,20 +9,22 @@ import { PaymentSuccess } from '../components/payment/PaymentSuccess'
 import { useMainStore } from '../contexts/useMainStore'
 import { useBlockConfirmations } from '../hooks'
 
-export type StatusChildrenProps = {
+export type StatusDialogChildrenProps = {
   transaction: TransactionState | null
   confirmed: boolean
 }
 
 export type StatusDialogProps = {
   customChildren?: boolean
-  children?: ({ transaction, confirmed }: StatusChildrenProps) => void
-  onContinue: () => void
+  children?: ({
+    transaction,
+    confirmed,
+  }: StatusDialogChildrenProps) => JSX.Element
 }
 
 export default function StatusDialog({
   customChildren = false,
-  children = () => null,
+  children = () => <></>,
 }: StatusDialogProps) {
   const transaction = useMainStore((state) => state.transaction)
   const setTransaction = useMainStore((state) => state.setTransaction)

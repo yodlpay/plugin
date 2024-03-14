@@ -17,6 +17,7 @@ import {
   useIsBalanceSufficientToCoverGas,
   usePayment,
 } from '../../hooks'
+import { CallbackAction } from '../../lib'
 import { formatWagmiError } from '../../utils/helpers'
 import { getRouterAbi } from '../../utils/priceFeedHelpers'
 
@@ -26,11 +27,36 @@ const useStyles = createStyles(() => ({
   },
 }))
 
-type PaymentButtonType = {
+export type PaymentButtonChildrenProps = {
+  isPaymentLoading: boolean
+  isPreparing: boolean | undefined
+  isDisabled: boolean
+  isUnavailable: boolean | undefined
+  handlePaymentClick: () => Promise<void>
+  eventCallback: (
+    action: CallbackAction,
+    params?: Record<string, unknown> | undefined,
+  ) => void
+}
+
+export type PaymentButtonProps = {
+  customChildren?: boolean
+  children?: ({
+    isPaymentLoading,
+    isPreparing,
+    isDisabled,
+    isUnavailable,
+    handlePaymentClick,
+    eventCallback,
+  }: PaymentButtonChildrenProps) => JSX.Element
   rawAmountIn: bigint | undefined
 }
 
-export const PaymentButton = ({ rawAmountIn }: PaymentButtonType) => {
+export const PaymentButton = ({
+  customChildren = false,
+  children = () => <></>,
+  rawAmountIn,
+}: PaymentButtonProps) => {
   const gasLoading = usePaymentStore((state) => state.state.gasDetails?.loading)
   const priceFeedDetails = usePaymentStore(
     (state) => state.state.priceFeedDetails,
@@ -182,7 +208,16 @@ export const PaymentButton = ({ rawAmountIn }: PaymentButtonType) => {
     }
   }, [isGasBalanceLoading, isGasBalanceSufficient])
 
-  return (
+  return customChildren ? (
+    children({
+      isPaymentLoading,
+      isPreparing,
+      isDisabled,
+      isUnavailable,
+      handlePaymentClick,
+      eventCallback,
+    })
+  ) : (
     <Button
       c="onColor.0"
       color="brand.0"

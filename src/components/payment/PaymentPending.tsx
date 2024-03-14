@@ -13,6 +13,7 @@ import { useEffect, useMemo } from 'react'
 import { useAccount } from 'wagmi'
 import { useMainStore } from '../../contexts/useMainStore'
 import { useBlockConfirmations, useDynamicLoadingLabel } from '../../hooks'
+import { Analytics } from '../../lib'
 import { getEstimatedTime } from '../../utils/helpers'
 
 const useStyles = createStyles((theme) => ({
@@ -30,7 +31,31 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-export const PaymentPending = () => {
+export type PaymentPendingChildrenProps = {
+  confirmed: boolean
+  loadingLabel: string
+  confirmations: number
+  DESIRED_NUMBER_OF_CONFIRMATIONS: number
+  estimatedTimeInMins: number
+  analytics: Analytics | null
+}
+
+export type PaymentPendingProps = {
+  customChildren?: boolean
+  children?: ({
+    confirmed,
+    loadingLabel,
+    confirmations,
+    DESIRED_NUMBER_OF_CONFIRMATIONS,
+    estimatedTimeInMins,
+    analytics,
+  }: PaymentPendingChildrenProps) => JSX.Element
+}
+
+export const PaymentPending = ({
+  customChildren = false,
+  children = () => <></>,
+}: PaymentPendingProps) => {
   const analytics = useMainStore((state) => state.analytics)
 
   const { confirmations } = useBlockConfirmations()
@@ -73,7 +98,16 @@ export const PaymentPending = () => {
     )
   }, [analytics])
 
-  return (
+  return customChildren ? (
+    children({
+      confirmed,
+      loadingLabel,
+      confirmations,
+      DESIRED_NUMBER_OF_CONFIRMATIONS,
+      estimatedTimeInMins,
+      analytics,
+    })
+  ) : (
     <Flex
       direction="column"
       align="center"

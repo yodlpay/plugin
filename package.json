@@ -1,6 +1,6 @@
 {
   "name": "@hiropay/plugin",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Yodl plugin payment modal.",
   "main": "dist/lib.js",
   "types": "dist/lib.d.ts",

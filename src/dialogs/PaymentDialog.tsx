@@ -7,31 +7,31 @@ import {
   RudderStackJSPageNames,
   WarningIndicator,
   usePaymentStyles,
-} from '@hiropay/common'
-import { clsx } from '@mantine/core'
-import { GetBalanceReturnType } from '@wagmi/core'
-import { TokenInfo } from '@yodlpay/tokenlists'
-import { useEffect, useMemo } from 'react'
+} from '@hiropay/common';
+import { clsx } from '@mantine/core';
+import { GetBalanceReturnType } from '@wagmi/core';
+import { TokenInfo } from '@yodlpay/tokenlists';
+import { useEffect, useMemo } from 'react';
 import {
   Address,
   GetBalanceErrorType,
   ReadContractErrorType,
   erc20Abi,
-} from 'viem'
+} from 'viem';
 import {
   UseBalanceReturnType,
   useAccount,
   useBalance,
   useReadContract,
-} from 'wagmi'
-import { ApproveButton } from '../components/payment/ApproveButton'
-import { PaymentAmounts } from '../components/payment/PaymentAmounts'
-import { PaymentAutoswap } from '../components/payment/PaymentAutoswap'
-import { PaymentButton } from '../components/payment/PaymentButton'
-import { PaymentFooter } from '../components/payment/PaymentFooter'
-import { PaymentHeader } from '../components/payment/PaymentHeader'
-import { useMainStore } from '../contexts/useMainStore'
-import { usePaymentStore } from '../contexts/usePaymentStore'
+} from 'wagmi';
+import { ApproveButton } from '../components/payment/ApproveButton';
+import { PaymentAmounts } from '../components/payment/PaymentAmounts';
+import { PaymentAutoswap } from '../components/payment/PaymentAutoswap';
+import { PaymentButton } from '../components/payment/PaymentButton';
+import { PaymentFooter } from '../components/payment/PaymentFooter';
+import { PaymentHeader } from '../components/payment/PaymentHeader';
+import { useMainStore } from '../contexts/useMainStore';
+import { usePaymentStore } from '../contexts/usePaymentStore';
 import {
   useChainPriceFeed,
   useDynamicLoadingLabel,
@@ -40,43 +40,43 @@ import {
   useGetEstimates,
   useGetQuotes,
   useLoadingState,
-} from '../hooks'
-import { CallbackPage } from '../lib'
-import { actions } from '../reducers/payment'
-import { isAllowanceSufficient } from '../utils/helpers'
+} from '../hooks';
+import { CallbackPage } from '../lib';
+import { actions } from '../reducers/payment';
+import { isAllowanceSufficient } from '../utils/helpers';
 
 export type PaymentDialogChildrenProps = {
-  state: string
-  rawAmountIn: bigint | undefined
+  state: string;
+  rawAmountIn: bigint | undefined;
   allowance: {
-    isLoading: boolean
-    isFetching: boolean
+    isLoading: boolean;
+    isFetching: boolean;
     data:
       | { decimals: number; formatted: string; symbol: string; value: bigint }
       | undefined
-      | bigint
-    error: GetBalanceErrorType | ReadContractErrorType | null
-  }
-  isCalculatingPayment: boolean
-  loadingLabel: string
-  nativeTokenPrice: bigint | undefined
-  tokenInfo: TokenInfo
+      | bigint;
+    error: GetBalanceErrorType | ReadContractErrorType | null;
+  };
+  isCalculatingPayment: boolean;
+  loadingLabel: string;
+  nativeTokenPrice: bigint | undefined;
+  tokenInfo: TokenInfo;
   allowanceNativeToken: UseBalanceReturnType<{
-    decimals: number
-    formatted: string
-    symbol: string
-    value: bigint
-  }>
-  renderedIndicator: JSX.Element
+    decimals: number;
+    formatted: string;
+    symbol: string;
+    value: bigint;
+  }>;
+  renderedIndicator: JSX.Element;
   pageCallback: (
     category: RudderStackJSPageCategories.Payment,
     page: CallbackPage,
     params?: Record<string, unknown> | undefined,
-  ) => void
-}
+  ) => void;
+};
 
 export type PaymentDialogProps = {
-  customChildren?: boolean
+  customChildren?: boolean;
   children?: ({
     state,
     rawAmountIn,
@@ -88,9 +88,9 @@ export type PaymentDialogProps = {
     allowanceNativeToken,
     renderedIndicator,
     pageCallback,
-  }: PaymentDialogChildrenProps) => JSX.Element
-  handleRetry: () => void
-}
+  }: PaymentDialogChildrenProps) => JSX.Element;
+  handleRetry: () => void;
+};
 
 export default function PaymentDialog({
   customChildren = false,
@@ -99,52 +99,54 @@ export default function PaymentDialog({
 }: PaymentDialogProps) {
   const directPaymentLoading = usePaymentStore(
     (state) => state.state.directPaymentDetails?.loading,
-  )
+  );
   const directPaymentError = usePaymentStore(
     (state) => state.state.directPaymentDetails?.error,
-  )
+  );
   const directPaymentAmountIn = usePaymentStore(
     (state) => state.state.directPaymentDetails?.data,
-  )
+  );
   const swapLoading = usePaymentStore(
     (state) => state.state.swapDetails?.loading,
-  )
-  const swapError = usePaymentStore((state) => state.state.swapDetails?.error)
+  );
+  const swapError = usePaymentStore((state) => state.state.swapDetails?.error);
   const swapQuotes = usePaymentStore(
     (state) => state.state.swapDetails?.swapQuotes,
-  )
-  const bestSwap = usePaymentStore((state) => state.state.swapDetails?.bestSwap)
+  );
+  const bestSwap = usePaymentStore(
+    (state) => state.state.swapDetails?.bestSwap,
+  );
   const allowanceError = usePaymentStore(
     (state) => state.state.allowanceDetails?.error,
-  )
+  );
   const allowanceOk = usePaymentStore(
     (state) => state.state.allowanceDetails?.data,
-  )
+  );
   const priceFeedError = usePaymentStore(
     (state) => state.state.priceFeedDetails?.error,
-  )
+  );
 
-  const dispatch = usePaymentStore((state) => state.dispatch)
+  const dispatch = usePaymentStore((state) => state.dispatch);
 
-  const token = useMainStore((state) => state.token)
-  const routerAddress = useMainStore((state) => state.routerAddress)
-  const curveLoading = useMainStore((state) => state.curveLoading)
-  const pageCallback = useMainStore((state) => state.pageCallback)
+  const token = useMainStore((state) => state.token);
+  const routerAddress = useMainStore((state) => state.routerAddress);
+  const curveLoading = useMainStore((state) => state.curveLoading);
+  const pageCallback = useMainStore((state) => state.pageCallback);
 
-  const { chain, address, isConnected } = useAccount()
+  const { chain, address, isConnected } = useAccount();
 
   // Fetch the network's native token price in terms of USD
-  const [nativeTokenPrice, , nativeTokenError] = useChainPriceFeed(chain)
+  const [nativeTokenPrice, , nativeTokenError] = useChainPriceFeed(chain);
 
   const tokenInfo = useMemo(
     () => token?.tokenInfo ?? ({} as TokenInfo),
     [token?.tokenInfo],
-  )
+  );
 
   const allowanceNativeToken = useBalance({
     address,
     scopeKey: 'native',
-  })
+  });
 
   const allowanceERC20 = useReadContract({
     address: tokenInfo.address as Address,
@@ -154,18 +156,18 @@ export default function PaymentDialog({
     query: {
       enabled: isConnected && chain?.nativeCurrency.symbol !== tokenInfo.symbol,
     },
-  })
+  });
 
-  const { classes } = usePaymentStyles()
+  const { classes } = usePaymentStyles();
 
   const rawAmountIn = !token?.isAccepted
     ? bestSwap?.[0].amountIn
-    : directPaymentAmountIn
+    : directPaymentAmountIn;
 
   const allowance =
     chain?.nativeCurrency.symbol !== tokenInfo.symbol
       ? allowanceERC20
-      : allowanceNativeToken
+      : allowanceNativeToken;
 
   const state = useLoadingState(
     allowance.isLoading || allowance.isFetching,
@@ -176,11 +178,11 @@ export default function PaymentDialog({
     swapQuotes ?? null,
     curveLoading,
     nativeTokenPrice,
-  )
+  );
 
   const isCalculatingPayment =
     state === LoadingState.SwapsLoading ||
-    state === LoadingState.DirectPaymentLoading
+    state === LoadingState.DirectPaymentLoading;
 
   const loadingLabel = useDynamicLoadingLabel({
     labels: [
@@ -198,32 +200,32 @@ export default function PaymentDialog({
     shouldFallback: false,
     delay: 2000,
     shouldStop: !isCalculatingPayment,
-  })
+  });
 
-  useGetQuotes()
-  useGetEstimates()
-  useGetDirectPaymentAmount()
-  useGetDirectPaymentGasDetails()
+  useGetQuotes();
+  useGetEstimates();
+  useGetDirectPaymentAmount();
+  useGetDirectPaymentGasDetails();
 
   useEffect(() => {
     if (allowance.error?.message) {
       dispatch({
         type: actions.SET_ALLOWANCE_ERROR,
         payload: 'Failed to fetch allowance',
-      })
-      return
+      });
+      return;
     }
     const allowanceData =
       chain?.nativeCurrency.symbol !== tokenInfo.symbol
         ? (allowance?.data as bigint)
-        : (allowance?.data as GetBalanceReturnType)?.value
+        : (allowance?.data as GetBalanceReturnType)?.value;
 
     if (allowanceData !== undefined && rawAmountIn !== undefined) {
-      const ok = isAllowanceSufficient(allowanceData, rawAmountIn)
+      const ok = isAllowanceSufficient(allowanceData, rawAmountIn);
       dispatch({
         type: actions.SET_ALLOWANCE_DETAILS,
         payload: { data: ok, loading: false, error: null },
-      })
+      });
     }
   }, [
     allowance.data,
@@ -232,22 +234,22 @@ export default function PaymentDialog({
     dispatch,
     rawAmountIn,
     tokenInfo?.symbol,
-  ])
+  ]);
 
   // clean up state on unmount
   useEffect(() => {
     return () => {
-      dispatch({ type: actions.RESET_PAYMENT_STATE })
-    }
-  }, [dispatch])
+      dispatch({ type: actions.RESET_PAYMENT_STATE });
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     pageCallback?.(
       RudderStackJSPageCategories.Payment,
       RudderStackJSPageNames.PaymentDialog,
-    )
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
   if (
     swapError ||
@@ -268,25 +270,25 @@ export default function PaymentDialog({
         withRetry
         handleRetry={handleRetry}
       />
-    )
+    );
   }
 
   const loadingIndicator = (
     <LoadingIndicator
       label={isCalculatingPayment ? loadingLabel : 'Loading allowance'}
     />
-  )
+  );
 
   const warningIndicator = (
     <WarningIndicator label={`No swaps available for ${tokenInfo.symbol}`} />
-  )
+  );
 
   const renderedIndicator = {
     [LoadingState.AllowanceLoading]: loadingIndicator,
     [LoadingState.DirectPaymentLoading]: loadingIndicator,
     [LoadingState.SwapsLoading]: loadingIndicator,
     [LoadingState.NoSwaps]: warningIndicator,
-  }[state]
+  }[state];
 
   const renderedContent = (
     <>
@@ -324,7 +326,7 @@ export default function PaymentDialog({
         </Flex>
       </Flex>
     </>
-  )
+  );
 
   return customChildren ? (
     children({
@@ -343,5 +345,5 @@ export default function PaymentDialog({
     <Flex direction="column" grow={1}>
       {renderedIndicator ?? renderedContent}
     </Flex>
-  )
+  );
 }

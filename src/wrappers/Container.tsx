@@ -1,7 +1,7 @@
-import { Flex } from '@hiropay/common'
-import { FlexProps } from '@hiropay/common/dist/components/Flex'
+import { Flex } from '@hiropay/common';
+import { FlexProps } from '@hiropay/common/dist/components/Flex';
 
-export type ContainerWrapperProps = {} & FlexProps
+export type ContainerWrapperProps = {} & FlexProps;
 
 export const ContainerWrapper = ({
   children,
@@ -12,5 +12,5 @@ export const ContainerWrapper = ({
     <Flex className="container-wrapper" direction={direction} {...props}>
       {children}
     </Flex>
-  )
-}
+  );
+};

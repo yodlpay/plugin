@@ -2,7 +2,7 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
   NoSymbolIcon,
-} from '@heroicons/react/20/solid'
+} from '@heroicons/react/20/solid';
 import {
   Accordion,
   Button,
@@ -24,33 +24,33 @@ import {
   coinIdToToken,
   useNavLinkStyles,
   usePaymentStyles,
-} from '@hiropay/common'
-import { clsx, createStyles } from '@mantine/core'
+} from '@hiropay/common';
+import { clsx, createStyles } from '@mantine/core';
 import {
   ArrowBendUpLeft,
   Info,
   LinkBreak,
   Shuffle,
-} from '@phosphor-icons/react'
-import { TokenInfo, getTokens } from '@yodlpay/tokenlists'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Address } from 'viem'
-import { useAccount, useDisconnect } from 'wagmi'
-import { useMainStore } from '../contexts/useMainStore'
-import { useTokenStore } from '../contexts/useTokenStore'
+} from '@phosphor-icons/react';
+import { TokenInfo, getTokens } from '@yodlpay/tokenlists';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Address } from 'viem';
+import { useAccount, useDisconnect } from 'wagmi';
+import { useMainStore } from '../contexts/useMainStore';
+import { useTokenStore } from '../contexts/useTokenStore';
 import {
   useAvailableTokens,
   usePayment,
   useTokenBalances,
   useTokenPrices,
-} from '../hooks'
-import { CallbackAction, CallbackPage } from '../lib'
+} from '../hooks';
+import { CallbackAction, CallbackPage } from '../lib';
 import {
   areCurrenciesEqual,
   formatBalance,
   formatConvertedBalance,
   isBalanceSufficient,
-} from '../utils/helpers'
+} from '../utils/helpers';
 
 const useStyles = createStyles((theme) => ({
   accordion: {
@@ -139,37 +139,37 @@ const useStyles = createStyles((theme) => ({
   shuffleIndicator: {
     marginLeft: '4px',
   },
-}))
+}));
 
 export type TokenDialogChildrenProps = {
-  isLoading: boolean
-  isBalancesError: string | null | undefined
-  containsAcceptedTokens: boolean
-  containsSwappableTokens: boolean
-  acceptedTokensWithSufficientBalance: TokenHeld[] | undefined
-  swappableTokensWithSufficientBalance: TokenHeld[] | undefined
-  invoice: Invoice
-  exchangeRates: ExchangeRate | null
-  tokensWithInsufficientBalance: TokenHeld[]
-  formatBalance: (balance: bigint, decimals: number, symbol?: string) => string
-  areCurrenciesEqual: (invoice: Invoice, token: TokenHeld | null) => boolean
-  renderConvertedBalance: (token: TokenHeld) => JSX.Element
-  handleNavlinkClick: (token: TokenHeld) => void
-  handleNetworkClick: () => Promise<void>
-  handleItemChange: (value: string | null | unknown) => void
+  isLoading: boolean;
+  isBalancesError: string | null | undefined;
+  containsAcceptedTokens: boolean;
+  containsSwappableTokens: boolean;
+  acceptedTokensWithSufficientBalance: TokenHeld[] | undefined;
+  swappableTokensWithSufficientBalance: TokenHeld[] | undefined;
+  invoice: Invoice;
+  exchangeRates: ExchangeRate | null;
+  tokensWithInsufficientBalance: TokenHeld[];
+  formatBalance: (balance: bigint, decimals: number, symbol?: string) => string;
+  areCurrenciesEqual: (invoice: Invoice, token: TokenHeld | null) => boolean;
+  renderConvertedBalance: (token: TokenHeld) => JSX.Element;
+  handleNavlinkClick: (token: TokenHeld) => void;
+  handleNetworkClick: () => Promise<void>;
+  handleItemChange: (value: string | null | unknown) => void;
   eventCallback: (
     action: CallbackAction,
     params?: Record<string, unknown> | undefined,
-  ) => void
+  ) => void;
   pageCallback: (
     category: RudderStackJSPageCategories.Payment,
     page: CallbackPage,
     params?: Record<string, unknown> | undefined,
-  ) => void
-}
+  ) => void;
+};
 
 export type TokenDialogProps = {
-  customChildren?: boolean
+  customChildren?: boolean;
   children?: ({
     isLoading,
     isBalancesError,
@@ -188,8 +188,8 @@ export type TokenDialogProps = {
     handleItemChange,
     eventCallback,
     pageCallback,
-  }: TokenDialogChildrenProps) => JSX.Element
-}
+  }: TokenDialogChildrenProps) => JSX.Element;
+};
 
 export default function TokenDialog({
   customChildren = false,
@@ -197,23 +197,23 @@ export default function TokenDialog({
 }: TokenDialogProps) {
   const [expandedItem, setExpandedItem] = useState<string | undefined>(
     undefined,
-  )
+  );
 
-  const { invoice } = usePayment()
-  const { address, chain } = useAccount()
-  const { disconnectAsync } = useDisconnect()
+  const { invoice } = usePayment();
+  const { address, chain } = useAccount();
+  const { disconnectAsync } = useDisconnect();
 
-  const { classes } = useStyles()
-  const { classes: paymentClasses } = usePaymentStyles()
-  const { classes: navLinkClasses } = useNavLinkStyles()
+  const { classes } = useStyles();
+  const { classes: paymentClasses } = usePaymentStyles();
+  const { classes: navLinkClasses } = useNavLinkStyles();
 
-  const setToken = useMainStore((state) => state.setToken)
+  const setToken = useMainStore((state) => state.setToken);
 
-  const exchangeRates = useTokenStore((state) => state.exchangeRates)
-  const routerVersion = useMainStore((state) => state.routerVersion)
-  const chainDataAPI = useMainStore((state) => state.chainDataAPI)
-  const eventCallback = useMainStore((state) => state.eventCallback)
-  const pageCallback = useMainStore((state) => state.pageCallback)
+  const exchangeRates = useTokenStore((state) => state.exchangeRates);
+  const routerVersion = useMainStore((state) => state.routerVersion);
+  const chainDataAPI = useMainStore((state) => state.chainDataAPI);
+  const eventCallback = useMainStore((state) => state.eventCallback);
+  const pageCallback = useMainStore((state) => state.pageCallback);
 
   const noDataSharedProps = {
     labelSize: 14,
@@ -224,27 +224,27 @@ export default function TokenDialog({
     verticalMargin: 0,
     padding: '8px 16px',
     backgroundShade: 0,
-  }
+  };
 
-  const { acceptedTokens, swappableTokens } = useAvailableTokens()
+  const { acceptedTokens, swappableTokens } = useAvailableTokens();
 
   const chainTokens = useMemo(
     () => (chain?.id ? getTokens(chain?.id) : []),
     [chain?.id],
-  )
+  );
 
   const invoiceTokens = useMemo(() => {
     const chainConfig = invoice.coins.find(
       (coinConfig) => coinConfig.chainId == chain?.id,
-    )
+    );
     if (chainConfig) {
       return chainConfig.tokens.map((token) =>
         coinIdToToken(`${token.symbol}-${chain?.id}`),
-      ) as TokenInfo[]
+      ) as TokenInfo[];
     } else {
-      return []
+      return [];
     }
-  }, [chain?.id, invoice.coins])
+  }, [chain?.id, invoice.coins]);
 
   const filteredTokens = useMemo(
     () =>
@@ -257,7 +257,7 @@ export default function TokenDialog({
           )
         : chainTokens,
     [chainTokens, invoiceTokens, routerVersion],
-  )
+  );
 
   const renderConvertedBalance = useCallback(
     (token: TokenHeld) => {
@@ -274,12 +274,12 @@ export default function TokenDialog({
               ]?.symbol || ''
             }_.__`}
           </Text>
-        )
+        );
       const { isLoading, formattedAmount } = formatConvertedBalance(
         token,
         exchangeRates?.data?.[token.tokenInfo.symbol],
         invoice,
-      )
+      );
       if (isLoading) {
         return (
           <LoadingIndicator
@@ -291,58 +291,63 @@ export default function TokenDialog({
             labelSize={14}
             spinnerSize={14}
           />
-        )
+        );
       }
-      return <>{formattedAmount}</>
+      return <>{formattedAmount}</>;
     },
     [exchangeRates, invoice],
-  )
+  );
 
   const handleItemChange = (value: string | null | unknown) => {
-    setExpandedItem(value as string)
-  }
+    setExpandedItem(value as string);
+  };
 
   const handleNetworkClick = async () => {
-    await disconnectAsync()
-  }
+    await disconnectAsync();
+  };
 
   const handleNavlinkClick = (token: TokenHeld) => {
     if (isBalanceSufficient(token, invoice, exchangeRates)) {
-      setToken(token)
+      setToken(token);
       eventCallback?.(RudderStackJSEvents.TokenChosen, {
         token: token.tokenInfo.symbol,
-      })
+      });
     }
-  }
+  };
 
   const { isLoading: isLoadingPrices, error: isPricesError } =
-    useTokenPrices(filteredTokens)
+    useTokenPrices(filteredTokens);
 
   const { isLoading: isLoadingBalances, error: isBalancesError } =
-    useTokenBalances(chainDataAPI, chain?.id, address as Address, invoiceTokens)
+    useTokenBalances(
+      chainDataAPI,
+      chain?.id,
+      address as Address,
+      invoiceTokens,
+    );
 
   const tokensWithInsufficientBalance = [
     ...(acceptedTokens ?? []),
     ...(swappableTokens ?? []),
-  ].filter((token) => !isBalanceSufficient(token, invoice, exchangeRates))
+  ].filter((token) => !isBalanceSufficient(token, invoice, exchangeRates));
 
   const acceptedTokensWithSufficientBalance = acceptedTokens?.filter(
     (token) => !!isBalanceSufficient(token, invoice, exchangeRates),
-  )
+  );
   const swappableTokensWithSufficientBalance = swappableTokens?.filter(
     (token) => !!isBalanceSufficient(token, invoice, exchangeRates),
-  )
+  );
 
   const containsAcceptedTokens =
-    (acceptedTokensWithSufficientBalance?.length ?? 0) > 0
+    (acceptedTokensWithSufficientBalance?.length ?? 0) > 0;
   const containsSwappableTokens =
-    (swappableTokensWithSufficientBalance?.length ?? 0) > 0
+    (swappableTokensWithSufficientBalance?.length ?? 0) > 0;
 
   const isLoading =
     isLoadingBalances ||
     isLoadingPrices ||
     !exchangeRates ||
-    exchangeRates?.loading
+    exchangeRates?.loading;
 
   useEffect(() => {
     if (!isLoading && !isBalancesError && !isPricesError) {
@@ -363,10 +368,10 @@ export default function TokenDialog({
               (token) => token.tokenInfo.symbol,
             ) ?? [],
         },
-      )
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading])
+  }, [isLoading]);
 
   return customChildren ? (
     children({
@@ -404,7 +409,7 @@ export default function TokenDialog({
                     token,
                     invoice,
                     exchangeRates,
-                  )
+                  );
 
                   return (
                     <NavLink
@@ -441,7 +446,7 @@ export default function TokenDialog({
                       }
                       onClick={() => handleNavlinkClick(token)}
                     />
-                  )
+                  );
                 })
               ) : (
                 <Flex direction="column">
@@ -477,7 +482,7 @@ export default function TokenDialog({
                     token,
                     invoice,
                     exchangeRates,
-                  )
+                  );
 
                   return (
                     <NavLink
@@ -524,7 +529,7 @@ export default function TokenDialog({
                       }
                       onClick={() => handleNavlinkClick(token)}
                     />
-                  )
+                  );
                 })
               ) : (
                 <Flex direction="column">
@@ -631,5 +636,5 @@ export default function TokenDialog({
         </Flex>
       )}
     </Flex>
-  )
+  );
 }

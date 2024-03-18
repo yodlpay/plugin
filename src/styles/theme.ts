@@ -1,4 +1,4 @@
-import { DeepPartial, THEME_COLOR_SCHEME } from '@hiropay/common'
+import { DeepPartial, THEME_COLOR_SCHEME } from '@hiropay/common';
 import {
   CSSObject,
   ColorScheme,
@@ -9,7 +9,7 @@ import {
   getStylesRef,
   px,
   rem,
-} from '@mantine/core'
+} from '@mantine/core';
 
 type Color =
   | DeepPartial<
@@ -29,14 +29,14 @@ type Color =
         ]
       >
     >
-  | undefined
+  | undefined;
 
-export const MOBILE_BREAKPOINT = 452
-export const TABLET_BREAKPOINT = 768
-export const DESKTOP_BREAKPOINT = 1024
+export const MOBILE_BREAKPOINT = 452;
+export const TABLET_BREAKPOINT = 768;
+export const DESKTOP_BREAKPOINT = 1024;
 
-export const CONTENT_PADDING = 32
-export const MOBILE_CONTENT_PADDING = 16
+export const CONTENT_PADDING = 32;
+export const MOBILE_CONTENT_PADDING = 16;
 
 export const CUSTOM_COLORS = {
   modayOverlay: 'rgba(16, 17, 19, 0.9)',
@@ -46,12 +46,12 @@ export const CUSTOM_COLORS = {
   positiveLightInactive: 'rgba(138, 43, 62, 1)',
   positiveDarkInactive: 'rgba(249, 211, 216, 1)',
   positiveBaseInactive: 'rgba(138, 43, 62, 0.25)',
-}
+};
 
-export const CUSTOM_ACCESSIBILITY_SPACING = 4
+export const CUSTOM_ACCESSIBILITY_SPACING = 4;
 
-export const SIZE_OPTIONS = ['xs', 'sm', 'md', 'lg', 'xl']
-export const MINIMAL_SIZE_OPTIONS = ['sm', 'md', 'lg']
+export const SIZE_OPTIONS = ['xs', 'sm', 'md', 'lg', 'xl'];
+export const MINIMAL_SIZE_OPTIONS = ['sm', 'md', 'lg'];
 
 export const LIGHT_MODE_COLORS: Color = {
   brand: [DEFAULT_THEME.colors.indigo[9]],
@@ -69,7 +69,7 @@ export const LIGHT_MODE_COLORS: Color = {
   disabled: [DEFAULT_THEME.colors.gray[5]],
   error: [DEFAULT_THEME.colors.red[7]],
   positive: [CUSTOM_COLORS.positiveLight],
-}
+};
 
 export const DARK_MODE_COLORS: Color = {
   brand: [DEFAULT_THEME.colors.indigo[9]],
@@ -87,7 +87,7 @@ export const DARK_MODE_COLORS: Color = {
   disabled: [DEFAULT_THEME.colors.gray[7]],
   error: [DEFAULT_THEME.colors.red[6]],
   positive: [CUSTOM_COLORS.positiveDark],
-}
+};
 
 export const MOBILE_HEADING_SIZES = {
   h1: { fontSize: rem(36) },
@@ -96,12 +96,12 @@ export const MOBILE_HEADING_SIZES = {
   h4: { fontSize: rem(24) },
   h5: { fontSize: rem(20) },
   h6: { fontSize: rem(18) },
-}
+};
 
 export const COLOR_SCHEME = {
   light: LIGHT_MODE_COLORS,
   dark: DARK_MODE_COLORS,
-} as Record<ColorScheme, Color>
+} as Record<ColorScheme, Color>;
 
 export const theme: MantineThemeOverride = {
   colorScheme: THEME_COLOR_SCHEME,
@@ -184,7 +184,7 @@ export const theme: MantineThemeOverride = {
       },
     },
   }),
-}
+};
 
 export const useNavLinkStyles = createStyles((theme) => ({
   icon: {
@@ -198,17 +198,17 @@ export const useNavLinkStyles = createStyles((theme) => ({
     fill: theme.colors?.subtle?.[0],
     transform: 'rotate(90deg)',
   },
-}))
+}));
 
 export const usePaymentStyles = createStyles((theme) => {
-  const BORDER_WIDTH = 1
+  const BORDER_WIDTH = 1;
 
   const sharedHoverStyles = {
     background: theme.colors?.level?.[1],
     '&::before': {
       animation: 'rotate 2s linear infinite',
     },
-  }
+  };
 
   return {
     modalContainer: {
@@ -427,18 +427,18 @@ export const usePaymentStyles = createStyles((theme) => {
         fontWeight: 500,
       },
     },
-  }
-})
+  };
+});
 
 export const getColorFromProp = (colorProp: string) => {
-  const [colorName, shade] = colorProp.split('.')
+  const [colorName, shade] = colorProp.split('.');
 
-  const actualShade = shade ? parseInt(shade) : 0
+  const actualShade = shade ? parseInt(shade) : 0;
 
-  const colorValue = theme.colors?.[colorName]?.[actualShade]
+  const colorValue = theme.colors?.[colorName]?.[actualShade];
 
-  return colorValue ?? ''
-}
+  return colorValue ?? '';
+};
 
 export const addLineClamp = (numberOfLines = 1): CSSObject => ({
   whiteSpace: 'nowrap',
@@ -453,4 +453,4 @@ export const addLineClamp = (numberOfLines = 1): CSSObject => ({
     WebkitLineClamp: numberOfLines,
     WebkitBoxOrient: 'vertical',
   },
-})
+});

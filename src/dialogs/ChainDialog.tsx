@@ -1,4 +1,4 @@
-import { ChevronRightIcon, NoSymbolIcon } from '@heroicons/react/20/solid'
+import { ChevronRightIcon, NoSymbolIcon } from '@heroicons/react/20/solid';
 import {
   ErrorIndicator,
   Flex,
@@ -8,112 +8,112 @@ import {
   RudderStackJSPageCategories,
   RudderStackJSPageNames,
   useNavLinkStyles,
-} from '@hiropay/common'
-import { TokenInfo } from '@yodlpay/tokenlists'
-import { useEffect } from 'react'
-import { Chain } from 'viem'
-import { useAccount } from 'wagmi'
-import { useMainStore } from '../contexts/useMainStore'
-import { useAvailableChains } from '../hooks'
-import { CallbackAction, CallbackPage } from '../lib'
+} from '@hiropay/common';
+import { TokenInfo } from '@yodlpay/tokenlists';
+import { useEffect } from 'react';
+import { Chain } from 'viem';
+import { useAccount } from 'wagmi';
+import { useMainStore } from '../contexts/useMainStore';
+import { useAvailableChains } from '../hooks';
+import { CallbackAction, CallbackPage } from '../lib';
 
 export type ChainDialogChildrenProps = {
-  currentChain: Chain | undefined
+  currentChain: Chain | undefined;
   sortedChains: {
-    isDisabled: boolean
-    tooltip: string
-    tokens: TokenInfo[]
-    router: string
-    chainId: number
-    chainName: string
-    shortName: string
-    logoUri: string
-    explorerUrl: string
-    rpcUrls: string[]
-    wrappedNativeToken: string
-    feeTreasury?: string | undefined
-    testnet: boolean
+    isDisabled: boolean;
+    tooltip: string;
+    tokens: TokenInfo[];
+    router: string;
+    chainId: number;
+    chainName: string;
+    shortName: string;
+    logoUri: string;
+    explorerUrl: string;
+    rpcUrls: string[];
+    wrappedNativeToken: string;
+    feeTreasury?: string | undefined;
+    testnet: boolean;
     priceFeeds?:
       | {
-          readonly [key: string]: string | undefined
+          readonly [key: string]: string | undefined;
         }
-      | undefined
-    curveRouterAddress?: string | undefined
-  }[]
-  handleClick: (chainId: number) => void
+      | undefined;
+    curveRouterAddress?: string | undefined;
+  }[];
+  handleClick: (chainId: number) => void;
   eventCallback: (
     action: CallbackAction,
     params?: Record<string, unknown> | undefined,
-  ) => void
+  ) => void;
   pageCallback: (
     category: RudderStackJSPageCategories.Payment,
     page: CallbackPage,
     params?: Record<string, unknown> | undefined,
-  ) => void
-}
+  ) => void;
+};
 
 export type ChainDialogProps = {
-  customChildren?: boolean
+  customChildren?: boolean;
   children?: ({
     currentChain,
     sortedChains,
     handleClick,
     eventCallback,
     pageCallback,
-  }: ChainDialogChildrenProps) => JSX.Element
-  selectChain: (nid: number | undefined) => void
-}
+  }: ChainDialogChildrenProps) => JSX.Element;
+  selectChain: (nid: number | undefined) => void;
+};
 
 export default function ChainDialog({
   customChildren = false,
   children = () => <></>,
   selectChain,
 }: ChainDialogProps) {
-  const { chain: currentChain } = useAccount()
-  const chainsWithBalance = useMainStore((state) => state.chainsWithBalance)
-  const eventCallback = useMainStore((state) => state.eventCallback)
-  const pageCallback = useMainStore((state) => state.pageCallback)
+  const { chain: currentChain } = useAccount();
+  const chainsWithBalance = useMainStore((state) => state.chainsWithBalance);
+  const eventCallback = useMainStore((state) => state.eventCallback);
+  const pageCallback = useMainStore((state) => state.pageCallback);
 
-  const { classes } = useNavLinkStyles()
+  const { classes } = useNavLinkStyles();
 
   // Disallow chains that do not have a price feed for the invoice currency
-  const { availableChains } = useAvailableChains()
+  const { availableChains } = useAvailableChains();
 
   const sortedChains = availableChains.sort((a, b) => {
     // Sort by disabled status
     if (a.isDisabled && !b.isDisabled) {
-      return 1
+      return 1;
     }
     if (!a.isDisabled && b.isDisabled) {
-      return -1
+      return -1;
     }
 
     // Otherwise, they're equal
-    return 0
-  })
+    return 0;
+  });
 
   const handleClick = (chainId: number) => {
-    selectChain(chainId)
+    selectChain(chainId);
     eventCallback?.(RudderStackJSEvents.NetworkChosen, {
       networkId: chainId,
-    })
-  }
+    });
+  };
 
   useEffect(() => {
     pageCallback?.(
       RudderStackJSPageCategories.Payment,
       RudderStackJSPageNames.NetworkDialog,
       { chains: sortedChains.map((chain) => chain.chainName) },
-    )
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
   if (chainsWithBalance?.loading) {
-    return <LoadingIndicator label="Loading chain balance details..." />
+    return <LoadingIndicator label="Loading chain balance details..." />;
   }
 
   if (chainsWithBalance?.error) {
-    return <ErrorIndicator error={chainsWithBalance?.error} />
+    return <ErrorIndicator error={chainsWithBalance?.error} />;
   }
 
   return customChildren ? (
@@ -152,5 +152,5 @@ export default function ChainDialog({
         ))}
       </Flex>
     </>
-  )
+  );
 }

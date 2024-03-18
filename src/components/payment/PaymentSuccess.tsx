@@ -1,4 +1,4 @@
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid'
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import {
   Button,
   Flex,
@@ -9,12 +9,12 @@ import {
   RudderStackJSPageCategories,
   RudderStackJSPageNames,
   Text,
-} from '@hiropay/common'
-import { createStyles, rem } from '@mantine/core'
-import { useCallback, useEffect, useState } from 'react'
-import { useMainStore } from '../../contexts/useMainStore'
-import { useOnCompleteAction } from '../../hooks'
-import { getReceiptUrl } from '../../utils/helpers'
+} from '@hiropay/common';
+import { createStyles, rem } from '@mantine/core';
+import { useCallback, useEffect, useState } from 'react';
+import { useMainStore } from '../../contexts/useMainStore';
+import { useOnCompleteAction } from '../../hooks';
+import { getReceiptUrl } from '../../utils/helpers';
 
 const useStyles = createStyles((theme) => ({
   status: {
@@ -68,37 +68,37 @@ const useStyles = createStyles((theme) => ({
   receiptLink: {
     color: theme.colors?.brand?.[0],
   },
-}))
+}));
 
 export type PaymentSuccessChildrenProps = {
-  origin: string
-  receiptUrl: string
-  secondsLeft: number | null
-  actionLabel: string | undefined
-}
+  origin: string;
+  receiptUrl: string;
+  secondsLeft: number | null;
+  actionLabel: string | undefined;
+};
 
 export type PaymentSuccessProps = {
-  customChildren?: boolean
+  customChildren?: boolean;
   children?: ({
     origin,
     receiptUrl,
     secondsLeft,
     actionLabel,
-  }: PaymentSuccessChildrenProps) => JSX.Element
-}
+  }: PaymentSuccessChildrenProps) => JSX.Element;
+};
 
 export const PaymentSuccess = ({
   customChildren = false,
   children = () => <></>,
 }: PaymentSuccessProps) => {
-  const analytics = useMainStore((state) => state.analytics)
-  const transaction = useMainStore((state) => state.transaction)
-  const setCloseModal = useMainStore((state) => state.setCloseModal)
+  const analytics = useMainStore((state) => state.analytics);
+  const transaction = useMainStore((state) => state.transaction);
+  const setCloseModal = useMainStore((state) => state.setCloseModal);
 
-  const chain = transaction?.data?.chain ?? null
-  const receiptUrl = getReceiptUrl(chain, transaction?.data?.hash)
+  const chain = transaction?.data?.chain ?? null;
+  const receiptUrl = getReceiptUrl(chain, transaction?.data?.hash);
 
-  const [origin, setOrigin] = useState('')
+  const [origin, setOrigin] = useState('');
 
   // TODO - commented out for now since footnote is not needed
   // const finalityDuration = chain ? AVERAGE_FINALITY_DURATION[chain.id] : null;
@@ -112,11 +112,11 @@ export const PaymentSuccess = ({
   //   action === PaymentLinkAction.TEST && isValidAction;
 
   const handleClose = useCallback(() => {
-    setCloseModal()
-  }, [setCloseModal])
+    setCloseModal();
+  }, [setCloseModal]);
 
   const { secondsLeft, actionType, actionText } =
-    useOnCompleteAction(handleClose)
+    useOnCompleteAction(handleClose);
 
   const formattedActionText =
     actionText
@@ -124,7 +124,7 @@ export const PaymentSuccess = ({
       .replace(
         REDIRECT_UNIT_KEYWORD,
         `second${secondsLeft === 1 ? '' : 's'}`,
-      ) ?? ''
+      ) ?? '';
 
   const actionLabel = {
     [OnCompleteActionType.REDIRECT]:
@@ -138,21 +138,21 @@ export const PaymentSuccess = ({
         secondsLeft === 1 ? '' : 's'
       }...`,
     [OnCompleteActionType.NOTHING]: '',
-  }[actionType as string]
+  }[actionType as string];
 
-  const { classes } = useStyles()
+  const { classes } = useStyles();
 
   useEffect(() => {
     analytics?.page(
       RudderStackJSPageCategories.Payment,
       RudderStackJSPageNames.SuccessDialog,
       { receiptUrl },
-    )
-  }, [analytics, receiptUrl])
+    );
+  }, [analytics, receiptUrl]);
 
   useEffect(() => {
-    setOrigin(window.location.origin)
-  }, [])
+    setOrigin(window.location.origin);
+  }, []);
 
   return customChildren ? (
     children({
@@ -240,5 +240,5 @@ export const PaymentSuccess = ({
         </Text>
       )} */}
     </Flex>
-  )
-}
+  );
+};

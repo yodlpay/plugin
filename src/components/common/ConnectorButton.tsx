@@ -1,67 +1,71 @@
-import { ChevronRightIcon, NoSymbolIcon } from '@heroicons/react/20/solid'
-import { NavLink, connectorWalletIcon, useNavLinkStyles } from '@hiropay/common'
-import { useEffect, useMemo, useState } from 'react'
-import { Connector } from 'wagmi'
+import { ChevronRightIcon, NoSymbolIcon } from '@heroicons/react/20/solid';
+import {
+  NavLink,
+  connectorWalletIcon,
+  useNavLinkStyles,
+} from '@hiropay/common';
+import { useEffect, useMemo, useState } from 'react';
+import { Connector } from 'wagmi';
 
 export type StrippedConnector = {
-  id: string
-  name: string
-}
+  id: string;
+  name: string;
+};
 
 export const ConnectorButton = ({
   connector,
   handleClick,
 }: {
-  connector: Connector | StrippedConnector
+  connector: Connector | StrippedConnector;
   handleClick: (
     connector: Connector | StrippedConnector,
     callback: ({
       isLoading,
       error,
     }: {
-      isLoading?: boolean
-      error?: string | null
+      isLoading?: boolean;
+      error?: string | null;
     }) => void,
-  ) => void
+  ) => void;
 }) => {
-  const [loading, setLoading] = useState(false)
-  const [ready, setReady] = useState(false)
-  const [error, setError] = useState<string | boolean | null>(false)
+  const [loading, setLoading] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [error, setError] = useState<string | boolean | null>(false);
 
-  const { classes } = useNavLinkStyles()
+  const { classes } = useNavLinkStyles();
 
   const updateConnectorState = ({
     isLoading,
     error,
   }: {
-    isLoading?: boolean
-    error?: string | null
+    isLoading?: boolean;
+    error?: string | null;
   }) => {
     if (typeof isLoading === 'boolean') {
-      setLoading(isLoading)
+      setLoading(isLoading);
     }
     if (typeof error === 'string' || error === null) {
-      setError(error)
+      setError(error);
     }
-  }
+  };
 
   const connectorState = useMemo(() => {
     if (error) {
-      return { label: ' (Failed)', state: 'error' }
+      return { label: ' (Failed)', state: 'error' };
     }
 
     if (loading) {
-      return { label: ' (Connecting)', state: 'connecting' }
+      return { label: ' (Connecting)', state: 'connecting' };
     }
 
     if (!ready || (!window.ethereum && connector.id == 'metaMask')) {
-      return { label: ' (Not installed)', state: 'disabled' }
+      return { label: ' (Not installed)', state: 'disabled' };
     }
-  }, [ready, loading, error, connector.id])
+  }, [ready, loading, error, connector.id]);
 
   useEffect(() => {
-    setReady(true)
-  }, [connector, setReady])
+    setReady(true);
+  }, [connector, setReady]);
 
   return (
     <NavLink
@@ -89,5 +93,5 @@ export const ConnectorButton = ({
       }
       onClick={() => handleClick(connector, updateConnectorState)}
     />
-  )
-}
+  );
+};

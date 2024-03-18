@@ -8,7 +8,7 @@ import {
   STABLECOIN_SLIPPAGE,
   SwapState,
   SwapVenue,
-} from '@hiropay/common'
+} from '@hiropay/common';
 
 export type Action =
   | { type: 'SET_DIRECT_PAYMENT_LOADING'; payload: boolean }
@@ -27,35 +27,35 @@ export type Action =
   | { type: 'SET_ALLOWANCE_DETAILS'; payload: AllowanceState }
   | { type: 'SET_SLIPPAGE'; payload: number }
   | {
-      type: 'SET_SWAP_STATE'
+      type: 'SET_SWAP_STATE';
       payload: {
-        swapDetails: SwapState
-      }
+        swapDetails: SwapState;
+      };
     }
   | { type: 'RESET_SWAP_STATE' }
   | {
-      type: 'SET_GAS_STATE'
-      payload: { gasDetails: GasState; remainderDetails: RemainderDetails }
+      type: 'SET_GAS_STATE';
+      payload: { gasDetails: GasState; remainderDetails: RemainderDetails };
     }
   | { type: 'RESET_GAS_STATE' }
   | { type: 'SET_PRICE_FEED_LOADING'; payload: boolean }
   | { type: 'SET_PRICE_FEED_ERROR'; payload: string }
   | {
-      type: 'SET_PRICE_FEED_DETAILS'
-      payload: PriceFeedState
+      type: 'SET_PRICE_FEED_DETAILS';
+      payload: PriceFeedState;
     }
   | { type: 'RESET_PRICE_FEED_DETAILS' }
-  | { type: 'RESET_PAYMENT_STATE' }
+  | { type: 'RESET_PAYMENT_STATE' };
 
 export type State = {
-  directPaymentDetails: DirectPaymentState | null
-  swapDetails: SwapState | null
-  gasDetails: GasState | null
-  remainderDetails: RemainderDetails | null
-  allowanceDetails: AllowanceState | null
-  slippage: number
-  priceFeedDetails: PriceFeedState | null
-}
+  directPaymentDetails: DirectPaymentState | null;
+  swapDetails: SwapState | null;
+  gasDetails: GasState | null;
+  remainderDetails: RemainderDetails | null;
+  allowanceDetails: AllowanceState | null;
+  slippage: number;
+  priceFeedDetails: PriceFeedState | null;
+};
 
 export const actions = {
   SET_DIRECT_PAYMENT_LOADING: 'SET_DIRECT_PAYMENT_LOADING',
@@ -81,7 +81,7 @@ export const actions = {
   SET_PRICE_FEED_DETAILS: 'SET_PRICE_FEED_DETAILS',
   RESET_PRICE_FEED_DETAILS: 'RESET_PRICE_FEED_DETAILS',
   RESET_PAYMENT_STATE: 'RESET_PAYMENT_STATE',
-} as const
+} as const;
 
 export const initialState: State = {
   directPaymentDetails: null,
@@ -91,7 +91,7 @@ export const initialState: State = {
   allowanceDetails: null,
   slippage: STABLECOIN_SLIPPAGE,
   priceFeedDetails: null,
-}
+};
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -102,7 +102,7 @@ export const reducer = (state: State, action: Action): State => {
           ...(state.directPaymentDetails as DirectPaymentState),
           loading: action.payload,
         },
-      }
+      };
     case actions.SET_DIRECT_PAYMENT_ERROR:
       return {
         ...state,
@@ -111,9 +111,9 @@ export const reducer = (state: State, action: Action): State => {
           error: action.payload,
           loading: false,
         },
-      }
+      };
     case actions.SET_DIRECT_PAYMENT_DETAILS:
-      return { ...state, directPaymentDetails: action.payload }
+      return { ...state, directPaymentDetails: action.payload };
     case actions.SET_BEST_SWAP:
       return {
         ...state,
@@ -121,7 +121,7 @@ export const reducer = (state: State, action: Action): State => {
           ...(state.swapDetails as SwapState),
           bestSwap: action.payload,
         },
-      }
+      };
     case actions.SET_SWAP_LOADING:
       return {
         ...state,
@@ -129,7 +129,7 @@ export const reducer = (state: State, action: Action): State => {
           ...(state.swapDetails as SwapState),
           loading: action.payload,
         },
-      }
+      };
     case actions.SET_SWAP_ERROR:
       return {
         ...state,
@@ -138,9 +138,9 @@ export const reducer = (state: State, action: Action): State => {
           error: action.payload,
           loading: false,
         },
-      }
+      };
     case actions.SET_SWAP_DETAILS:
-      return { ...state, swapDetails: action.payload }
+      return { ...state, swapDetails: action.payload };
     case actions.SET_GAS_LOADING:
       return {
         ...state,
@@ -148,7 +148,7 @@ export const reducer = (state: State, action: Action): State => {
           ...(state.gasDetails as GasState),
           loading: action.payload,
         },
-      }
+      };
     case actions.SET_GAS_ERROR:
       return {
         ...state,
@@ -157,9 +157,9 @@ export const reducer = (state: State, action: Action): State => {
           error: action.payload,
           loading: false,
         },
-      }
+      };
     case actions.SET_GAS_DETAILS:
-      return { ...state, gasDetails: action.payload }
+      return { ...state, gasDetails: action.payload };
     case actions.SET_PRICE_FEED_LOADING:
       return {
         ...state,
@@ -167,7 +167,7 @@ export const reducer = (state: State, action: Action): State => {
           ...(state.priceFeedDetails as PriceFeedState),
           loading: action.payload,
         },
-      }
+      };
     case actions.SET_PRICE_FEED_ERROR:
       return {
         ...state,
@@ -176,9 +176,9 @@ export const reducer = (state: State, action: Action): State => {
           error: action.payload,
           loading: false,
         },
-      }
+      };
     case actions.SET_REMAINDER_DETAILS:
-      return { ...state, remainderDetails: action.payload }
+      return { ...state, remainderDetails: action.payload };
     case actions.SET_ALLOWANCE_LOADING:
       return {
         ...state,
@@ -186,7 +186,7 @@ export const reducer = (state: State, action: Action): State => {
           ...(state.allowanceDetails as AllowanceState),
           loading: action.payload,
         },
-      }
+      };
     case actions.SET_ALLOWANCE_ERROR:
       return {
         ...state,
@@ -194,11 +194,11 @@ export const reducer = (state: State, action: Action): State => {
           ...(state.allowanceDetails as AllowanceState),
           error: action.payload,
         },
-      }
+      };
     case actions.SET_ALLOWANCE_DETAILS:
-      return { ...state, allowanceDetails: action.payload }
+      return { ...state, allowanceDetails: action.payload };
     case actions.SET_SLIPPAGE:
-      return { ...state, slippage: action.payload }
+      return { ...state, slippage: action.payload };
     case actions.RESET_SWAP_STATE:
       return {
         ...state,
@@ -208,33 +208,33 @@ export const reducer = (state: State, action: Action): State => {
           loading: false,
           error: null,
         },
-      }
+      };
     case actions.SET_GAS_STATE:
       return {
         ...state,
         ...action.payload,
-      }
+      };
     case actions.RESET_GAS_STATE:
       return {
         ...state,
         gasDetails: null,
         remainderDetails: null,
-      }
+      };
     case actions.SET_PRICE_FEED_DETAILS:
       return {
         ...state,
         priceFeedDetails: action.payload,
-      }
+      };
     case actions.RESET_PRICE_FEED_DETAILS:
       return {
         ...state,
         priceFeedDetails: null,
-      }
+      };
     case actions.RESET_PAYMENT_STATE:
       return {
         ...initialState,
-      }
+      };
     default:
-      throw new Error('Unknown action type')
+      throw new Error('Unknown action type');
   }
-}
+};

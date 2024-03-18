@@ -5,63 +5,63 @@ import {
   RudderStackJSPageCategories,
   RudderStackJSPageNames,
   Text,
-} from '@hiropay/common'
-import { createStyles } from '@mantine/core'
-import { useEffect } from 'react'
-import { useMainStore } from '../contexts/useMainStore'
-import { CallbackAction, CallbackPage } from '../lib'
+} from '@hiropay/common';
+import { createStyles } from '@mantine/core';
+import { useEffect } from 'react';
+import { useMainStore } from '../contexts/useMainStore';
+import { CallbackAction, CallbackPage } from '../lib';
 
 const useStyles = createStyles(() => ({
   flex: {
     marginTop: '34px',
     height: '200px',
   },
-}))
+}));
 
 export type WelcomeDialogChildrenProps = {
-  handleClick: () => void
+  handleClick: () => void;
   eventCallback: (
     action: CallbackAction,
     params?: Record<string, unknown> | undefined,
-  ) => void
+  ) => void;
   pageCallback: (
     category: RudderStackJSPageCategories.Payment,
     page: CallbackPage,
     params?: Record<string, unknown> | undefined,
-  ) => void
-}
+  ) => void;
+};
 
 export type WelcomeDialogProps = {
-  customChildren?: boolean
+  customChildren?: boolean;
   children?: ({
     handleClick,
     eventCallback,
     pageCallback,
-  }: WelcomeDialogChildrenProps) => JSX.Element
-  onContinue: () => void
-}
+  }: WelcomeDialogChildrenProps) => JSX.Element;
+  onContinue: () => void;
+};
 
 export default function WelcomeDialog({
   customChildren = false,
   children = () => <></>,
   onContinue,
 }: WelcomeDialogProps) {
-  const eventCallback = useMainStore((state) => state.eventCallback)
-  const pageCallback = useMainStore((state) => state.pageCallback)
+  const eventCallback = useMainStore((state) => state.eventCallback);
+  const pageCallback = useMainStore((state) => state.pageCallback);
 
-  const { classes } = useStyles()
+  const { classes } = useStyles();
 
   const handleClick = () => {
-    eventCallback?.(RudderStackJSEvents.WelcomeDialogSkipped)
-    onContinue()
-  }
+    eventCallback?.(RudderStackJSEvents.WelcomeDialogSkipped);
+    onContinue();
+  };
 
   useEffect(() => {
     pageCallback?.(
       RudderStackJSPageCategories.Payment,
       RudderStackJSPageNames.WelcomeDialog,
-    )
-  }, [pageCallback])
+    );
+  }, [pageCallback]);
 
   return customChildren ? (
     children({
@@ -87,5 +87,5 @@ export default function WelcomeDialog({
         Continue
       </Button>
     </Flex>
-  )
+  );
 }

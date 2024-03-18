@@ -5,11 +5,11 @@ import {
   RudderStackJSPageNames,
   Text,
   TransactionState,
-} from '@hiropay/common'
-import { createStyles } from '@mantine/core'
-import { useEffect } from 'react'
-import { useMainStore } from '../../contexts/useMainStore'
-import { Analytics } from '../../lib'
+} from '@hiropay/common';
+import { createStyles } from '@mantine/core';
+import { useEffect } from 'react';
+import { useMainStore } from '../../contexts/useMainStore';
+import { Analytics } from '../../lib';
 
 const useStyles = createStyles(() => ({
   status: {
@@ -18,42 +18,42 @@ const useStyles = createStyles(() => ({
   icon: {
     marginLeft: '-6px',
   },
-}))
+}));
 
 export type PaymentErrorChildrenProps = {
-  transaction: TransactionState | null
-  analytics: Analytics | null
-  resetTransaction: () => void
-}
+  transaction: TransactionState | null;
+  analytics: Analytics | null;
+  resetTransaction: () => void;
+};
 
 export type PaymentErrorProps = {
-  customChildren?: boolean
+  customChildren?: boolean;
   children?: ({
     transaction,
     analytics,
     resetTransaction,
-  }: PaymentErrorChildrenProps) => JSX.Element
-}
+  }: PaymentErrorChildrenProps) => JSX.Element;
+};
 
 export const PaymentError = ({
   customChildren = false,
   children = () => <></>,
 }: PaymentErrorProps) => {
-  const analytics = useMainStore((state) => state.analytics)
-  const transaction = useMainStore((state) => state.transaction)
+  const analytics = useMainStore((state) => state.analytics);
+  const transaction = useMainStore((state) => state.transaction);
 
-  const resetTransaction = useMainStore((state) => state.resetTransaction)
+  const resetTransaction = useMainStore((state) => state.resetTransaction);
 
-  const { classes } = useStyles()
+  const { classes } = useStyles();
 
   useEffect(() => {
     analytics?.page(
       RudderStackJSPageCategories.Payment,
       RudderStackJSPageNames.ErrorDialog,
       { error: transaction?.error ?? 'Unknown error' },
-    )
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
   return customChildren ? (
     children({
@@ -96,5 +96,5 @@ export const PaymentError = ({
         Go back
       </Button>
     </Flex>
-  )
-}
+  );
+};

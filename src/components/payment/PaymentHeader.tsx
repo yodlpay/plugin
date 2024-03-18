@@ -7,81 +7,83 @@ import {
   Tooltip,
   formatPaymentAmount,
   usePaymentStyles,
-} from '@hiropay/common'
-import { Info } from '@phosphor-icons/react'
-import { useMemo } from 'react'
-import truncateEthAddress from 'truncate-eth-address'
-import { useAccount } from 'wagmi'
-import { useMainStore } from '../../contexts/useMainStore'
-import { usePaymentStore } from '../../contexts/usePaymentStore'
-import { usePayment } from '../../hooks'
+} from '@hiropay/common';
+import { Info } from '@phosphor-icons/react';
+import { useMemo } from 'react';
+import truncateEthAddress from 'truncate-eth-address';
+import { useAccount } from 'wagmi';
+import { useMainStore } from '../../contexts/useMainStore';
+import { usePaymentStore } from '../../contexts/usePaymentStore';
+import { usePayment } from '../../hooks';
 import {
   determineTokenCurrency,
   getTokenOutInfo,
   normalizeBigInt,
-} from '../../utils/helpers'
+} from '../../utils/helpers';
 
 export type PaymentHeaderChildrenProps = {
-  invoice: Invoice
-  formattedSettlementAmount: string
-  formattedExchangeRate: string
-  truncateEthAddress: (address: string) => string
-}
+  invoice: Invoice;
+  formattedSettlementAmount: string;
+  formattedExchangeRate: string;
+  truncateEthAddress: (address: string) => string;
+};
 
 export type PaymentHeaderProps = {
-  customChildren?: boolean
+  customChildren?: boolean;
   children?: ({
     invoice,
     formattedSettlementAmount,
     formattedExchangeRate,
     truncateEthAddress,
-  }: PaymentHeaderChildrenProps) => JSX.Element
-}
+  }: PaymentHeaderChildrenProps) => JSX.Element;
+};
 
 export const PaymentHeader = ({
   customChildren = false,
   children = () => <></>,
 }: PaymentHeaderProps) => {
-  const { invoice } = usePayment()
-  const { chain } = useAccount()
+  const { invoice } = usePayment();
+  const { chain } = useAccount();
 
-  const token = useMainStore((state) => state.token)
+  const token = useMainStore((state) => state.token);
 
   const priceFeed = usePaymentStore(
     (state) => state.state.priceFeedDetails?.data,
-  )
-  const bestSwap = usePaymentStore(({ state }) => state.swapDetails?.bestSwap)
+  );
+  const bestSwap = usePaymentStore(({ state }) => state.swapDetails?.bestSwap);
 
-  const { classes } = usePaymentStyles()
+  const { classes } = usePaymentStyles();
 
-  const tokenOut = getTokenOutInfo(invoice, chain)
+  const tokenOut = getTokenOutInfo(invoice, chain);
 
-  const tokenInHasCurrency = !!token?.tokenInfo.currency
-  const tokenOutHasCurrency = !!tokenOut.currency
+  const tokenInHasCurrency = !!token?.tokenInfo.currency;
+  const tokenOutHasCurrency = !!tokenOut.currency;
 
-  const isSwapPayment = !!bestSwap
+  const isSwapPayment = !!bestSwap;
 
   const exchangeRate = normalizeBigInt(
     priceFeed?.approximateRate ?? 0n,
     APPROXIMATE_RATE_DECIMALS,
-  )
+  );
 
   const normalizedPriceFeedAmount = normalizeBigInt(
     priceFeed?.convertedAmount ?? 0n,
     priceFeed?.decimals ?? 0,
-  )
+  );
 
   const settlementTokenAmount = isSwapPayment
     ? normalizeBigInt(bestSwap[0].amountOut, tokenOut.decimals)
     : !!priceFeed
-    ? normalizedPriceFeedAmount
-    : new Decimal(invoice.amountInMinor).dividedBy(new Decimal(100)).toNumber()
+      ? normalizedPriceFeedAmount
+      : new Decimal(invoice.amountInMinor)
+          .dividedBy(new Decimal(100))
+          .toNumber();
 
   const settlementTokenCurrency = determineTokenCurrency(
     !!bestSwap,
     token,
     tokenOut,
-  )
+  );
 
   const formattedExchangeRate = exchangeRate
     ? `${formatPaymentAmount({
@@ -93,7 +95,7 @@ export const PaymentHeader = ({
       })} ${determineTokenCurrency(!!bestSwap, token, tokenOut)}/${
         invoice.currency
       }`
-    : ''
+    : '';
 
   const formattedSettlementAmount = useMemo(
     () =>
@@ -111,7 +113,7 @@ export const PaymentHeader = ({
       settlementTokenCurrency,
       tokenOutHasCurrency,
     ],
-  )
+  );
 
   return customChildren
     ? children({
@@ -159,5 +161,5 @@ export const PaymentHeader = ({
             </Flex>
           )}
         </Flex>
-      )
-}
+      );
+};

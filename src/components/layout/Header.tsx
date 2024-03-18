@@ -1,5 +1,5 @@
-import { ArrowLeftIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
-import { PowerIcon } from '@heroicons/react/24/outline'
+import { ArrowLeftIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
+import { PowerIcon } from '@heroicons/react/24/outline';
 import {
   ActionIcon,
   Badge,
@@ -14,22 +14,22 @@ import {
   Select,
   Text,
   formatPaymentAmount,
-} from '@hiropay/common'
-import { createStyles, rem } from '@mantine/core'
-import { TokenInfo } from '@yodlpay/tokenlists'
-import { useMemo } from 'react'
-import truncateEthAddress from 'truncate-eth-address'
-import { Chain } from 'viem'
-import { useAccount, useDisconnect } from 'wagmi'
-import { useMainStore } from '../../contexts/useMainStore'
-import { useAvailableChains, usePayment, useViewBasedState } from '../../hooks'
+} from '@hiropay/common';
+import { createStyles, rem } from '@mantine/core';
+import { TokenInfo } from '@yodlpay/tokenlists';
+import { useMemo } from 'react';
+import truncateEthAddress from 'truncate-eth-address';
+import { Chain } from 'viem';
+import { useAccount, useDisconnect } from 'wagmi';
+import { useMainStore } from '../../contexts/useMainStore';
+import { useAvailableChains, usePayment, useViewBasedState } from '../../hooks';
 
-const EXCLUDED_HEADER_VIEWS = ['WelcomeDialog', 'StatusDialog']
-const INCLUDED_CHAIN_VIEWS = ['TokenDialog', 'PaymentDialog']
+const EXCLUDED_HEADER_VIEWS = ['WelcomeDialog', 'StatusDialog'];
+const INCLUDED_CHAIN_VIEWS = ['TokenDialog', 'PaymentDialog'];
 
 type StylesProps = {
-  onBackButtonClick: (() => void) | null
-}
+  onBackButtonClick: (() => void) | null;
+};
 
 const useStyles = createStyles((theme, { onBackButtonClick }: StylesProps) => ({
   header: {
@@ -162,47 +162,47 @@ const useStyles = createStyles((theme, { onBackButtonClick }: StylesProps) => ({
     stroke: theme.colors?.primary?.[0],
     strokeWidth: '2.5px',
   },
-}))
+}));
 
 export type HeaderChildrenProps = {
-  onBackButtonClick: (() => void) | null
-  handleBackButtonClick: () => void
-  INCLUDED_CHAIN_VIEWS: string[]
-  chainSelected: boolean
-  chain: Chain | undefined
+  onBackButtonClick: (() => void) | null;
+  handleBackButtonClick: () => void;
+  INCLUDED_CHAIN_VIEWS: string[];
+  chainSelected: boolean;
+  chain: Chain | undefined;
   availableChains: {
-    isDisabled: boolean
-    tooltip: string
-    tokens: TokenInfo[]
-    router: string
-    chainId: number
-    chainName: string
-    shortName: string
-    logoUri: string
-    explorerUrl: string
-    rpcUrls: string[]
-    wrappedNativeToken: string
-    feeTreasury?: string | undefined
-    testnet: boolean
+    isDisabled: boolean;
+    tooltip: string;
+    tokens: TokenInfo[];
+    router: string;
+    chainId: number;
+    chainName: string;
+    shortName: string;
+    logoUri: string;
+    explorerUrl: string;
+    rpcUrls: string[];
+    wrappedNativeToken: string;
+    feeTreasury?: string | undefined;
+    testnet: boolean;
     priceFeeds?:
       | {
-          readonly [key: string]: string | undefined
+          readonly [key: string]: string | undefined;
         }
-      | undefined
-    curveRouterAddress?: string | undefined
-  }[]
-  handleNetworkChange: (chainId: string) => void
-  chainLoading: boolean
-  isConnected: boolean
-  address: `0x${string}` | undefined
-  truncateEthAddress: (address: string) => string
-  handleWalletDisconnect: () => void
-  invoice: Invoice
-  formattedPayAmount: string
-}
+      | undefined;
+    curveRouterAddress?: string | undefined;
+  }[];
+  handleNetworkChange: (chainId: string) => void;
+  chainLoading: boolean;
+  isConnected: boolean;
+  address: `0x${string}` | undefined;
+  truncateEthAddress: (address: string) => string;
+  handleWalletDisconnect: () => void;
+  invoice: Invoice;
+  formattedPayAmount: string;
+};
 
 export type HeaderProps = {
-  customChildren?: boolean
+  customChildren?: boolean;
   children?: ({
     onBackButtonClick,
     handleBackButtonClick,
@@ -218,12 +218,12 @@ export type HeaderProps = {
     handleWalletDisconnect,
     invoice,
     formattedPayAmount,
-  }: HeaderChildrenProps) => JSX.Element
-  view: JSX.Element | null
-  resetChain: () => void
-  resetToken: () => void
-  selectChain: (chainId: number) => void
-}
+  }: HeaderChildrenProps) => JSX.Element;
+  view: JSX.Element | null;
+  resetChain: () => void;
+  resetToken: () => void;
+  selectChain: (chainId: number) => void;
+};
 
 export const Header = ({
   customChildren = false,
@@ -233,26 +233,28 @@ export const Header = ({
   resetToken,
   selectChain,
 }: HeaderProps) => {
-  const { address, isConnected, chain } = useAccount()
-  const { disconnect } = useDisconnect()
+  const { address, isConnected, chain } = useAccount();
+  const { disconnect } = useDisconnect();
 
-  const { availableChains } = useAvailableChains()
+  const { availableChains } = useAvailableChains();
 
-  const chainLoading = useMainStore((state) => state.chainLoading)
-  const chainSelected = useMainStore((state) => state.chainSelected)
-  const eventCallback = useMainStore((state) => state.eventCallback)
+  const chainLoading = useMainStore((state) => state.chainLoading);
+  const chainSelected = useMainStore((state) => state.chainSelected);
+  const eventCallback = useMainStore((state) => state.eventCallback);
 
-  const { invoice } = usePayment()
+  const { invoice } = usePayment();
 
   const { key, onBackButtonClick } = useViewBasedState(
     view,
     resetChain,
     resetToken,
-  )
+  );
 
-  const { classes } = useStyles({ onBackButtonClick })
+  const { classes } = useStyles({ onBackButtonClick });
 
-  const isStablecoin = !CURRENCY_SYMBOL_SPECIAL_CASES.includes(invoice.currency)
+  const isStablecoin = !CURRENCY_SYMBOL_SPECIAL_CASES.includes(
+    invoice.currency,
+  );
 
   const formattedPayAmount = useMemo(
     () =>
@@ -264,26 +266,26 @@ export const Header = ({
         isFiatOrStablecoin: isStablecoin,
       }),
     [invoice.amountInMinor, invoice.currency, isStablecoin],
-  )
+  );
 
   const handleNetworkChange = (chainId: string) => {
     eventCallback?.(RudderStackJSEvents.NetworkChanged, {
       networkId: chainId,
-    })
-    selectChain(parseInt(chainId))
-  }
+    });
+    selectChain(parseInt(chainId));
+  };
 
   const handleWalletDisconnect = () => {
-    eventCallback?.(RudderStackJSEvents.WalletDisconnected)
-    disconnect()
-  }
+    eventCallback?.(RudderStackJSEvents.WalletDisconnected);
+    disconnect();
+  };
 
   const handleBackButtonClick = () => {
-    eventCallback?.(RudderStackJSEvents.BackButtonClicked)
-    onBackButtonClick?.()
-  }
+    eventCallback?.(RudderStackJSEvents.BackButtonClicked);
+    onBackButtonClick?.();
+  };
 
-  if (EXCLUDED_HEADER_VIEWS.includes(key)) return null
+  if (EXCLUDED_HEADER_VIEWS.includes(key)) return null;
 
   return customChildren ? (
     children({
@@ -405,5 +407,5 @@ export const Header = ({
         </Text>
       </Flex>
     </Flex>
-  )
-}
+  );
+};

@@ -1,5 +1,5 @@
-import { NATIVE_TOKENS, NETWORK_CONSTANTS } from '@curvefi/api/lib/curve.js'
-import { IPoolData } from '@curvefi/api/lib/interfaces'
+import { NATIVE_TOKENS, NETWORK_CONSTANTS } from '@curvefi/api/lib/curve.js';
+import { IPoolData } from '@curvefi/api/lib/interfaces';
 import {
   AVERAGE_BLOCK_TIMES,
   AddressZero,
@@ -33,14 +33,14 @@ import {
   getPriceFromFeed,
   parseUnitsDecimal,
   tokenAddressToToken,
-} from '@hiropay/common'
+} from '@hiropay/common';
 import {
   CURVE_ROUTER_ABI,
   TokenInfo,
   getChain,
   getRouter,
-} from '@yodlpay/tokenlists'
-import assert from 'minimalistic-assert'
+} from '@yodlpay/tokenlists';
+import assert from 'minimalistic-assert';
 import {
   Address,
   BaseError,
@@ -58,52 +58,52 @@ import {
   serializeTransaction,
   stringToHex,
   zeroAddress,
-} from 'viem'
-import { gnosis, mainnet } from 'wagmi/chains'
-import { doFetch } from '../__tests__/mocks/doFetch'
-import { mainStore } from '../contexts/useMainStore'
-import { getRouterAbi } from '../utils/priceFeedHelpers'
+} from 'viem';
+import { gnosis, mainnet } from 'wagmi/chains';
+import { doFetch } from '../__tests__/mocks/doFetch';
+import { mainStore } from '../contexts/useMainStore';
+import { getRouterAbi } from '../utils/priceFeedHelpers';
 
 // Take a simple number like '9' and convert it to
 // valid 40 byte Ethereum address 0x000000000000000000000000000000009
 export function padAddress(address: string): `0x${string}` {
-  const padding = 40 - address.length
-  return ('0x' + '0'.repeat(padding) + address) as `0x${string}`
+  const padding = 40 - address.length;
+  return ('0x' + '0'.repeat(padding) + address) as `0x${string}`;
 }
 
 export function getRouterAddress(chainId: number, version: string) {
-  const mainStoreState = mainStore.getState()
+  const mainStoreState = mainStore.getState();
 
   // We do not want to throw because this will break the app
   if (version === 'test') {
     if (chainId === 1) {
-      return '0x447786d977Ea11Ad0600E193b2d07A06EfB53e5F' as Address
+      return '0x447786d977Ea11Ad0600E193b2d07A06EfB53e5F' as Address;
     } else {
       mainStoreState.logger?.error(
         `Testnet router not present for chain ${chainId}`,
-      )
+      );
     }
   } else {
-    const router = getRouter(chainId, version)
+    const router = getRouter(chainId, version);
     if (!!router) {
-      return router.address as Address
+      return router.address as Address;
     } else {
       mainStoreState.logger?.error(
         `Router not present for chain ${chainId} with version ${version}`,
-      )
+      );
     }
   }
 }
 
 export function tokensOfChain(tokens: TokenInfo[], chainId: number) {
-  return tokens.filter((token: { chainId: any }) => token.chainId == chainId)
+  return tokens.filter((token: { chainId: any }) => token.chainId == chainId);
 }
 
 export function abiForToken(symbol: string, chainId: number) {
   if (symbol in CUSTOM_ABI && chainId in CUSTOM_ABI[symbol]) {
-    return CUSTOM_ABI[symbol][chainId]
+    return CUSTOM_ABI[symbol][chainId];
   } else {
-    return erc20Abi
+    return erc20Abi;
   }
 }
 
@@ -111,9 +111,9 @@ export const getReceiptUrl = (
   chain: Chain | null,
   txHash: string | undefined,
 ) => {
-  if (!chain?.id || !txHash) return ''
-  return `tx/${txHash}`
-}
+  if (!chain?.id || !txHash) return '';
+  return `tx/${txHash}`;
+};
 
 export const parseAmountInMinorForComparison = (
   amountInMinorString: string,
@@ -122,9 +122,9 @@ export const parseAmountInMinorForComparison = (
   assert(
     typeof amountInMinorString === 'string',
     'This function expects amountInMinor passed as a string',
-  )
-  return parseUnitsDecimal(amountInMinorString, comparisonDecimals - 2)
-}
+  );
+  return parseUnitsDecimal(amountInMinorString, comparisonDecimals - 2);
+};
 
 export function findTokenOut(
   tokenIn: TokenInfo,
@@ -132,18 +132,18 @@ export function findTokenOut(
 ): [TokenInfo | undefined, boolean] {
   const recipientCoins = _recipientCoins.filter(
     (c) => c.chainId == tokenIn.chainId,
-  )
-  const sameToken = recipientCoins.find((c) => c.symbol == tokenIn.symbol)
-  const tokenOut = sameToken ? sameToken : recipientCoins[0]
+  );
+  const sameToken = recipientCoins.find((c) => c.symbol == tokenIn.symbol);
+  const tokenOut = sameToken ? sameToken : recipientCoins[0];
 
   // if still no tokenOut found, throw an error
   if (tokenOut == undefined) {
-    throw new Error('No suitable output token found')
+    throw new Error('No suitable output token found');
   }
 
-  const isSwap = tokenOut.symbol !== tokenIn.symbol
+  const isSwap = tokenOut.symbol !== tokenIn.symbol;
 
-  return [tokenOut, isSwap]
+  return [tokenOut, isSwap];
 }
 
 export function parseExchangeRates(
@@ -157,28 +157,28 @@ export function parseExchangeRates(
       !token.coinGeckoId ||
       !exchangeRates.hasOwnProperty(token.coinGeckoId)
     ) {
-      accumulator[token.symbol] = undefined
-      return accumulator
+      accumulator[token.symbol] = undefined;
+      return accumulator;
     }
 
     if (exchangeRates[token.coinGeckoId].hasOwnProperty(tokenOutId)) {
-      accumulator[token.symbol] = exchangeRates[token.coinGeckoId][tokenOutId]
-      return accumulator
+      accumulator[token.symbol] = exchangeRates[token.coinGeckoId][tokenOutId];
+      return accumulator;
     } else {
       // use USD prices to convert to tokenOut price
       if (
         !exchangeRates.hasOwnProperty(tokenOutId) ||
         !exchangeRates[tokenOutId].usd
       ) {
-        accumulator[token.symbol] = undefined
-        return accumulator
+        accumulator[token.symbol] = undefined;
+        return accumulator;
       }
-      const tokenOutPrice = exchangeRates[tokenOutId].usd
+      const tokenOutPrice = exchangeRates[tokenOutId].usd;
       accumulator[token.symbol] =
-        exchangeRates[token.coinGeckoId].usd / tokenOutPrice
-      return accumulator
+        exchangeRates[token.coinGeckoId].usd / tokenOutPrice;
+      return accumulator;
     }
-  }, {} as ExchangeRates)
+  }, {} as ExchangeRates);
 }
 
 export async function handleSingleCurveQuote(
@@ -192,35 +192,35 @@ export async function handleSingleCurveQuote(
     tokenOutAddress,
     tokenInAddress,
     provider,
-  )
+  );
 
   // The Curve quote has been done inversely, so we can approximate how much of token in we should put in
-  let pctIncrease = BigInt(1001)
-  let amountInCurve = curveInverseQuote.amountOut as bigint
+  let pctIncrease = BigInt(1001);
+  let amountInCurve = curveInverseQuote.amountOut as bigint;
   let curveQuote = await fetchSingleCurveQuote(
     amountInCurve,
     tokenInAddress,
     tokenOutAddress,
     provider,
-  )
-  let attempts = 1
+  );
+  let attempts = 1;
   while (curveQuote.amountOut < amount) {
     if (attempts >= MAX_CURVE_ATTEMPTS) {
-      return undefined
+      return undefined;
     }
-    pctIncrease += BigInt(1)
+    pctIncrease += BigInt(1);
     amountInCurve =
-      ((curveInverseQuote.amountOut as bigint) * pctIncrease) / BigInt(1000)
+      ((curveInverseQuote.amountOut as bigint) * pctIncrease) / BigInt(1000);
     curveQuote = await fetchSingleCurveQuote(
       amountInCurve,
       tokenInAddress,
       tokenOutAddress,
       provider,
-    )
-    attempts += 1
+    );
+    attempts += 1;
   }
 
-  return curveQuote
+  return curveQuote;
 }
 
 export async function handleCurveClientQuote(
@@ -236,40 +236,40 @@ export async function handleCurveClientQuote(
     tokenInAddress as Address,
     amountString,
     chainId ?? -1,
-  )
+  );
 
   if (!curveClientInverseQuote) {
-    return undefined
+    return undefined;
   }
 
   // The Curve quote has been done inversely, so we can approximate how much of token in we should put in
-  let pctIncrease = 1.001
-  let amountInCurveClient = Number(curveClientInverseQuote.output)
+  let pctIncrease = 1.001;
+  let amountInCurveClient = Number(curveClientInverseQuote.output);
   let curveClientQuoteRes = await chainDataAPI.getCurveQuote(
     tokenInAddress as Address,
     tokenOut.address as Address,
     amountInCurveClient,
     chainId ?? -1,
-  )
-  let attempts = 1
+  );
+  let attempts = 1;
   while (!!curveClientQuoteRes && curveClientQuoteRes.output < amountString) {
-    pctIncrease += 0.001
-    amountInCurveClient = Number(curveClientInverseQuote.output) * pctIncrease
+    pctIncrease += 0.001;
+    amountInCurveClient = Number(curveClientInverseQuote.output) * pctIncrease;
     curveClientQuoteRes = await chainDataAPI.getCurveQuote(
       tokenInAddress as Address,
       tokenOut.address as Address,
       amountInCurveClient,
       chainId ?? -1,
-    )
-    attempts += 1
+    );
+    attempts += 1;
 
     if (attempts >= MAX_CURVE_ATTEMPTS) {
-      return undefined
+      return undefined;
     }
   }
 
   if (!curveClientQuoteRes) {
-    return undefined
+    return undefined;
   }
 
   // Convert curve client quote to our Quote type
@@ -282,7 +282,7 @@ export async function handleCurveClientQuote(
         poolFee: '',
         swapParams: [route.i, route.j, route.swapType],
         factoryAddress: route.swapAddress, // swapAddress is a misnomer
-      } as Pool
+      } as Pool;
     }),
     // need to account for decimals
     amountIn: parseUnitsDecimal(
@@ -291,7 +291,7 @@ export async function handleCurveClientQuote(
     ),
     amountOut: parseUnitsDecimal(curveClientQuoteRes.output, tokenOut.decimals),
     priceImpact: curveClientQuoteRes.priceImpact,
-  }
+  };
 }
 
 export async function fetchAllQuotes(
@@ -303,27 +303,27 @@ export async function fetchAllQuotes(
   chainDataAPI: IChainDataAPI,
   excludeVenues: SwapVenue[] = [],
 ): Promise<[Quote, SwapVenue][]> {
-  const mainStoreState = mainStore.getState()
+  const mainStoreState = mainStore.getState();
 
-  const chainId = await provider?.getChainId()
+  const chainId = await provider?.getChainId();
 
   // Convert slippage to a big int
-  const slippageBigInt = BigInt(slippage * 10000)
+  const slippageBigInt = BigInt(slippage * 10000);
 
   // The curve API takes the amount with decimal places
-  const curveAmountString = formatUnits(amount, tokenOut.decimals)
+  const curveAmountString = formatUnits(amount, tokenOut.decimals);
 
   // Replace the native token with the wrapped token - we automatically wrap the native token
-  const chainInfo = getChain(provider?.chain?.id as number)
+  const chainInfo = getChain(provider?.chain?.id as number);
   const tokenInAddress =
     tokenIn.symbol === provider?.chain?.nativeCurrency.symbol
       ? (chainInfo.wrappedNativeToken as Address)
-      : (tokenIn.address as Address)
-  const tokenOutAddress = tokenOut.address as Address
+      : (tokenIn.address as Address);
+  const tokenOutAddress = tokenOut.address as Address;
   const tokenOutAddressUniswap =
     tokenOut.symbol === provider?.chain?.nativeCurrency.symbol
       ? (chainInfo.wrappedNativeToken as Address)
-      : tokenOutAddress
+      : tokenOutAddress;
 
   // Fetch the quotes for Uniswap and Curve
   const uniswapQuotePromise: Promise<Quote | undefined> =
@@ -334,7 +334,7 @@ export async function fetchAllQuotes(
           amount,
           chainId ?? -1,
         )
-      : Promise.resolve(undefined)
+      : Promise.resolve(undefined);
   const curveSingleQuotePromise: Promise<Quote | undefined> =
     !excludeVenues.includes(SwapVenue.CURVE)
       ? handleSingleCurveQuote(
@@ -343,7 +343,7 @@ export async function fetchAllQuotes(
           tokenOutAddress,
           provider,
         )
-      : Promise.resolve(undefined)
+      : Promise.resolve(undefined);
   const curveQuotePromise: Promise<Quote | undefined> = !excludeVenues.includes(
     SwapVenue.CURVE,
   )
@@ -355,21 +355,21 @@ export async function fetchAllQuotes(
         chainId,
         chainDataAPI,
       )
-    : Promise.resolve(undefined)
+    : Promise.resolve(undefined);
   const promises = await Promise.allSettled([
     uniswapQuotePromise,
     curveSingleQuotePromise,
     curveQuotePromise,
-  ])
+  ]);
 
-  let uniswapQuote, curveSingleQuote, curveQuote
+  let uniswapQuote, curveSingleQuote, curveQuote;
   if (promises[0].status == 'fulfilled' && !!promises[0].value) {
-    uniswapQuote = promises[0].value
+    uniswapQuote = promises[0].value;
     const amountInWithSlippage =
-      (uniswapQuote.amountIn * (10000n + slippageBigInt)) / 10000n
-    uniswapQuote.slippage = amountInWithSlippage - uniswapQuote.amountIn
-    uniswapQuote.path[0].amountIn = amountInWithSlippage
-    uniswapQuote.amountIn = amountInWithSlippage
+      (uniswapQuote.amountIn * (10000n + slippageBigInt)) / 10000n;
+    uniswapQuote.slippage = amountInWithSlippage - uniswapQuote.amountIn;
+    uniswapQuote.path[0].amountIn = amountInWithSlippage;
+    uniswapQuote.amountIn = amountInWithSlippage;
 
     // We do not need to update the tokenIn for Uniswap if we are using ETH
     // (and replacing it with WETH). The router automatically detects that we
@@ -379,20 +379,21 @@ export async function fetchAllQuotes(
     // This will only change the value if tokenOut is ETH/native token
     // We need this so that it identifies that we want ETH out, replaces the
     // tokenOut in the contract with WETH then unwraps it.
-    uniswapQuote.path[uniswapQuote.path.length - 1].tokenOut = tokenOutAddress
+    uniswapQuote.path[uniswapQuote.path.length - 1].tokenOut = tokenOutAddress;
   } else if (promises[0].status == 'rejected') {
-    mainStoreState.logger?.error('failed to get uniswap quote')
-    mainStoreState.logger?.error(promises[0].reason)
+    mainStoreState.logger?.error('failed to get uniswap quote');
+    mainStoreState.logger?.error(promises[0].reason);
   }
 
   if (promises[1].status == 'fulfilled' && !!promises[1].value) {
-    curveSingleQuote = promises[1].value
+    curveSingleQuote = promises[1].value;
 
     // Add slippage to the curveSingleQuote
     const amountInWithSlippage =
-      (curveSingleQuote.amountIn * (10000n + slippageBigInt)) / 10000n
-    curveSingleQuote.slippage = amountInWithSlippage - curveSingleQuote.amountIn
-    curveSingleQuote.amountIn = amountInWithSlippage
+      (curveSingleQuote.amountIn * (10000n + slippageBigInt)) / 10000n;
+    curveSingleQuote.slippage =
+      amountInWithSlippage - curveSingleQuote.amountIn;
+    curveSingleQuote.amountIn = amountInWithSlippage;
 
     // Finally, set the swapParams and factoryAddress for the quote
     try {
@@ -401,46 +402,46 @@ export async function fetchAllQuotes(
         curveSingleQuote.path[0].tokenIn,
         curveSingleQuote.path[0].tokenOut,
         chainId,
-      )
-      curveSingleQuote.path[0].factoryAddress = AddressZero
+      );
+      curveSingleQuote.path[0].factoryAddress = AddressZero;
 
       // Update the token in with the original token address
       // This will only change the value if tokenIn is ETH/native token
-      curveSingleQuote.path[0].tokenIn = tokenIn.address
+      curveSingleQuote.path[0].tokenIn = tokenIn.address;
     } catch (err) {
-      mainStoreState.logger?.error(err)
-      curveSingleQuote = undefined
+      mainStoreState.logger?.error(err);
+      curveSingleQuote = undefined;
     }
   } else if (promises[1].status == 'rejected') {
-    mainStoreState.logger?.error('failed to get single curve quote')
-    mainStoreState.logger?.error(promises[1].reason)
+    mainStoreState.logger?.error('failed to get single curve quote');
+    mainStoreState.logger?.error(promises[1].reason);
   }
 
   if (promises[2].status == 'fulfilled' && !!promises[2].value) {
-    curveQuote = promises[2].value
+    curveQuote = promises[2].value;
 
     // Add slippage to the curveQuote
     const amountInWithSlippage =
-      (curveQuote.amountIn * (10000n + slippageBigInt)) / 10000n
-    curveQuote.slippage = amountInWithSlippage - curveQuote.amountIn
-    curveQuote.amountIn = amountInWithSlippage
+      (curveQuote.amountIn * (10000n + slippageBigInt)) / 10000n;
+    curveQuote.slippage = amountInWithSlippage - curveQuote.amountIn;
+    curveQuote.amountIn = amountInWithSlippage;
 
     // Update the token in with the original token address
     // This will only change the value if tokenIn is ETH/native token
-    curveQuote.path[0].tokenIn = tokenIn.address
+    curveQuote.path[0].tokenIn = tokenIn.address;
   } else if (promises[2].status == 'rejected') {
-    mainStoreState.logger?.error('failed to get curve quote from client')
-    mainStoreState.logger?.error(promises[2].reason)
+    mainStoreState.logger?.error('failed to get curve quote from client');
+    mainStoreState.logger?.error(promises[2].reason);
   }
 
   const quotes = [
     [uniswapQuote, SwapVenue.UNISWAP],
     [curveSingleQuote, SwapVenue.CURVE],
     [curveQuote, SwapVenue.CURVE],
-  ] as [Quote | undefined, SwapVenue][]
+  ] as [Quote | undefined, SwapVenue][];
   return quotes.filter(
     ([quote, _venue]) => !!quote && quote.path.length > 0,
-  ) as [Quote, SwapVenue][]
+  ) as [Quote, SwapVenue][];
 }
 
 export async function getOptimismGasCost(
@@ -455,13 +456,13 @@ export async function getOptimismGasCost(
     gasPrice,
     data: encodeFunctionData(args),
     value: args.value,
-  })
+  });
   return await provider?.readContract({
     address: OPTIMISM_GAS_PRICE_ORACLE,
     abi: parseAbi(['function getL1Fee(bytes) view returns (uint256)']),
     functionName: 'getL1Fee',
     args: [txBytes],
-  })
+  });
 }
 
 export async function fetchEstimates(
@@ -477,13 +478,13 @@ export async function fetchEstimates(
   nativeTokenPriceDecimals: number,
   priceFeedDetails: PriceFeedDetails | null,
 ): Promise<EstimationResult[]> {
-  const mainStoreState = mainStore.getState()
+  const mainStoreState = mainStore.getState();
 
   // For each quote, create the payload and simulate the transaction
-  const routerAddress = getRouterAddress(chain.id, routerVersion)
-  const routerAbi = getRouterAbi(routerVersion)
+  const routerAddress = getRouterAddress(chain.id, routerVersion);
+  const routerAbi = getRouterAbi(routerVersion);
   if (!routerAddress) {
-    throw Error('Could not fetch YODL router address for the given chain.')
+    throw Error('Could not fetch YODL router address for the given chain.');
   }
 
   const settledPromises = await Promise.allSettled(
@@ -498,7 +499,7 @@ export async function fetchEstimates(
         venue,
         false,
         priceFeedDetails,
-      )
+      );
       const args = {
         account: sender,
         address: routerAddress,
@@ -507,7 +508,7 @@ export async function fetchEstimates(
         args: payload.contractArgs,
         value:
           tokenIn.symbol === chain.nativeCurrency.symbol ? payload.value : 0n,
-      }
+      };
 
       const data = await simulateTransaction({
         contractArgs: args,
@@ -521,22 +522,22 @@ export async function fetchEstimates(
         venue,
         invoice,
         priceFeedDetails,
-      })
-      return data as EstimationResult
+      });
+      return data as EstimationResult;
     }),
-  )
+  );
 
   // Filter out failed promises
   return settledPromises
     .map((promiseResult) => {
       if (promiseResult.status == 'fulfilled') {
-        return promiseResult.value
+        return promiseResult.value;
       } else {
-        mainStoreState.logger?.error({ promiseResult })
-        return undefined
+        mainStoreState.logger?.error({ promiseResult });
+        return undefined;
       }
     })
-    .filter((promiseResult) => !!promiseResult) as EstimationResult[]
+    .filter((promiseResult) => !!promiseResult) as EstimationResult[];
 }
 
 export async function fetchSwapQuote(
@@ -564,15 +565,15 @@ export async function fetchSwapQuote(
     slippage,
     chainDataAPI,
     excludeVenues,
-  )
+  );
 
   if (quotes.length === 0) {
     throw Error(
       'Failed to get quotes for both Uniswap and Curve in `fetchSwapQuotes`',
-    )
+    );
   }
 
-  let cheapestVenue
+  let cheapestVenue;
   if (!!nativeTokenPrice && !!nativeTokenPriceDecimals) {
     const gasEstimates = await fetchEstimates(
       quotes,
@@ -586,35 +587,35 @@ export async function fetchSwapQuote(
       nativeTokenPrice,
       nativeTokenPriceDecimals,
       priceFeedDetails,
-    )
+    );
     const cheapestVenueObject = gasEstimates.reduce(
       (cheapestVenue, currentVenue) => {
         // Get the cheapest venue in terms of amountIn
         const cheapestVenueCost =
           cheapestVenue.quote.amountIn +
           (cheapestVenue.gasInInvoiceCurrency * cheapestVenue.quote.amountIn) /
-            cheapestVenue.quote.amountOut
+            cheapestVenue.quote.amountOut;
         const currentVenueCost =
           currentVenue.quote.amountIn +
           (currentVenue.gasInInvoiceCurrency * currentVenue.quote.amountIn) /
-            currentVenue.quote.amountOut
+            currentVenue.quote.amountOut;
         return cheapestVenueCost < currentVenueCost
           ? cheapestVenue
-          : currentVenue
+          : currentVenue;
       },
       gasEstimates[0],
-    )
-    return [cheapestVenueObject.quote, cheapestVenueObject.venue]
+    );
+    return [cheapestVenueObject.quote, cheapestVenueObject.venue];
   } else {
     cheapestVenue = quotes.reduce((cheapestVenue, currentVenue) => {
       return cheapestVenue[0].amountIn < currentVenue[0].amountIn
         ? cheapestVenue
-        : currentVenue
-    }, quotes[0]) as [Quote, SwapVenue]
+        : currentVenue;
+    }, quotes[0]) as [Quote, SwapVenue];
   }
 
   // We have the cheapest path for a swap (including gas if nativeToken details are provided)
-  return cheapestVenue as [Quote, SwapVenue]
+  return cheapestVenue as [Quote, SwapVenue];
 }
 
 export function uniswapResponseToQuote(resJson: any): Quote {
@@ -626,15 +627,15 @@ export function uniswapResponseToQuote(resJson: any): Quote {
       poolFee: p.fee,
       amountIn: p.amountIn ? BigInt(p.amountIn!) : undefined,
       amountOut: p.amountOut ? BigInt(p.amountOut!) : undefined,
-    } as Pool
-  })
+    } as Pool;
+  });
 
   return {
     path: pools,
     amountIn: pools[0].amountIn,
     amountOut: pools[pools.length - 1].amountOut,
     priceImpact: resJson['priceImpact'],
-  } as Quote
+  } as Quote;
 }
 export async function fetchUniswapQuote(
   amount: BigInt,
@@ -643,17 +644,17 @@ export async function fetchUniswapQuote(
   chainId: number,
 ): Promise<Quote> {
   // Handle special case for ETH
-  const ethToken = coinIdToToken(`ETH-${chainId}`) as TokenInfo
-  const wethToken = coinIdToToken(`WETH-${chainId}`) as TokenInfo
+  const ethToken = coinIdToToken(`ETH-${chainId}`) as TokenInfo;
+  const wethToken = coinIdToToken(`WETH-${chainId}`) as TokenInfo;
   if (ethToken && wethToken) {
     if (tokenInAddress === ethToken.address) {
-      tokenInAddress = wethToken.address
+      tokenInAddress = wethToken.address;
     }
     if (tokenOutAddress === ethToken.address) {
-      tokenOutAddress = wethToken.address
+      tokenOutAddress = wethToken.address;
     }
   }
-  const baseUrl = 'https://api.uniswap.org/v1/quote'
+  const baseUrl = 'https://api.uniswap.org/v1/quote';
   const url = baseUrl.concat(
     '?protocols=v3',
     '&tokenInAddress=',
@@ -667,7 +668,7 @@ export async function fetchUniswapQuote(
     '&amount=',
     amount.toString(),
     '&type=exactOut',
-  )
+  );
   const response = await doFetch(url, {
     headers: {
       accept: '*/*',
@@ -686,16 +687,16 @@ export async function fetchUniswapQuote(
     method: 'GET',
     mode: 'cors',
     credentials: 'omit',
-  })
+  });
 
   if (!response.ok) {
-    const error = await response.json()
-    const message = error.errorCode ? error.errorCode : 'UNKNOWN_ERROR'
-    throw new Error(message)
+    const error = await response.json();
+    const message = error.errorCode ? error.errorCode : 'UNKNOWN_ERROR';
+    throw new Error(message);
   }
 
-  const data = await response.json()
-  return uniswapResponseToQuote(data)
+  const data = await response.json();
+  return uniswapResponseToQuote(data);
 }
 
 // The provider should be from the appropriate chain as the router address should be the same for all L2's
@@ -707,20 +708,20 @@ export async function fetchSingleCurveQuote(
 ): Promise<Quote> {
   // Check for invalid addresses
   if (!isAddress(tokenInAddress) || !isAddress(tokenOutAddress)) {
-    throw Error('One of the token addresses is invalid.')
+    throw Error('One of the token addresses is invalid.');
   }
 
   // Fetch the chain and get the curve router address
   if (!provider?.chain) {
-    throw Error('Provider must have a chain.')
+    throw Error('Provider must have a chain.');
   }
-  const chainInfo = getChain(provider?.chain.id)
+  const chainInfo = getChain(provider?.chain.id);
 
   // Check that we have a curve router address for the chain
   if (!chainInfo || !chainInfo.curveRouterAddress) {
     throw Error(
       `Chain ${provider?.chain.id} does not have a curve router address.`,
-    )
+    );
   }
 
   // Make a call to the contract to get the best rate
@@ -729,17 +730,17 @@ export async function fetchSingleCurveQuote(
     abi: CURVE_ROUTER_ABI,
     functionName: 'get_best_rate',
     args: [tokenInAddress, tokenOutAddress, amount] as any[],
-  })) as Array<any>
+  })) as Array<any>;
 
   // Should have exactly two items
   if (res.length != 2) {
-    throw Error("Invalid CurveRouter 'get_best_rate' response.")
+    throw Error("Invalid CurveRouter 'get_best_rate' response.");
   }
-  const [poolAddress, amountOut] = res
+  const [poolAddress, amountOut] = res;
 
   // 0 values indicate that one of the token addresses do not exist
   if (amountOut == BigInt(0) || poolAddress === '') {
-    throw Error("Token address doesn't exist for one of the tokens.")
+    throw Error("Token address doesn't exist for one of the tokens.");
   }
 
   return {
@@ -755,7 +756,7 @@ export async function fetchSingleCurveQuote(
     ],
     amountIn: amount,
     amountOut: amountOut,
-  } as Quote
+  } as Quote;
 }
 
 // We need to provide the coin indices for the pool/tokens
@@ -769,45 +770,45 @@ export function determineSwapParams(
 ) {
   // Check for invalid addresses
   if (!isAddress(tokenInAddress) || !isAddress(tokenOutAddress)) {
-    throw Error('One of the token addresses is invalid.')
+    throw Error('One of the token addresses is invalid.');
   }
 
   // Ensure token addresses are lower case
-  tokenInAddress = tokenInAddress.toLowerCase()
-  tokenOutAddress = tokenOutAddress.toLowerCase()
+  tokenInAddress = tokenInAddress.toLowerCase();
+  tokenOutAddress = tokenOutAddress.toLowerCase();
 
   if (tokenInAddress == tokenOutAddress) {
-    throw Error('Tokens must not be equal.')
+    throw Error('Tokens must not be equal.');
   }
 
   // Get all pools and loop through to find our pool and match its type
   const ALL_POOLS: [string, IPoolData][] = Object.entries(
     NETWORK_CONSTANTS[chainId ?? -1].POOLS_DATA,
-  )
+  );
   const pool = ALL_POOLS.find(([_poolId, poolData], _i) => {
-    return poolData.swap_address.toLowerCase() === poolAddress.toLowerCase()
-  })
+    return poolData.swap_address.toLowerCase() === poolAddress.toLowerCase();
+  });
 
   if (pool == undefined) {
     // This can happen for factory pools (created by users, we can collect and support these later)
-    throw Error('Failed to find Curve pool.')
+    throw Error('Failed to find Curve pool.');
   }
-  const [poolId, poolData] = pool
+  const [poolId, poolData] = pool;
 
   // Now that we have the pool we can determine its swap type
   // see '_findAllRoutes' method in router.ts of curve-js
   const wrapped_coin_addresses = poolData.wrapped_coin_addresses.map(
     (a: string) => a.toLowerCase(),
-  )
+  );
   const underlying_coin_addresses = poolData.underlying_coin_addresses.map(
     (a: string) => a.toLowerCase(),
-  )
+  );
   const base_pool = poolData.is_meta
     ? NETWORK_CONSTANTS[chainId ?? -1][poolData.base_pool as string]
-    : null
+    : null;
   const meta_coin_addresses = base_pool
     ? base_pool.underlying_coin_addresses.map((a: string) => a.toLowerCase())
-    : []
+    : [];
 
   // Ensure the tokens are both part of the pool
   if (
@@ -820,56 +821,58 @@ export function determineSwapParams(
       underlying_coin_addresses.includes(tokenOutAddress)
     )
   ) {
-    throw Error('One or both of the tokens is not part of the pool.')
+    throw Error('One or both of the tokens is not part of the pool.');
   }
 
   // We're going to skip swap types 7-15 as these will be disallowed (for now))
-  let swapType = 0
+  let swapType = 0;
   const inCoinIndices = {
     wrapped_coin: wrapped_coin_addresses.indexOf(tokenInAddress),
     underlying_coin: underlying_coin_addresses.indexOf(tokenInAddress),
     meta_coin: meta_coin_addresses.indexOf(tokenInAddress),
-  }
-  const inCoinIndex = Object.values(inCoinIndices).find((index) => index >= 0)
+  };
+  const inCoinIndex = Object.values(inCoinIndices).find((index) => index >= 0);
   const outCoinIndices = {
     wrapped_coin: wrapped_coin_addresses.indexOf(tokenOutAddress),
     underlying_coin: underlying_coin_addresses.indexOf(tokenOutAddress),
     meta_coin: meta_coin_addresses.indexOf(tokenOutAddress),
-  }
-  const outCoinIndex = Object.values(outCoinIndices).find((index) => index >= 0)
+  };
+  const outCoinIndex = Object.values(outCoinIndices).find(
+    (index) => index >= 0,
+  );
 
   // This should never throw because we have checks to ensure that both tokens are in the pool
   // But it doesn't hurt to have it
   if (inCoinIndex === undefined || outCoinIndex === undefined) {
-    throw Error('Could not get coin index.')
+    throw Error('Could not get coin index.');
   }
 
   if (inCoinIndices.wrapped_coin >= 0 && !poolData.is_fake) {
-    swapType = poolData.is_crypto ? 3 : 1
+    swapType = poolData.is_crypto ? 3 : 1;
   }
   if (!poolData.is_plain && inCoinIndices.underlying_coin >= 0) {
-    const nativeToken = NATIVE_TOKENS[chainId ?? -1]?.['address'].toLowerCase()
+    const nativeToken = NATIVE_TOKENS[chainId ?? -1]?.['address'].toLowerCase();
     const hasEth =
-      tokenInAddress === nativeToken || tokenOutAddress === nativeToken
+      tokenInAddress === nativeToken || tokenOutAddress === nativeToken;
     // We don't have any pools that are factories in the constants - so neither 5 nor 6 should occur, but we'll leave
     // the logic here for later
     swapType =
       poolData.is_crypto && poolData.is_meta && poolData.is_factory
         ? 6
         : base_pool?.is_lending && poolData.is_factory
-        ? 5
-        : hasEth && poolId !== 'avaxcrypto'
-        ? 3
-        : poolData.is_crypto
-        ? 4
-        : 2
+          ? 5
+          : hasEth && poolId !== 'avaxcrypto'
+            ? 3
+            : poolData.is_crypto
+              ? 4
+              : 2;
   }
 
   if (swapType === 0) {
-    throw Error('Could not find a valid swap type for the pool.')
+    throw Error('Could not find a valid swap type for the pool.');
   }
 
-  return [inCoinIndex, outCoinIndex, swapType] as [number, number, number]
+  return [inCoinIndex, outCoinIndex, swapType] as [number, number, number];
 }
 
 export function createPayloadV1(
@@ -882,12 +885,12 @@ export function createPayloadV1(
   priceFeedDetails: PriceFeedDetails | null = null,
 ): PaymentPayload {
   if (swapQuote || swapVenue) {
-    throw Error('Swaps are not supported with the V1 router.')
+    throw Error('Swaps are not supported with the V1 router.');
   }
 
-  let receiverAddress = getReceiverAddress(chain.id, tokenIn, invoice)
+  let receiverAddress = getReceiverAddress(chain.id, tokenIn, invoice);
   if (receiverAddress === '0x0') {
-    receiverAddress = sender
+    receiverAddress = sender;
   }
 
   if (
@@ -897,30 +900,30 @@ export function createPayloadV1(
   ) {
     throw Error(
       'Multiple or inverse price feeds are not supported in the V1 router.',
-    )
+    );
   }
 
   if (tokenIn.symbol === 'ETH') {
-    throw Error('ETH payments are not supported in the V1 router.')
+    throw Error('ETH payments are not supported in the V1 router.');
   }
 
   // Convert bps to divisor
-  let extraFeeDivisor = 0
+  let extraFeeDivisor = 0;
   if (!!invoice.extraFeeBps && invoice.extraFeeBps !== 0) {
-    extraFeeDivisor = Math.round(1 / (invoice.extraFeeBps / 10000))
+    extraFeeDivisor = Math.round(1 / (invoice.extraFeeBps / 10000));
   }
 
   // In the context of a direct payment, the amount we are sending is the tokenIn
   const amount = parseAmountInMinorForComparison(
     invoice.amountInMinor.toString(),
     tokenIn.decimals,
-  )
+  );
 
-  let extraFeeAddress
+  let extraFeeAddress;
   if (invoice.extraFeeAddress != zeroAddress) {
-    extraFeeAddress = invoice.extraFeeAddress
+    extraFeeAddress = invoice.extraFeeAddress;
   } else {
-    extraFeeAddress = zeroAddress
+    extraFeeAddress = zeroAddress;
   }
 
   const args = [
@@ -931,7 +934,7 @@ export function createPayloadV1(
     receiverAddress,
     extraFeeAddress || zeroAddress,
     extraFeeDivisor,
-  ]
+  ];
   return {
     tokenOut: tokenIn, // tokenOut and tokenIn are effectively the same
     contractFunctionName: 'payWithToken',
@@ -939,7 +942,7 @@ export function createPayloadV1(
     isSwap: false,
     error: undefined,
     value: 0n,
-  } as PaymentPayload
+  } as PaymentPayload;
 }
 
 export function createPayload(
@@ -952,11 +955,11 @@ export function createPayload(
   returnRemainder: boolean = false,
   priceFeedDetails: PriceFeedDetails | null = null,
 ): PaymentPayload {
-  const chainInfo = getChain(chain.id)
+  const chainInfo = getChain(chain.id);
 
-  let receiverAddress = getReceiverAddress(chain.id, tokenIn, invoice)
+  let receiverAddress = getReceiverAddress(chain.id, tokenIn, invoice);
   if (receiverAddress === '0x0') {
-    receiverAddress = sender
+    receiverAddress = sender;
   }
 
   // Handle direct payments
@@ -965,13 +968,13 @@ export function createPayload(
     const amount = parseAmountInMinorForComparison(
       invoice.amountInMinor.toString(),
       tokenIn.decimals,
-    )
+    );
 
-    let extraFeeAddress
+    let extraFeeAddress;
     if (invoice.extraFeeAddress != zeroAddress) {
-      extraFeeAddress = invoice.extraFeeAddress
+      extraFeeAddress = invoice.extraFeeAddress;
     } else {
-      extraFeeAddress = zeroAddress
+      extraFeeAddress = zeroAddress;
     }
 
     const args = [
@@ -984,7 +987,7 @@ export function createPayload(
       receiverAddress,
       extraFeeAddress || zeroAddress,
       invoice.extraFeeBps || 0,
-    ]
+    ];
     return {
       tokenOut: tokenIn, // tokenOut and tokenIn are effectively the same
       contractFunctionName: 'payWithToken',
@@ -998,47 +1001,53 @@ export function createPayload(
             ? priceFeedDetails.convertedAmount
             : amount
           : 0n,
-    } as PaymentPayload
+    } as PaymentPayload;
   }
 
   // Handle swaps
   if (!swapQuote) {
-    throw Error('swapQuote is not present for a payment that should be a swap.')
+    throw Error(
+      'swapQuote is not present for a payment that should be a swap.',
+    );
   }
 
   // Figure out the tokenOut TokenInfo
-  const tokenOutAddress = swapQuote.path[swapQuote.path.length - 1].tokenOut
-  const tokenOut = tokenAddressToToken(tokenOutAddress)
+  const tokenOutAddress = swapQuote.path[swapQuote.path.length - 1].tokenOut;
+  const tokenOut = tokenAddressToToken(tokenOutAddress);
 
   if (!tokenOut) {
     // This shouldn't occur as we fetch our tokens to swap from the tokenslist
-    throw Error('Could not find token out in tokenslist.')
+    throw Error('Could not find token out in tokenslist.');
   }
 
   // In the context of a swap, this is in terms of tokenOut
   const amount = parseAmountInMinorForComparison(
     invoice.amountInMinor.toString(),
     tokenOut.decimals,
-  )
+  );
 
   if (swapVenue == SwapVenue.UNISWAP) {
-    let encodeParams, encodeArgs
+    let encodeParams, encodeArgs;
     if (swapQuote.path.length === 1) {
-      encodeParams = parseAbiParameters('address, uint24, address')
-      encodeArgs = [tokenOutAddress, swapQuote.path[0].poolFee, tokenIn.address]
+      encodeParams = parseAbiParameters('address, uint24, address');
+      encodeArgs = [
+        tokenOutAddress,
+        swapQuote.path[0].poolFee,
+        tokenIn.address,
+      ];
     } else if (swapQuote.path.length === 2) {
       encodeParams = parseAbiParameters(
         'address, uint24, address, uint24, address',
-      )
+      );
       encodeArgs = [
         swapQuote.path[1].tokenOut,
         swapQuote.path[1].poolFee,
         swapQuote.path[1].tokenIn,
         swapQuote.path[0].poolFee,
         swapQuote.path[0].tokenIn,
-      ]
+      ];
     } else {
-      throw new Error('Invalid Uniswap path with more than two pools')
+      throw new Error('Invalid Uniswap path with more than two pools');
     }
 
     const contractArgs = [
@@ -1058,7 +1067,7 @@ export function createPayload(
         // 0 for single, 1 for multi
         swapType: swapQuote.path.length === 1 ? 0 : 1,
       },
-    ]
+    ];
 
     return {
       tokenOut: tokenOut,
@@ -1070,7 +1079,7 @@ export function createPayload(
         tokenIn.symbol === chain.nativeCurrency.symbol
           ? swapQuote.amountIn
           : 0n,
-    } as PaymentPayload
+    } as PaymentPayload;
   } else if (swapVenue == SwapVenue.CURVE) {
     // Initialize the route and swapParams
     const route = [
@@ -1083,41 +1092,41 @@ export function createPayload(
       AddressZero,
       AddressZero,
       AddressZero,
-    ]
+    ];
     const swapParams = [
       [0, 0, 0],
       [0, 0, 0],
       [0, 0, 0],
       [0, 0, 0],
-    ]
+    ];
     const factoryAddresses = [
       AddressZero,
       AddressZero,
       AddressZero,
       AddressZero,
-    ]
+    ];
 
     if (swapQuote.path.length > 4) {
-      throw Error('Swap path is too long.')
+      throw Error('Swap path is too long.');
     }
 
     for (let i = 0; i < swapQuote.path.length; i++) {
-      const pool = swapQuote.path[i]
+      const pool = swapQuote.path[i];
 
       // Set the route and swapParams
       if (i == 0) {
         if (pool.tokenIn.toLowerCase() === NATIVE_TOKEN_ADDRESS.toLowerCase()) {
           // We will automatically wrap the native token using the chains wrapped native token
           // So the swap's token in is the wrapped native token
-          route[0] = chainInfo.wrappedNativeToken as Address
+          route[0] = chainInfo.wrappedNativeToken as Address;
         } else {
-          route[0] = pool.tokenIn as Address
+          route[0] = pool.tokenIn as Address;
         }
       }
-      route[i * 2 + 1] = pool.poolAddress as Address
-      route[i * 2 + 2] = pool.tokenOut as Address
-      swapParams[i] = pool.swapParams!
-      factoryAddresses[i] = pool.factoryAddress! as Address
+      route[i * 2 + 1] = pool.poolAddress as Address;
+      route[i * 2 + 2] = pool.tokenOut as Address;
+      swapParams[i] = pool.swapParams!;
+      factoryAddresses[i] = pool.factoryAddress! as Address;
     }
 
     // Check that route and swapParams have valid values
@@ -1127,7 +1136,7 @@ export function createPayload(
       route[2] == AddressZero ||
       (swapParams[0][0] == 0 && swapParams[0][1] == 0 && swapParams[0][2] == 0)
     ) {
-      throw Error('Failed to get valid values for route and/or swapParams.')
+      throw Error('Failed to get valid values for route and/or swapParams.');
     }
 
     // Create the contract args
@@ -1148,7 +1157,7 @@ export function createPayload(
         extraFeeBps: 0,
         returnRemainder,
       },
-    ]
+    ];
 
     return {
       tokenOut: tokenOut,
@@ -1160,9 +1169,9 @@ export function createPayload(
         tokenIn.symbol === chain.nativeCurrency.symbol
           ? swapQuote.amountIn
           : 0n,
-    } as PaymentPayload
+    } as PaymentPayload;
   } else {
-    throw Error('Invalid swapVenue provided.')
+    throw Error('Invalid swapVenue provided.');
   }
 }
 
@@ -1172,35 +1181,35 @@ export function roundBigIntFixedPoint(
   significantFigures: number, // number of significant figures
 ): string {
   // Convert the BigInt into a number with the correct decimal places
-  let num = new Decimal(formatUnits(bigInt, decimalDigits))
+  let num = new Decimal(formatUnits(bigInt, decimalDigits));
 
   // Calculate the scale factor based on the number of significant figures
   const scaleFactor = Decimal.pow(
     10,
     Decimal.log10(num.abs()).floor().plus(1).minus(significantFigures),
-  )
+  );
 
   if (scaleFactor.isZero()) {
-    return '0.00'
+    return '0.00';
   }
 
   // Round the number to the given significant figures
-  num = num.dividedBy(scaleFactor).toDecimalPlaces(0).times(scaleFactor)
+  num = num.dividedBy(scaleFactor).toDecimalPlaces(0).times(scaleFactor);
 
   // Convert the number back to a string with the correct number of decimal places
-  let numStr = num.toFixed(decimalDigits)
+  let numStr = num.toFixed(decimalDigits);
 
   // Remove trailing zeros, but ensure there are always two decimal places
-  numStr = numStr.replace(/(\.[0-9]+?)0+$/, '$1')
+  numStr = numStr.replace(/(\.[0-9]+?)0+$/, '$1');
 
-  return numStr
+  return numStr;
 }
 
 export function isProd() {
-  const urlParams = new URLSearchParams(window.location.search)
+  const urlParams = new URLSearchParams(window.location.search);
   return (
     window.location.hostname === 'yodl.me' || urlParams.get('prod') === 'true'
-  )
+  );
 }
 
 export const formatTokenCurrency = (minor: number) => {
@@ -1210,15 +1219,15 @@ export const formatTokenCurrency = (minor: number) => {
     // These options are needed to round to whole numbers if that's what you want.
     minimumFractionDigits: 2, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
     //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
-  })
+  });
 
-  return formatter.format(minor / 100) /* $2,500.00 */
-}
+  return formatter.format(minor / 100); /* $2,500.00 */
+};
 
 export const getFractionDigits = (amount: number) => {
-  const decimals = amount.toString().split('.')[1]
-  return decimals ? decimals.replace(/0+$/, '').length : 0
-}
+  const decimals = amount.toString().split('.')[1];
+  return decimals ? decimals.replace(/0+$/, '').length : 0;
+};
 
 export const formatCurrencySymbol = (
   amount: string,
@@ -1227,20 +1236,20 @@ export const formatCurrencySymbol = (
   isFiatOrStablecoin = true,
 ) => {
   if (isFiatOrStablecoin) {
-    return `${prefix}${symbol}${amount}`
+    return `${prefix}${symbol}${amount}`;
   }
-  return `${prefix}${amount}${symbol ? ` ${symbol}` : ''}`
-}
+  return `${prefix}${amount}${symbol ? ` ${symbol}` : ''}`;
+};
 
 export const determineTokenAmount = (invoice: {
-  currency: string
-  amountInMinor: number
+  currency: string;
+  amountInMinor: number;
 }) => {
   // If the currency is in the list of currencies that use plain style, then use
   // "decimal" instead of "currency" for the style.
   const style = CURRENCIES_WITH_PLAIN_STYLE.includes(invoice.currency)
     ? 'decimal'
-    : 'currency'
+    : 'currency';
 
   // Create a number formatter that uses the style (either "decimal" or "currency")
   // and the currency.
@@ -1251,35 +1260,37 @@ export const determineTokenAmount = (invoice: {
     // These options are needed to round to whole numbers if that's what you want.
     minimumFractionDigits: 2, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
     //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
-  })
+  });
 
   // Format the amount in minor units into the native currency.
   const nativeFormatted = formatter.format(
     new Decimal(invoice.amountInMinor).dividedBy(new Decimal(100)).toNumber(),
-  )
+  );
 
-  return nativeFormatted
-}
+  return nativeFormatted;
+};
 
 export const getTokenOutInfo = (invoice: Invoice, chain: Chain | undefined) => {
   const chainConfig = invoice.coins.find(
     (config) => config.chainId === chain?.id,
-  ) as CoinConfig
-  const token = chainConfig.tokens[0]
-  return coinIdToToken(`${token.symbol}-${chain?.id}`) as TokenInfo
-}
+  ) as CoinConfig;
+  const token = chainConfig.tokens[0];
+  return coinIdToToken(`${token.symbol}-${chain?.id}`) as TokenInfo;
+};
 
 export const determineMostExpensiveSwap = (quotes: [Quote, SwapVenue][]) =>
   quotes.reduce((mostExpensive, current) => {
     return mostExpensive[0].amountIn > current[0].amountIn
       ? mostExpensive
-      : current
-  }, quotes[0])
+      : current;
+  }, quotes[0]);
 
 export const determineCheapestSwapWithoutGas = (quotes: [Quote, SwapVenue][]) =>
   quotes.reduce((minSwap, currentSwap) => {
-    return minSwap[0].amountIn < currentSwap[0].amountIn ? minSwap : currentSwap
-  }, quotes[0])
+    return minSwap[0].amountIn < currentSwap[0].amountIn
+      ? minSwap
+      : currentSwap;
+  }, quotes[0]);
 
 export const determineCheapestSwapWithGas = (estimates: EstimationResult[]) =>
   estimates.reduce((cheapestSwap, currentSwap) => {
@@ -1287,23 +1298,23 @@ export const determineCheapestSwapWithGas = (estimates: EstimationResult[]) =>
     const cheapestSwapReturnDelta = cheapestSwap.shouldReturnRemainder
       ? (cheapestSwap.returnRemainderDelta * cheapestSwap.quote.amountIn) /
         cheapestSwap.quote.amountOut
-      : 0n
+      : 0n;
     const cheapestSwapCost =
       cheapestSwap.quote.amountIn +
       (cheapestSwap.gasInInvoiceCurrency * cheapestSwap.quote.amountIn) /
         cheapestSwap.quote.amountOut +
-      cheapestSwapReturnDelta
+      cheapestSwapReturnDelta;
     const currentSwapReturnDelta = currentSwap.shouldReturnRemainder
       ? (currentSwap.returnRemainderDelta * currentSwap.quote.amountIn) /
         currentSwap.quote.amountOut
-      : 0n
+      : 0n;
     const currentSwapCost =
       currentSwap.quote.amountIn +
       (currentSwap.gasInInvoiceCurrency * currentSwap.quote.amountIn) /
         currentSwap.quote.amountOut +
-      currentSwapReturnDelta
-    return cheapestSwapCost < currentSwapCost ? cheapestSwap : currentSwap
-  }, estimates[0])
+      currentSwapReturnDelta;
+    return cheapestSwapCost < currentSwapCost ? cheapestSwap : currentSwap;
+  }, estimates[0]);
 
 export const getMockWalletClient = (
   address: string | null,
@@ -1319,7 +1330,7 @@ export const getMockWalletClient = (
       ? key
       : '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
     pollingInterval: 100,
-  })
+  });
 
 export const formatWagmiError = (
   err: unknown,
@@ -1327,28 +1338,28 @@ export const formatWagmiError = (
 ) => {
   if (err instanceof BaseError) {
     if (err.details?.includes('already pending')) {
-      return 'Network switch already pending. Check your wallet'
+      return 'Network switch already pending. Check your wallet';
     }
-    return err?.shortMessage ?? 'Something went wrong'
+    return err?.shortMessage ?? 'Something went wrong';
   }
   if (err && typeof err === 'object') {
     if ('message' in err) {
       if (typeof err.message === 'string') {
-        return err.message
+        return err.message;
       }
     }
   }
-  return shouldFallback ? 'Something went wrong' : (err as string)
-}
+  return shouldFallback ? 'Something went wrong' : (err as string);
+};
 
 export const getChainNativeCurrency = (chain: Chain) => {
   // Special case for gnosis which has xDAI (DAI) as its native token
   if (chain.id === gnosis.id) {
-    return 'DAI'
+    return 'DAI';
   } else {
-    return chain.nativeCurrency.symbol
+    return chain.nativeCurrency.symbol;
   }
-}
+};
 
 export const isBalanceSufficient = (
   token: TokenHeld,
@@ -1356,37 +1367,37 @@ export const isBalanceSufficient = (
   exchangeRates: ExchangeRate | null,
   skipConversionIfRateUndefined: boolean = true,
 ) => {
-  if (skipConversionIfRateUndefined) return true
+  if (skipConversionIfRateUndefined) return true;
   const { rawAmount } = formatConvertedBalance(
     token,
     exchangeRates?.data?.[token.tokenInfo.symbol],
     invoice,
-  )
+  );
   const requiredAmount = new Decimal(invoice.amountInMinor)
     .dividedBy(new Decimal(100))
-    .toNumber()
-  return rawAmount && rawAmount >= requiredAmount
-}
+    .toNumber();
+  return rawAmount && rawAmount >= requiredAmount;
+};
 
 export const isAllowanceSufficient = (
   balance: bigint,
   rawAmountIn: bigint,
 ): boolean => {
-  return !!balance && !!rawAmountIn && balance >= rawAmountIn
-}
+  return !!balance && !!rawAmountIn && balance >= rawAmountIn;
+};
 
 export const tokenAmountToHuman = (
   balance: bigint | Decimal,
   decimals: number,
 ) => {
-  const divisor = 10 ** decimals
-  const balanceAmount = Number(balance)
+  const divisor = 10 ** decimals;
+  const balanceAmount = Number(balance);
 
-  const balanceHuman = balanceAmount / divisor
-  const balanceSanitized = Math.abs(balanceHuman)
+  const balanceHuman = balanceAmount / divisor;
+  const balanceSanitized = Math.abs(balanceHuman);
 
-  return new Decimal(balanceSanitized)
-}
+  return new Decimal(balanceSanitized);
+};
 
 export const formatBalance = (
   balance: bigint,
@@ -1394,20 +1405,20 @@ export const formatBalance = (
   symbol: string = '',
 ) => {
   if (balance) {
-    const divisor = 10 ** decimals
-    const balanceAmount = Number(balance)
+    const divisor = 10 ** decimals;
+    const balanceAmount = Number(balance);
 
-    const balanceHuman = balanceAmount / divisor
-    const balanceSanitized = Math.abs(balanceHuman)
+    const balanceHuman = balanceAmount / divisor;
+    const balanceSanitized = Math.abs(balanceHuman);
 
     return formatBalanceAmount({
       amount: balanceSanitized,
       isFiatOrStablecoin: false,
       ...(symbol && { symbol }),
-    })
+    });
   }
-  return formatBalanceAmount({ amount: 0, isFiatOrStablecoin: false })
-}
+  return formatBalanceAmount({ amount: 0, isFiatOrStablecoin: false });
+};
 
 export const formatConvertedBalance = (
   tokenHeld: TokenHeld,
@@ -1415,68 +1426,68 @@ export const formatConvertedBalance = (
   invoice: Invoice,
 ) => {
   if (!tokenHeld) {
-    return { rawAmount: 0, formattedAmount: 0, currency: '', isLoading: true }
+    return { rawAmount: 0, formattedAmount: 0, currency: '', isLoading: true };
   }
 
   const calculateAmounts = (balance: BigInt, currency: string) => {
-    const rawAmount = Number(balance) / 10 ** tokenHeld.tokenInfo.decimals
+    const rawAmount = Number(balance) / 10 ** tokenHeld.tokenInfo.decimals;
     const formattedAmount = formatBalanceAmount({
       amount: rawAmount,
       currency,
       isFiatOrStablecoin: !CURRENCY_SYMBOL_SPECIAL_CASES.includes(currency),
       converted: true,
-    })
-    return { rawAmount, formattedAmount }
-  }
+    });
+    return { rawAmount, formattedAmount };
+  };
 
-  let balance = tokenHeld.balance
+  let balance = tokenHeld.balance;
 
   if (tokenHeld.tokenInfo.currency === invoice.currency) {
     return {
       ...calculateAmounts(balance, invoice.currency),
       currency: invoice.currency,
       isLoading: false,
-    }
+    };
   }
 
   if (exchangeRate !== undefined) {
     const exchangeRateBigInt = parseUnitsDecimal(
       new Decimal(exchangeRate).toString(),
       18,
-    )
-    balance = (balance * exchangeRateBigInt) / 10n ** 18n
+    );
+    balance = (balance * exchangeRateBigInt) / 10n ** 18n;
     return {
       ...calculateAmounts(balance, invoice.currency),
       currency: invoice.currency,
       isLoading: false,
-    }
+    };
   }
 
-  return { isLoading: true }
-}
+  return { isLoading: true };
+};
 
 export const normalizeBigInt = (amount: bigint, decimals: number) => {
-  const divisor = 10 ** decimals
+  const divisor = 10 ** decimals;
 
-  const normalizedAmount = Number(amount) / divisor
+  const normalizedAmount = Number(amount) / divisor;
 
-  return normalizedAmount
-}
+  return normalizedAmount;
+};
 
 export const getEstimatedTime = (
   chainId: number,
   numberOfConfirmations = DESIRED_NUMBER_OF_CONFIRMATIONS,
 ): number => {
-  const DEFAULT_DURATION = 120
+  const DEFAULT_DURATION = 120;
   return AVERAGE_BLOCK_TIMES[chainId]
     ? AVERAGE_BLOCK_TIMES[chainId] * numberOfConfirmations
-    : DEFAULT_DURATION
-}
+    : DEFAULT_DURATION;
+};
 
 export const areCurrenciesEqual = (invoice: Invoice, token: TokenHeld | null) =>
   (CURRENCY_SYMBOL_SPECIAL_CASES.includes(invoice.currency) &&
     CURRENCY_SYMBOL_SPECIAL_CASES.includes(token?.tokenInfo.symbol ?? '')) ||
-  invoice.currency === token?.tokenInfo.currency
+  invoice.currency === token?.tokenInfo.currency;
 
 export const simulateTransaction = async ({
   contractArgs,
@@ -1496,35 +1507,35 @@ export const simulateTransaction = async ({
     nativeTokenPrice === undefined ||
     nativeTokenPriceDecimals === undefined
   ) {
-    return
+    return;
   }
 
   if (!routerAddress) {
-    throw Error('Could not fetch YODL router address for the given chain.')
+    throw Error('Could not fetch YODL router address for the given chain.');
   }
 
   const invoiceAmount = parseAmountInMinorForComparison(
     invoice.amountInMinor.toString(),
     tokenOut.decimals,
-  )
+  );
 
-  let invoiceFeedPrice = 100000000n
-  let invoiceFeedDecimals = 8
+  let invoiceFeedPrice = 100000000n;
+  let invoiceFeedDecimals = 8;
 
   if (invoice.currency !== Currency.USD) {
     // Get the price feed for USD->invoice currency
-    const chainInfo = getChain(chain?.id ?? -1)
-    const feedAddress = chainInfo.priceFeeds?.[invoice.currency]
+    const chainInfo = getChain(chain?.id ?? -1);
+    const feedAddress = chainInfo.priceFeeds?.[invoice.currency];
     if (!feedAddress) {
-      throw Error('Feed address not present for invoice currency')
+      throw Error('Feed address not present for invoice currency');
     }
-    ;[invoiceFeedPrice, invoiceFeedDecimals] = await getPriceFromFeed(
+    [invoiceFeedPrice, invoiceFeedDecimals] = await getPriceFromFeed(
       provider,
       feedAddress as Address,
-    )
+    );
   }
 
-  const gasPrice = await provider?.getGasPrice()
+  const gasPrice = await provider?.getGasPrice();
 
   const [gas, simulationRes, l1GasCost] = await Promise.all([
     provider?.estimateContractGas(contractArgs),
@@ -1532,35 +1543,35 @@ export const simulateTransaction = async ({
     chain?.id === 10
       ? getOptimismGasCost(provider, chain?.id, gasPrice ?? 0n, contractArgs)
       : 0n,
-  ])
+  ]);
 
   // Calculate the cost of gas in USD in terms of token out (USD based token)
   // We want this as a function because the right hand side by which we multiply the amount is less than 0 as a bigint
   const gasCostInUsd = (amount: bigint) =>
     (amount * nativeTokenPrice) /
     10n ** BigInt(nativeTokenPriceDecimals) /
-    10n ** BigInt(chain.nativeCurrency.decimals - tokenOut.decimals)
+    10n ** BigInt(chain.nativeCurrency.decimals - tokenOut.decimals);
 
   // Calculate the remainder - for now tokenOut will be a currency
   // The remainder depends on the swap venue:
   // - tokenIn for Uniswap
   // - tokenOut for Curve
   // The values in terms of invoice currency will have the same number of decimals as tokenOut
-  let remainder
-  let remainderInInvoiceCurrency
+  let remainder;
+  let remainderInInvoiceCurrency;
   if (venue === SwapVenue.UNISWAP) {
-    const amountSpent = simulationRes?.result as unknown as bigint
-    remainder = quote.amountIn - amountSpent
-    remainderInInvoiceCurrency = (remainder * quote.amountOut) / quote.amountIn
+    const amountSpent = simulationRes?.result as unknown as bigint;
+    remainder = quote.amountIn - amountSpent;
+    remainderInInvoiceCurrency = (remainder * quote.amountOut) / quote.amountIn;
   } else if (venue === SwapVenue.CURVE) {
-    const amountReceived = simulationRes?.result as unknown as bigint
-    remainder = amountReceived - invoiceAmount
-    remainderInInvoiceCurrency = remainder
+    const amountReceived = simulationRes?.result as unknown as bigint;
+    remainder = amountReceived - invoiceAmount;
+    remainderInInvoiceCurrency = remainder;
   } else if (venue === SwapVenue.NONE) {
-    remainder = 0n
-    remainderInInvoiceCurrency = 0n
+    remainder = 0n;
+    remainderInInvoiceCurrency = 0n;
   } else {
-    throw Error(`Unhandled swap venue ${venue}`)
+    throw Error(`Unhandled swap venue ${venue}`);
   }
   if (
     !!priceFeedDetails &&
@@ -1570,30 +1581,30 @@ export const simulateTransaction = async ({
     // Convert remainder to the invoice currency if we have price feed data
     // Do not convert if our invoice currency is ETH, it will already be in ETH
     remainderInInvoiceCurrency =
-      (remainder * priceFeedDetails.approximateRate) / 10n ** 8n
+      (remainder * priceFeedDetails.approximateRate) / 10n ** 8n;
   }
 
   // Calculate how much it costs to return the remainder and determine if it is worth returning
   const returnRemainderCostUsd = gasCostInUsd(
     RETURN_REMAINDER_COST * (gasPrice ?? 0n),
-  )
+  );
 
   // Fetch the price of the gas in terms of invoice currency and amount in
   const gasInUsd = gasCostInUsd(
     (gas as bigint) * (gasPrice ?? 0n) + (l1GasCost ?? 0n),
-  )
+  );
 
   // Convert prices, if necessary
   const returnRemainderCost =
     invoice.currency === Currency.ETH
       ? RETURN_REMAINDER_COST * (gasPrice ?? 0n)
       : (returnRemainderCostUsd * invoiceFeedPrice) /
-        10n ** BigInt(invoiceFeedDecimals)
+        10n ** BigInt(invoiceFeedDecimals);
 
   const gasInInvoiceCurrency =
     invoice.currency === Currency.ETH
       ? (gas as bigint) * (gasPrice ?? 0n) + (l1GasCost ?? 0n)
-      : (gasInUsd * invoiceFeedPrice) / 10n ** BigInt(invoiceFeedDecimals)
+      : (gasInUsd * invoiceFeedPrice) / 10n ** BigInt(invoiceFeedDecimals);
 
   return {
     quote,
@@ -1607,13 +1618,13 @@ export const simulateTransaction = async ({
     returnRemainderDelta: remainderInInvoiceCurrency - returnRemainderCost,
     shouldReturnRemainder: remainderInInvoiceCurrency > returnRemainderCost,
     tokenOut,
-  } as EstimationResult
-}
+  } as EstimationResult;
+};
 
 export const capitalizeWord = (word: string) => {
-  if (!word) return word
-  return word[0].toUpperCase() + word.substr(1).toLowerCase()
-}
+  if (!word) return word;
+  return word[0].toUpperCase() + word.substr(1).toLowerCase();
+};
 
 export const getReceiverAddress = (
   chainId: number,
@@ -1622,23 +1633,23 @@ export const getReceiverAddress = (
 ) => {
   const chainConfig = invoice.coins.find(
     (coinConfig) => coinConfig.chainId === chainId,
-  )
+  );
   if (!chainConfig) {
-    return invoice.recipientAddress
+    return invoice.recipientAddress;
   }
 
   const tokenConfig = chainConfig.tokens.find(
     (token) => token.symbol === tokenIn.symbol,
-  )
+  );
 
   if (tokenConfig && tokenConfig.address) {
-    return tokenConfig.address
+    return tokenConfig.address;
   } else if (chainConfig.defaultAddress) {
-    return chainConfig.defaultAddress
+    return chainConfig.defaultAddress;
   } else {
-    return invoice.recipientAddress
+    return invoice.recipientAddress;
   }
-}
+};
 
 export const determineTokenCurrency = (
   isSwapPayment: boolean,
@@ -1647,5 +1658,5 @@ export const determineTokenCurrency = (
 ) => {
   return isSwapPayment
     ? tokenOut.currency ?? tokenOut.symbol
-    : token?.tokenInfo.currency ?? token?.tokenInfo.symbol ?? ''
-}
+    : token?.tokenInfo.currency ?? token?.tokenInfo.symbol ?? '';
+};

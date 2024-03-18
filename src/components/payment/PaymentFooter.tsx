@@ -4,30 +4,30 @@ import {
   Text,
   formatPaymentAmount,
   usePaymentStyles,
-} from '@hiropay/common'
-import { clsx } from '@mantine/core'
-import { TokenInfo, getTokenBySymbol } from '@yodlpay/tokenlists'
-import { useMemo } from 'react'
-import { useAccount } from 'wagmi'
-import { usePaymentStore } from '../../contexts/usePaymentStore'
-import { normalizeBigInt } from '../../utils/helpers'
+} from '@hiropay/common';
+import { clsx } from '@mantine/core';
+import { TokenInfo, getTokenBySymbol } from '@yodlpay/tokenlists';
+import { useMemo } from 'react';
+import { useAccount } from 'wagmi';
+import { usePaymentStore } from '../../contexts/usePaymentStore';
+import { normalizeBigInt } from '../../utils/helpers';
 
 export type PaymentFooterChildrenProps = {
-  gasLoading: boolean | undefined
-  nativeToken: TokenInfo | null
-  formattedGasInNativeCurrency: string
-  formattedGasInUsd: string
-}
+  gasLoading: boolean | undefined;
+  nativeToken: TokenInfo | null;
+  formattedGasInNativeCurrency: string;
+  formattedGasInUsd: string;
+};
 
 export type PaymentFooterProps = {
-  customChildren?: boolean
+  customChildren?: boolean;
   children?: ({
     gasLoading,
     nativeToken,
     formattedGasInNativeCurrency,
     formattedGasInUsd,
-  }: PaymentFooterChildrenProps) => JSX.Element
-}
+  }: PaymentFooterChildrenProps) => JSX.Element;
+};
 
 export const PaymentFooter = ({
   customChildren = false,
@@ -35,27 +35,29 @@ export const PaymentFooter = ({
 }: PaymentFooterProps) => {
   const allowanceOk = usePaymentStore(
     (state) => state.state.allowanceDetails?.data,
-  )
-  const gasLoading = usePaymentStore((state) => state.state.gasDetails?.loading)
-  const gasError = usePaymentStore((state) => state.state.gasDetails?.error)
-  const gasDetails = usePaymentStore(({ state }) => state.gasDetails?.data)
+  );
+  const gasLoading = usePaymentStore(
+    (state) => state.state.gasDetails?.loading,
+  );
+  const gasError = usePaymentStore((state) => state.state.gasDetails?.error);
+  const gasDetails = usePaymentStore(({ state }) => state.gasDetails?.data);
 
-  const { chain } = useAccount()
+  const { chain } = useAccount();
 
-  const nativeToken = getTokenBySymbol(chain?.nativeCurrency.symbol ?? '')
+  const nativeToken = getTokenBySymbol(chain?.nativeCurrency.symbol ?? '');
 
-  const { classes } = usePaymentStyles()
+  const { classes } = usePaymentStyles();
 
   const calculatedGasInNativeCurrency = gasDetails?.gas
     ? normalizeBigInt(
         gasDetails?.gas * gasDetails?.gasPrice,
         chain?.nativeCurrency.decimals ?? 0,
       )
-    : 0
+    : 0;
 
   const calculatedGasInUsd = gasDetails?.gas
     ? normalizeBigInt(gasDetails?.gasInUsd, gasDetails?.tokenOut?.decimals ?? 0)
-    : 0
+    : 0;
 
   const gasInNativeCurrency = useMemo(
     () =>
@@ -71,17 +73,17 @@ export const PaymentFooter = ({
       chain?.nativeCurrency.symbol,
       gasDetails?.gas,
     ],
-  )
+  );
 
   const formattedGasInNativeCurrency = useMemo(
     () =>
       gasInNativeCurrency
         ? gasInNativeCurrency
         : allowanceOk || gasError
-        ? 'Failed to determine gas fees'
-        : 'Requires token to be approved',
+          ? 'Failed to determine gas fees'
+          : 'Requires token to be approved',
     [allowanceOk, gasInNativeCurrency, gasError],
-  )
+  );
 
   const formattedGasInUsd = useMemo(
     () =>
@@ -93,7 +95,7 @@ export const PaymentFooter = ({
           })}`
         : '',
     [calculatedGasInUsd],
-  )
+  );
 
   return customChildren ? (
     children({
@@ -173,5 +175,5 @@ export const PaymentFooter = ({
         </Flex>
       </Flex> */}
     </Flex>
-  )
-}
+  );
+};

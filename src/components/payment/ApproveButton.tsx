@@ -4,11 +4,11 @@ import {
   MaxUint256,
   RudderStackJSEvents,
   SwapVenue,
-} from '@hiropay/common'
-import { createStyles } from '@mantine/core'
-import { enqueueSnackbar } from 'notistack'
-import { useEffect, useMemo } from 'react'
-import { Address } from 'viem'
+} from '@hiropay/common';
+import { createStyles } from '@mantine/core';
+import { enqueueSnackbar } from 'notistack';
+import { useEffect, useMemo } from 'react';
+import { Address } from 'viem';
 import {
   useAccount,
   useBalance,
@@ -16,43 +16,43 @@ import {
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
-} from 'wagmi'
-import { USER_DENIED_TX_MESSAGE } from '../../constants/messages'
-import { useMainStore } from '../../contexts/useMainStore'
-import { usePaymentStore } from '../../contexts/usePaymentStore'
+} from 'wagmi';
+import { USER_DENIED_TX_MESSAGE } from '../../constants/messages';
+import { useMainStore } from '../../contexts/useMainStore';
+import { usePaymentStore } from '../../contexts/usePaymentStore';
 import {
   useChainPriceFeed,
   usePayment,
   useSimulateTransaction,
-} from '../../hooks'
-import { CallbackAction } from '../../lib'
+} from '../../hooks';
+import { CallbackAction } from '../../lib';
 import {
   abiForToken,
   formatWagmiError,
   getTokenOutInfo,
   normalizeBigInt,
-} from '../../utils/helpers'
+} from '../../utils/helpers';
 
 const useStyles = createStyles(() => ({
   button: {
     width: '100%',
   },
-}))
+}));
 
 export type ApproveButtonChildrenProps = {
-  isLoading: boolean
-  isPreparing: boolean
-  isDisabled: boolean
-  isUnavailable: boolean | undefined
-  handleClick: () => Promise<void>
+  isLoading: boolean;
+  isPreparing: boolean;
+  isDisabled: boolean;
+  isUnavailable: boolean | undefined;
+  handleClick: () => Promise<void>;
   eventCallback: (
     action: CallbackAction,
     params?: Record<string, unknown> | undefined,
-  ) => void
-}
+  ) => void;
+};
 
 export type ApproveButtonProps = {
-  customChildren?: boolean
+  customChildren?: boolean;
   children?: ({
     isLoading,
     isPreparing,
@@ -60,35 +60,37 @@ export type ApproveButtonProps = {
     isUnavailable,
     handleClick,
     eventCallback,
-  }: ApproveButtonChildrenProps) => JSX.Element
+  }: ApproveButtonChildrenProps) => JSX.Element;
   allowance: {
-    isLoading: boolean
-    refetch: () => void
-  }
-}
+    isLoading: boolean;
+    refetch: () => void;
+  };
+};
 
 export const ApproveButton = ({
   customChildren = false,
   children = () => <></>,
   allowance,
 }: ApproveButtonProps) => {
-  const { invoice } = usePayment()
-  const { address, chain } = useAccount()
+  const { invoice } = usePayment();
+  const { address, chain } = useAccount();
 
-  const logger = useMainStore((state) => state.logger)
-  const token = useMainStore((state) => state.token)
-  const routerAddress = useMainStore((state) => state.routerAddress)
-  const eventCallback = useMainStore((state) => state.eventCallback)
+  const logger = useMainStore((state) => state.logger);
+  const token = useMainStore((state) => state.token);
+  const routerAddress = useMainStore((state) => state.routerAddress);
+  const eventCallback = useMainStore((state) => state.eventCallback);
 
-  const gasLoading = usePaymentStore((state) => state.state.gasDetails?.loading)
+  const gasLoading = usePaymentStore(
+    (state) => state.state.gasDetails?.loading,
+  );
 
-  const [nativeTokenPrice, nativeTokenPriceDecimals] = useChainPriceFeed(chain)
+  const [nativeTokenPrice, nativeTokenPriceDecimals] = useChainPriceFeed(chain);
 
-  const provider = usePublicClient()
+  const provider = usePublicClient();
 
-  const tokenOut = getTokenOutInfo(invoice, chain)
+  const tokenOut = getTokenOutInfo(invoice, chain);
 
-  const sender = address ?? `0x`
+  const sender = address ?? `0x`;
 
   const contractArgs = {
     account: sender,
@@ -96,12 +98,12 @@ export const ApproveButton = ({
     abi: abiForToken(token?.tokenInfo?.symbol ?? '', chain?.id ?? -1),
     functionName: 'approve',
     args: [routerAddress, MaxUint256],
-  }
+  };
 
   const tokenAbi = abiForToken(
     token?.tokenInfo?.symbol ?? '',
     chain ? chain.id : -1,
-  )
+  );
 
   const {
     data: balanceData,
@@ -109,7 +111,7 @@ export const ApproveButton = ({
     isFetching: isFetchingBalance,
   } = useBalance({
     address,
-  })
+  });
 
   const {
     gas,
@@ -128,7 +130,7 @@ export const ApproveButton = ({
     quote: DEFAULT_QUOTE,
     venue: SwapVenue.NONE,
     priceFeedDetails: null,
-  })
+  });
 
   const isApprovalBalanceSufficient = useMemo(
     () =>
@@ -149,27 +151,27 @@ export const ApproveButton = ({
       gasInInvoiceCurrency,
       gasPrice,
     ],
-  )
+  );
 
-  const { classes } = useStyles()
+  const { classes } = useStyles();
 
   const contractParams = {
     address: token?.tokenInfo?.address as Address,
     abi: tokenAbi,
     functionName: 'approve',
     args: [routerAddress, MaxUint256],
-  }
+  };
 
   const { isLoading: isPrepareLoading, isFetching: isPrepareFetching } =
-    useSimulateContract(contractParams)
+    useSimulateContract(contractParams);
 
-  const allowWrite = useWriteContract()
+  const allowWrite = useWriteContract();
   const allowanceWriteTx = useWaitForTransactionReceipt({
     hash: allowWrite.data,
-  })
+  });
 
   if (allowanceWriteTx.isSuccess) {
-    allowance.refetch()
+    allowance.refetch();
   }
 
   const isPreparing =
@@ -178,40 +180,40 @@ export const ApproveButton = ({
     gasLoading ||
     isAllowanceLoading ||
     isLoadingBalance ||
-    isFetchingBalance
+    isFetchingBalance;
 
-  const isLoading = allowWrite.isPending || allowanceWriteTx.isLoading
+  const isLoading = allowWrite.isPending || allowanceWriteTx.isLoading;
 
-  const isUnavailable = isLoading || gasLoading
+  const isUnavailable = isLoading || gasLoading;
 
   const isDisabled =
-    isUnavailable || !allowWrite.writeContract || !isApprovalBalanceSufficient
+    isUnavailable || !allowWrite.writeContract || !isApprovalBalanceSufficient;
 
   const handleClick = async () => {
-    eventCallback?.(RudderStackJSEvents.ApproveClicked)
+    eventCallback?.(RudderStackJSEvents.ApproveClicked);
     try {
-      await allowWrite.writeContractAsync?.(contractParams)
+      await allowWrite.writeContractAsync?.(contractParams);
     } catch (err: unknown) {
       if (err instanceof Error && 'details' in err) {
         if (err.details === USER_DENIED_TX_MESSAGE) {
           // The user rejected the transaction, we should track this, but not raise an exception
-          logger?.warn('User rejected the transaction')
-          eventCallback?.(RudderStackJSEvents.ApproveRejected)
+          logger?.warn('User rejected the transaction');
+          eventCallback?.(RudderStackJSEvents.ApproveRejected);
         }
       }
       // We don't handle other errors, so we'll throw and let Sentry notify us
-      throw err
+      throw err;
     }
-  }
+  };
 
   useEffect(() => {
     if (!isAllowanceLoading && !isApprovalBalanceSufficient) {
       enqueueSnackbar(
         formatWagmiError('Insufficient balance to cover gas fees', false),
         { variant: 'error' },
-      )
+      );
     }
-  }, [isApprovalBalanceSufficient, isAllowanceLoading])
+  }, [isApprovalBalanceSufficient, isAllowanceLoading]);
 
   return customChildren ? (
     children({
@@ -235,5 +237,5 @@ export const ApproveButton = ({
     >
       {isLoading ? 'Approving' : isPreparing ? 'Preparing' : 'Approve'}
     </Button>
-  )
-}
+  );
+};

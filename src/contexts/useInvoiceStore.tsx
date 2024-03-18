@@ -1,5 +1,5 @@
-import { Invoice, OnCompleteActionType } from '@hiropay/common'
-import { create } from 'zustand'
+import { Invoice, OnCompleteActionType } from '@hiropay/common';
+import { create } from 'zustand';
 
 const initialState = {
   memo: '',
@@ -12,18 +12,18 @@ const initialState = {
   isDemo: true,
   excludedVenues: [],
   onCompleteAction: { type: OnCompleteActionType.NOTHING },
-} as Invoice
+} as Invoice;
 
 type InvoiceStoreType = {
-  invoice: Invoice
-  setInvoice: (invoice: Invoice) => void
-  resetInvoiceState: () => void
-}
+  invoice: Invoice;
+  setInvoice: (invoice: Invoice) => void;
+  resetInvoiceState: () => void;
+};
 
 export const useInvoiceStore = create<InvoiceStoreType>((set) => ({
   invoice: initialState,
   setInvoice: (invoice) => set({ invoice }),
   resetInvoiceState: () => set({ invoice: { ...initialState } }),
-}))
+}));
 
-export const invoiceStore = useInvoiceStore
+export const invoiceStore = useInvoiceStore;

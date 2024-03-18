@@ -1,4 +1,4 @@
-import { CheckIcon, ClockIcon } from '@heroicons/react/20/solid'
+import { CheckIcon, ClockIcon } from '@heroicons/react/20/solid';
 import {
   DESIRED_NUMBER_OF_CONFIRMATIONS,
   Flex,
@@ -7,14 +7,14 @@ import {
   RudderStackJSPageCategories,
   RudderStackJSPageNames,
   Text,
-} from '@hiropay/common'
-import { createStyles } from '@mantine/core'
-import { useEffect, useMemo } from 'react'
-import { useAccount } from 'wagmi'
-import { useMainStore } from '../../contexts/useMainStore'
-import { useBlockConfirmations, useDynamicLoadingLabel } from '../../hooks'
-import { Analytics } from '../../lib'
-import { getEstimatedTime } from '../../utils/helpers'
+} from '@hiropay/common';
+import { createStyles } from '@mantine/core';
+import { useEffect, useMemo } from 'react';
+import { useAccount } from 'wagmi';
+import { useMainStore } from '../../contexts/useMainStore';
+import { useBlockConfirmations, useDynamicLoadingLabel } from '../../hooks';
+import { Analytics } from '../../lib';
+import { getEstimatedTime } from '../../utils/helpers';
 
 const useStyles = createStyles((theme) => ({
   status: {
@@ -29,19 +29,19 @@ const useStyles = createStyles((theme) => ({
     marginRight: '4px',
     fill: theme.colors?.primary?.[0],
   },
-}))
+}));
 
 export type PaymentPendingChildrenProps = {
-  confirmed: boolean
-  loadingLabel: string
-  confirmations: number
-  DESIRED_NUMBER_OF_CONFIRMATIONS: number
-  estimatedTimeInMins: number
-  analytics: Analytics | null
-}
+  confirmed: boolean;
+  loadingLabel: string;
+  confirmations: number;
+  DESIRED_NUMBER_OF_CONFIRMATIONS: number;
+  estimatedTimeInMins: number;
+  analytics: Analytics | null;
+};
 
 export type PaymentPendingProps = {
-  customChildren?: boolean
+  customChildren?: boolean;
   children?: ({
     confirmed,
     loadingLabel,
@@ -49,23 +49,23 @@ export type PaymentPendingProps = {
     DESIRED_NUMBER_OF_CONFIRMATIONS,
     estimatedTimeInMins,
     analytics,
-  }: PaymentPendingChildrenProps) => JSX.Element
-}
+  }: PaymentPendingChildrenProps) => JSX.Element;
+};
 
 export const PaymentPending = ({
   customChildren = false,
   children = () => <></>,
 }: PaymentPendingProps) => {
-  const analytics = useMainStore((state) => state.analytics)
+  const analytics = useMainStore((state) => state.analytics);
 
-  const { confirmations } = useBlockConfirmations()
+  const { confirmations } = useBlockConfirmations();
 
-  const { chain } = useAccount()
+  const { chain } = useAccount();
 
   const confirmed = useMemo(
     () => confirmations >= DESIRED_NUMBER_OF_CONFIRMATIONS,
     [confirmations],
-  )
+  );
 
   const loadingLabel = useDynamicLoadingLabel({
     labels: [
@@ -83,20 +83,20 @@ export const PaymentPending = ({
     shouldFallback: false,
     delay: 2000,
     shouldStop: confirmed,
-  })
+  });
 
   const estimatedTimeInMins = Math.ceil(
     getEstimatedTime(chain?.id as number) / 60,
-  )
+  );
 
-  const { classes } = useStyles()
+  const { classes } = useStyles();
 
   useEffect(() => {
     analytics?.page(
       RudderStackJSPageCategories.Payment,
       RudderStackJSPageNames.PendingDialog,
-    )
-  }, [analytics])
+    );
+  }, [analytics]);
 
   return customChildren ? (
     children({
@@ -168,5 +168,5 @@ export const PaymentPending = ({
         </Text>
       </Flex>
     </Flex>
-  )
-}
+  );
+};

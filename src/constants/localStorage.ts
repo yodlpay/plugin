@@ -1,1 +1,1 @@
-export const WAGMI_STORE = 'wagmi.store'
+export const WAGMI_STORE = 'wagmi.store';

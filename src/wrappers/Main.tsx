@@ -39,7 +39,15 @@ const useStyles = createStyles(() => ({
   },
 }))
 
-export const MainWrapper = () => {
+export type MainWrapperProps = {
+  customChildren?: boolean
+  children?: JSX.Element
+}
+
+export const MainWrapper = ({
+  customChildren = false,
+  children,
+}: MainWrapperProps) => {
   const { isPending } = useConnect()
   const { chain: accountChain, connector, address, isConnected } = useAccount()
   const client = usePublicClient()
@@ -323,7 +331,9 @@ export const MainWrapper = () => {
     }
   }, [address, browserChainDataAPI])
 
-  return renderedContent ? (
+  return customChildren ? (
+    children
+  ) : renderedContent ? (
     <>
       <Header {...headerFooterProps} />
       <div className={classes.container} key={key}>

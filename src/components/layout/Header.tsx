@@ -220,35 +220,27 @@ export type HeaderProps = {
     formattedPayAmount,
   }: HeaderChildrenProps) => JSX.Element;
   view: JSX.Element | null;
-  resetChain: () => void;
-  resetToken: () => void;
-  selectChain: (chainId: number) => void;
 };
 
 export const Header = ({
   customChildren = false,
   children = () => <></>,
   view,
-  resetChain,
-  resetToken,
-  selectChain,
 }: HeaderProps) => {
-  const { address, isConnected, chain } = useAccount();
+  const { address, isConnected, chain, connector } = useAccount();
   const { disconnect } = useDisconnect();
 
   const { availableChains } = useAvailableChains();
 
   const chainLoading = useMainStore((state) => state.chainLoading);
   const chainSelected = useMainStore((state) => state.chainSelected);
+
+  const setSelectedChain = useMainStore((state) => state.setSelectedChain);
   const eventCallback = useMainStore((state) => state.eventCallback);
 
   const { invoice } = usePayment();
 
-  const { key, onBackButtonClick } = useViewBasedState(
-    view,
-    resetChain,
-    resetToken,
-  );
+  const { key, onBackButtonClick } = useViewBasedState(view);
 
   const { classes } = useStyles({ onBackButtonClick });
 
@@ -272,7 +264,7 @@ export const Header = ({
     eventCallback?.(RudderStackJSEvents.NetworkChanged, {
       networkId: chainId,
     });
-    selectChain(parseInt(chainId));
+    setSelectedChain(connector, parseInt(chainId));
   };
 
   const handleWalletDisconnect = () => {

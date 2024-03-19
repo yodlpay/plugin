@@ -411,12 +411,10 @@ export const useLoadingState = (
   return state;
 };
 
-export const useViewBasedState = (
-  view: JSX.Element | null,
-  resetChain = () => {},
-  resetToken = () => {},
-) => {
+export const useViewBasedState = (view: JSX.Element | null) => {
   const setSkippedWelcome = useMainStore((state) => state.setSkippedWelcome);
+  const resetSelectedChain = useMainStore((state) => state.resetSelectedChain);
+  const resetSelectedToken = useMainStore((state) => state.resetSelectedToken);
   const exchangeRates = useTokenStore((state) => state.exchangeRates);
   const tokensHeld = useTokenStore((state) => state.tokensHeld);
 
@@ -483,7 +481,7 @@ export const useViewBasedState = (
           ? 'Recipient preferred tokens:'
           : '',
       onBackButtonClick: () => {
-        resetChain();
+        resetSelectedChain();
       },
     };
   }
@@ -492,7 +490,7 @@ export const useViewBasedState = (
       key: 'PaymentDialog',
       heading: 'Confirm Payment',
       subheading: '',
-      onBackButtonClick: () => resetToken(),
+      onBackButtonClick: () => resetSelectedToken(),
     };
   }
   if (view?.type === StatusDialog) {

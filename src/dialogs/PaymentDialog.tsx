@@ -89,13 +89,11 @@ export type PaymentDialogProps = {
     renderedIndicator,
     pageCallback,
   }: PaymentDialogChildrenProps) => JSX.Element;
-  handleRetry: () => void;
 };
 
 export default function PaymentDialog({
   customChildren = false,
   children = () => <></>,
-  handleRetry,
 }: PaymentDialogProps) {
   const directPaymentLoading = usePaymentStore(
     (state) => state.state.directPaymentDetails?.loading,
@@ -131,6 +129,8 @@ export default function PaymentDialog({
   const token = useMainStore((state) => state.token);
   const routerAddress = useMainStore((state) => state.routerAddress);
   const curveLoading = useMainStore((state) => state.curveLoading);
+
+  const resetPayment = useMainStore((state) => state.resetPayment);
   const pageCallback = useMainStore((state) => state.pageCallback);
 
   const { chain, address, isConnected } = useAccount();
@@ -268,7 +268,7 @@ export default function PaymentDialog({
           nativeTokenError
         }
         withRetry
-        handleRetry={handleRetry}
+        handleRetry={resetPayment}
       />
     );
   }

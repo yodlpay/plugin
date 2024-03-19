@@ -74,7 +74,7 @@ describe('WalletDialog', () => {
 
     invoiceStore.getState().setInvoice(invoice);
 
-    render(<ChainDialog selectChain={(_n?: number) => {}} />, {
+    render(<ChainDialog />, {
       // @ts-expect-error Incompatible wrapper type
       wrapper: WrapperGenerator(config),
     });

@@ -47,7 +47,7 @@ describe('ChainDialog', () => {
 
     invoiceStore.getState().setInvoice(invoice);
 
-    render(<ChainDialog selectChain={(_n?: number) => {}} />, {
+    render(<ChainDialog />, {
       wrapper: WrapperGenerator(config),
     });
 

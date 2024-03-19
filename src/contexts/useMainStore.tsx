@@ -10,8 +10,9 @@ import {
 } from '@hiropay/common';
 import { ColorScheme } from '@mantine/core';
 import { Address } from 'viem';
-import { Config } from 'wagmi';
+import { Config, Connector } from 'wagmi';
 import { create } from 'zustand';
+import { WELCOME_DISPLAYED } from '../constants/test';
 import { BrowserChainDataAPI } from '../utils/browserChainDataAPI';
 import {
   Analytics,
@@ -22,8 +23,11 @@ import {
 } from '../wrappers/Provider';
 import { useInvoiceStore } from './useInvoiceStore';
 import { usePaymentStore } from './usePaymentStore';
+import { formatWagmiError } from '../utils/helpers';
+import { enqueueSnackbar } from 'notistack';
 
 const initialState = {
+  stateKey: 0,
   wagmiConfig: null,
   token: null,
   transaction: null,
@@ -58,6 +62,7 @@ const initialState = {
 };
 
 type MainStoreType = {
+  stateKey: number;
   wagmiConfig: Config | null;
   token: TokenHeld | null;
   transaction: TransactionState | null;
@@ -89,13 +94,17 @@ type MainStoreType = {
     page: CallbackPage,
     params?: Record<string, unknown>,
   ) => void;
+  setStateKey: (key: number) => void;
   setWagmiConfig: (wagmiConfig: Config) => void;
   setEnv: (envData: EnvData) => void;
   setToken: (token: TokenHeld | null) => void;
   setTransaction: (transaction: TransactionState) => void;
   setTransactionConfirmed: (confirmed: boolean) => void;
   setChainLoading: (loading: boolean) => void;
-  setChainSelected: (selected: boolean) => void;
+  setSelectedChain: (
+    connector: Connector | undefined,
+    chainId: number | undefined,
+  ) => Promise<void>;
   setChainsWithBalance: (chainsWithBalance: ChainsWithBalanceState) => void;
   setCurveLoading: (loading: boolean) => void;
   setRouterVersion: (version: string) => void;
@@ -118,12 +127,16 @@ type MainStoreType = {
     ) => void,
   ) => void;
   setCloseModal: () => void;
+  resetSelectedToken: () => void;
+  resetSelectedChain: () => void;
+  resetPayment: () => void;
   resetTransaction: () => void;
   resetMainState: () => void;
 };
 
 export const useMainStore = create<MainStoreType>((set) => ({
   ...initialState,
+  setStateKey: (stateKey) => set({ stateKey }),
   setLogger: (logger) => set({ logger }),
   setAnalytics: (analytics) => set({ analytics }),
   setWagmiConfig: (wagmiConfig: Config) => set({ wagmiConfig }),
@@ -146,12 +159,40 @@ export const useMainStore = create<MainStoreType>((set) => ({
         : null,
     })),
   setChainLoading: (loading) => set({ chainLoading: loading }),
-  setChainSelected: (selected) => set({ chainSelected: selected }),
+  setSelectedChain: async (
+    connector: Connector | undefined,
+    chainId: number | undefined,
+  ) => {
+    // logger.info(`selectChain: ${chainId}`);
+    if (connector) {
+      set((prevState) => ({ ...prevState, chainLoading: true }));
+      try {
+        await connector.connect?.({ chainId });
+        set((prevState) => ({ ...prevState, chainSelected: true }));
+        // logger.info("selectedConnector.current.connect.then");
+      } catch (err) {
+        // logger.info(`selectedConnector.current.connect.catch: ${err}`);
+        enqueueSnackbar(formatWagmiError(err), { variant: 'error' });
+      } finally {
+        set((prevState) => ({
+          ...prevState,
+          token: null,
+          chainLoading: false,
+        }));
+      }
+    } else {
+      // WalletConnect first calls selectChain, then assigns selectedConnector.current
+      // logger.info("selectedConnector.current does not exist");
+    }
+  },
   setChainsWithBalance: (chainsWithBalance) => set({ chainsWithBalance }),
   setCurveLoading: (loading) => set({ curveLoading: loading }),
   setRouterVersion: (version) => set({ routerVersion: version }),
   setRouterAddress: (address) => set({ routerAddress: address }),
-  setSkippedWelcome: (skipped) => set({ skippedWelcome: skipped }),
+  setSkippedWelcome: (skipped) => {
+    localStorage.setItem(WELCOME_DISPLAYED, 'true');
+    set({ skippedWelcome: skipped });
+  },
   setColorScheme: (scheme: ColorScheme) => set({ colorScheme: scheme }),
   setFlowInitiated: (open) => set({ flowInitiated: open }),
   setChainDataAPI: (chainDataAPI) => set({ chainDataAPI }),
@@ -162,6 +203,18 @@ export const useMainStore = create<MainStoreType>((set) => ({
     useInvoiceStore.getState().resetInvoiceState();
     useMainStore.getState().resetMainState();
     usePaymentStore.getState().dispatch({ type: 'RESET_PAYMENT_STATE' });
+  },
+  resetSelectedToken: () => {
+    // logger.info("resetSelectedToken");
+    set((prevState) => ({ ...prevState, token: null }));
+  },
+  resetSelectedChain: () => {
+    // logger.info("resetSelectedChain");
+    set((prevState) => ({ ...prevState, chainSelected: false, token: null }));
+  },
+  resetPayment: () => {
+    usePaymentStore.getState().dispatch({ type: 'RESET_PAYMENT_STATE' });
+    set((prevState) => ({ ...prevState, stateKey: prevState.stateKey + 1 }));
   },
   resetTransaction: () => set({ transaction: null }),
   resetMainState: () => set({ ...initialState }),

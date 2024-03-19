@@ -38,14 +38,13 @@ export type WelcomeDialogProps = {
     eventCallback,
     pageCallback,
   }: WelcomeDialogChildrenProps) => JSX.Element;
-  onContinue: () => void;
 };
 
 export default function WelcomeDialog({
   customChildren = false,
   children = () => <></>,
-  onContinue,
 }: WelcomeDialogProps) {
+  const setSkippedWelcome = useMainStore((state) => state.setSkippedWelcome);
   const eventCallback = useMainStore((state) => state.eventCallback);
   const pageCallback = useMainStore((state) => state.pageCallback);
 
@@ -53,7 +52,7 @@ export default function WelcomeDialog({
 
   const handleClick = () => {
     eventCallback?.(RudderStackJSEvents.WelcomeDialogSkipped);
-    onContinue();
+    setSkippedWelcome(true);
   };
 
   useEffect(() => {

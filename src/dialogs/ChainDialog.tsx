@@ -61,16 +61,16 @@ export type ChainDialogProps = {
     eventCallback,
     pageCallback,
   }: ChainDialogChildrenProps) => JSX.Element;
-  selectChain: (nid: number | undefined) => void;
 };
 
 export default function ChainDialog({
   customChildren = false,
   children = () => <></>,
-  selectChain,
 }: ChainDialogProps) {
-  const { chain: currentChain } = useAccount();
+  const { chain: currentChain, connector } = useAccount();
   const chainsWithBalance = useMainStore((state) => state.chainsWithBalance);
+
+  const setSelectedChain = useMainStore((state) => state.setSelectedChain);
   const eventCallback = useMainStore((state) => state.eventCallback);
   const pageCallback = useMainStore((state) => state.pageCallback);
 
@@ -93,7 +93,7 @@ export default function ChainDialog({
   });
 
   const handleClick = (chainId: number) => {
-    selectChain(chainId);
+    setSelectedChain(connector, chainId);
     eventCallback?.(RudderStackJSEvents.NetworkChosen, {
       networkId: chainId,
     });

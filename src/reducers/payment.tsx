@@ -11,7 +11,7 @@ import {
 } from '@hiropay/common';
 
 export type Action =
-  | { type: 'SET_STATE_KEY' }
+  | { type: 'SET_PAYMENT_STATE_KEY' }
   | { type: 'SET_DIRECT_PAYMENT_LOADING'; payload: boolean }
   | { type: 'SET_DIRECT_PAYMENT_ERROR'; payload: string }
   | { type: 'SET_DIRECT_PAYMENT_DETAILS'; payload: DirectPaymentState }
@@ -49,7 +49,7 @@ export type Action =
   | { type: 'RESET_PAYMENT_STATE' };
 
 export type State = {
-  stateKey: number;
+  paymentStateKey: number;
   directPaymentDetails: DirectPaymentState | null;
   swapDetails: SwapState | null;
   gasDetails: GasState | null;
@@ -60,7 +60,7 @@ export type State = {
 };
 
 export const actions = {
-  SET_STATE_KEY: 'SET_STATE_KEY',
+  SET_PAYMENT_STATE_KEY: 'SET_PAYMENT_STATE_KEY',
   SET_DIRECT_PAYMENT_LOADING: 'SET_DIRECT_PAYMENT_LOADING',
   SET_DIRECT_PAYMENT_ERROR: 'SET_DIRECT_PAYMENT_ERROR',
   SET_DIRECT_PAYMENT_DETAILS: 'SET_DIRECT_PAYMENT_DETAILS',
@@ -87,7 +87,7 @@ export const actions = {
 } as const;
 
 export const initialState: State = {
-  stateKey: 0,
+  paymentStateKey: 0,
   directPaymentDetails: null,
   swapDetails: null,
   gasDetails: null,
@@ -99,10 +99,10 @@ export const initialState: State = {
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case actions.SET_STATE_KEY:
+    case actions.SET_PAYMENT_STATE_KEY:
       return {
         ...state,
-        stateKey: state.stateKey + 1,
+        paymentStateKey: state.paymentStateKey + 1,
       };
     case actions.SET_DIRECT_PAYMENT_LOADING:
       return {

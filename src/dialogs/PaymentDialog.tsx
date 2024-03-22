@@ -124,7 +124,6 @@ function PaymentDialog({
     (state) => state.state.priceFeedDetails?.error,
   );
 
-  const paymentStateKey = usePaymentStore((state) => state.state.stateKey);
   const dispatch = usePaymentStore((state) => state.dispatch);
 
   const token = useMainStore((state) => state.token);
@@ -331,32 +330,30 @@ function PaymentDialog({
     </>
   );
 
-  return (
-    <React.Fragment key={paymentStateKey}>
-      {customChildren ? (
-        children({
-          state,
-          rawAmountIn,
-          allowance,
-          isCalculatingPayment,
-          loadingLabel,
-          nativeTokenPrice,
-          tokenInfo,
-          allowanceNativeToken,
-          renderedIndicator,
-          pageCallback,
-        })
-      ) : (
-        <Flex direction="column" grow={1}>
-          {renderedIndicator ?? renderedContent}
-        </Flex>
-      )}
-    </React.Fragment>
+  return customChildren ? (
+    children({
+      state,
+      rawAmountIn,
+      allowance,
+      isCalculatingPayment,
+      loadingLabel,
+      nativeTokenPrice,
+      tokenInfo,
+      allowanceNativeToken,
+      renderedIndicator,
+      pageCallback,
+    })
+  ) : (
+    <Flex direction="column" grow={1}>
+      {renderedIndicator ?? renderedContent}
+    </Flex>
   );
 }
 
 export default function PaymentDialogWrapper(props: PaymentDialogProps) {
-  const paymentStateKey = usePaymentStore((state) => state.state.stateKey);
+  const paymentStateKey = usePaymentStore(
+    (state) => state.state.paymentStateKey,
+  );
 
   return (
     <React.Fragment key={paymentStateKey}>

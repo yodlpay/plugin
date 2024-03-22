@@ -213,7 +213,7 @@ function TokenDialog({
   const { classes: paymentClasses } = usePaymentStyles();
   const { classes: navLinkClasses } = useNavLinkStyles();
 
-  const setToken = useMainStore((state) => state.setToken);
+  const setSelectedToken = useMainStore((state) => state.setSelectedToken);
 
   const exchangeRates = useTokenStore((state) => state.exchangeRates);
   const routerVersion = useMainStore((state) => state.routerVersion);
@@ -314,7 +314,7 @@ function TokenDialog({
 
   const handleNavlinkClick = (token: TokenHeld) => {
     if (isBalanceSufficient(token, invoice, exchangeRates)) {
-      setToken(token);
+      setSelectedToken(token);
       eventCallback?.(RudderStackJSEvents.TokenChosen, {
         token: token.tokenInfo.symbol,
       });

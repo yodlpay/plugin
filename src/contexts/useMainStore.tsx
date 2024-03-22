@@ -14,6 +14,7 @@ import { Address } from 'viem';
 import { Config, Connector } from 'wagmi';
 import { create } from 'zustand';
 import { WELCOME_DISPLAYED } from '../constants/test';
+import { actions } from '../reducers/payment';
 import { BrowserChainDataAPI } from '../utils/browserChainDataAPI';
 import { formatWagmiError } from '../utils/helpers';
 import {
@@ -25,6 +26,7 @@ import {
 } from '../wrappers/Provider';
 import { useInvoiceStore } from './useInvoiceStore';
 import { usePaymentStore } from './usePaymentStore';
+import { useTokenStore } from './useTokenStore';
 
 const initialState = {
   mainStateKey: 0,
@@ -100,7 +102,7 @@ type MainStoreType = {
   setChainStateKey: () => void;
   setWagmiConfig: (wagmiConfig: Config) => void;
   setEnv: (envData: EnvData) => void;
-  setToken: (token: TokenHeld | null) => void;
+  setSelectedToken: (token: TokenHeld | null) => void;
   setTransaction: (transaction: TransactionState) => void;
   setTransactionConfirmed: (confirmed: boolean) => void;
   setChainLoading: (loading: boolean) => void;
@@ -153,7 +155,12 @@ export const useMainStore = create<MainStoreType>((set) => ({
   setAnalytics: (analytics) => set({ analytics }),
   setWagmiConfig: (wagmiConfig: Config) => set({ wagmiConfig }),
   setEnv: (envData) => set({ ...envData }),
-  setToken: (token) => set({ token }),
+  setSelectedToken: (token) => {
+    set({ token });
+    usePaymentStore.getState().dispatch({
+      type: actions.SET_PAYMENT_STATE_KEY,
+    });
+  },
   setTransaction: (transaction) => set({ transaction }),
   setTransactionConfirmed: (confirmed) =>
     set((prevState) => ({
@@ -191,6 +198,10 @@ export const useMainStore = create<MainStoreType>((set) => ({
           token: null,
           chainLoading: false,
         }));
+        useTokenStore.getState().setTokenStateKey();
+        usePaymentStore.getState().dispatch({
+          type: actions.SET_PAYMENT_STATE_KEY,
+        });
       }
     } else {
       // WalletConnect first calls selectChain, then assigns selectedConnector.current

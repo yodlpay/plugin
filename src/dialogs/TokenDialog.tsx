@@ -33,7 +33,7 @@ import {
   Shuffle,
 } from '@phosphor-icons/react';
 import { TokenInfo, getTokens } from '@yodlpay/tokenlists';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'viem';
 import { useAccount, useDisconnect } from 'wagmi';
 import { useMainStore } from '../contexts/useMainStore';
@@ -151,6 +151,12 @@ export type TokenDialogChildrenProps = {
   invoice: Invoice;
   exchangeRates: ExchangeRate | null;
   tokensWithInsufficientBalance: TokenHeld[];
+  isBalanceSufficient: (
+    token: TokenHeld,
+    invoice: Invoice,
+    exchangeRates: ExchangeRate | null,
+    skipConversionIfRateUndefined?: boolean,
+  ) => boolean | 0 | undefined;
   formatBalance: (balance: bigint, decimals: number, symbol?: string) => string;
   areCurrenciesEqual: (invoice: Invoice, token: TokenHeld | null) => boolean;
   renderConvertedBalance: (token: TokenHeld) => JSX.Element;
@@ -191,7 +197,7 @@ export type TokenDialogProps = {
   }: TokenDialogChildrenProps) => JSX.Element;
 };
 
-export default function TokenDialog({
+function TokenDialog({
   customChildren = false,
   children = () => <></>,
 }: TokenDialogProps) {
@@ -373,6 +379,8 @@ export default function TokenDialog({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
+  if (!chain) return null;
+
   return customChildren ? (
     children({
       isLoading,
@@ -384,6 +392,7 @@ export default function TokenDialog({
       invoice,
       exchangeRates,
       tokensWithInsufficientBalance,
+      isBalanceSufficient,
       formatBalance,
       areCurrenciesEqual,
       renderConvertedBalance,
@@ -636,5 +645,15 @@ export default function TokenDialog({
         </Flex>
       )}
     </Flex>
+  );
+}
+
+export default function TokenDialogWrapper(props: TokenDialogProps) {
+  const tokenStateKey = useTokenStore((state) => state.tokenStateKey);
+
+  return (
+    <React.Fragment key={tokenStateKey}>
+      <TokenDialog {...props} />
+    </React.Fragment>
   );
 }

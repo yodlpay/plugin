@@ -59,7 +59,7 @@ export const MainWrapper = ({
   const isTest = useMainStore((state) => state.isTest);
   const dataApiUrl = useMainStore((state) => state.dataApiUrl);
 
-  const stateKey = useMainStore((state) => state.stateKey);
+  const mainStateKey = useMainStore((state) => state.mainStateKey);
   const setCurveLoading = useMainStore((state) => state.setCurveLoading);
   const setRouterVersion = useMainStore((state) => state.setRouterVersion);
   const setRouterAddress = useMainStore((state) => state.setRouterAddress);
@@ -261,7 +261,7 @@ export const MainWrapper = ({
     <>
       <Header view={renderedContent} />
       <div className={classes.container} key={key}>
-        <ScrollShadowWrapper key={stateKey}>
+        <ScrollShadowWrapper key={mainStateKey}>
           {renderedContent}
         </ScrollShadowWrapper>
       </div>

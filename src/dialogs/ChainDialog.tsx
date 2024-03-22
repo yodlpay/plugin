@@ -10,7 +10,7 @@ import {
   useNavLinkStyles,
 } from '@hiropay/common';
 import { TokenInfo } from '@yodlpay/tokenlists';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Chain } from 'viem';
 import { useAccount } from 'wagmi';
 import { useMainStore } from '../contexts/useMainStore';
@@ -63,7 +63,7 @@ export type ChainDialogProps = {
   }: ChainDialogChildrenProps) => JSX.Element;
 };
 
-export default function ChainDialog({
+function ChainDialog({
   customChildren = false,
   children = () => <></>,
 }: ChainDialogProps) {
@@ -152,5 +152,15 @@ export default function ChainDialog({
         ))}
       </Flex>
     </>
+  );
+}
+
+export default function ChainDialogWrapper(props: ChainDialogProps) {
+  const chainStateKey = useMainStore((state) => state.chainStateKey);
+
+  return (
+    <React.Fragment key={chainStateKey}>
+      <ChainDialog {...props} />
+    </React.Fragment>
   );
 }

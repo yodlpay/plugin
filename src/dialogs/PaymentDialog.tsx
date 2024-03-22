@@ -11,7 +11,7 @@ import {
 import { clsx } from '@mantine/core';
 import { GetBalanceReturnType } from '@wagmi/core';
 import { TokenInfo } from '@yodlpay/tokenlists';
-import { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
   Address,
   GetBalanceErrorType,
@@ -91,7 +91,7 @@ export type PaymentDialogProps = {
   }: PaymentDialogChildrenProps) => JSX.Element;
 };
 
-export default function PaymentDialog({
+function PaymentDialog({
   customChildren = false,
   children = () => <></>,
 }: PaymentDialogProps) {
@@ -124,6 +124,7 @@ export default function PaymentDialog({
     (state) => state.state.priceFeedDetails?.error,
   );
 
+  const paymentStateKey = usePaymentStore((state) => state.state.stateKey);
   const dispatch = usePaymentStore((state) => state.dispatch);
 
   const token = useMainStore((state) => state.token);
@@ -251,6 +252,8 @@ export default function PaymentDialog({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  if (!token || !chain) return null;
+
   if (
     swapError ||
     directPaymentError ||
@@ -328,22 +331,36 @@ export default function PaymentDialog({
     </>
   );
 
-  return customChildren ? (
-    children({
-      state,
-      rawAmountIn,
-      allowance,
-      isCalculatingPayment,
-      loadingLabel,
-      nativeTokenPrice,
-      tokenInfo,
-      allowanceNativeToken,
-      renderedIndicator,
-      pageCallback,
-    })
-  ) : (
-    <Flex direction="column" grow={1}>
-      {renderedIndicator ?? renderedContent}
-    </Flex>
+  return (
+    <React.Fragment key={paymentStateKey}>
+      {customChildren ? (
+        children({
+          state,
+          rawAmountIn,
+          allowance,
+          isCalculatingPayment,
+          loadingLabel,
+          nativeTokenPrice,
+          tokenInfo,
+          allowanceNativeToken,
+          renderedIndicator,
+          pageCallback,
+        })
+      ) : (
+        <Flex direction="column" grow={1}>
+          {renderedIndicator ?? renderedContent}
+        </Flex>
+      )}
+    </React.Fragment>
+  );
+}
+
+export default function PaymentDialogWrapper(props: PaymentDialogProps) {
+  const paymentStateKey = usePaymentStore((state) => state.state.stateKey);
+
+  return (
+    <React.Fragment key={paymentStateKey}>
+      <PaymentDialog {...props} />
+    </React.Fragment>
   );
 }

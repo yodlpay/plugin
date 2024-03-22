@@ -9,11 +9,13 @@ import {
   TransactionState,
 } from '@hiropay/common';
 import { ColorScheme } from '@mantine/core';
+import { enqueueSnackbar } from 'notistack';
 import { Address } from 'viem';
 import { Config, Connector } from 'wagmi';
 import { create } from 'zustand';
 import { WELCOME_DISPLAYED } from '../constants/test';
 import { BrowserChainDataAPI } from '../utils/browserChainDataAPI';
+import { formatWagmiError } from '../utils/helpers';
 import {
   Analytics,
   CallbackAction,
@@ -23,11 +25,10 @@ import {
 } from '../wrappers/Provider';
 import { useInvoiceStore } from './useInvoiceStore';
 import { usePaymentStore } from './usePaymentStore';
-import { formatWagmiError } from '../utils/helpers';
-import { enqueueSnackbar } from 'notistack';
 
 const initialState = {
-  stateKey: 0,
+  mainStateKey: 0,
+  chainStateKey: 0,
   wagmiConfig: null,
   token: null,
   transaction: null,
@@ -62,7 +63,8 @@ const initialState = {
 };
 
 type MainStoreType = {
-  stateKey: number;
+  mainStateKey: number;
+  chainStateKey: number;
   wagmiConfig: Config | null;
   token: TokenHeld | null;
   transaction: TransactionState | null;
@@ -94,7 +96,8 @@ type MainStoreType = {
     page: CallbackPage,
     params?: Record<string, unknown>,
   ) => void;
-  setStateKey: (key: number) => void;
+  setMainStateKey: () => void;
+  setChainStateKey: () => void;
   setWagmiConfig: (wagmiConfig: Config) => void;
   setEnv: (envData: EnvData) => void;
   setToken: (token: TokenHeld | null) => void;
@@ -136,7 +139,16 @@ type MainStoreType = {
 
 export const useMainStore = create<MainStoreType>((set) => ({
   ...initialState,
-  setStateKey: (stateKey) => set({ stateKey }),
+  setMainStateKey: () =>
+    set((prevState) => ({
+      ...prevState,
+      mainStateKey: prevState.mainStateKey + 1,
+    })),
+  setChainStateKey: () =>
+    set((prevState) => ({
+      ...prevState,
+      chainStateKey: prevState.chainStateKey + 1,
+    })),
   setLogger: (logger) => set({ logger }),
   setAnalytics: (analytics) => set({ analytics }),
   setWagmiConfig: (wagmiConfig: Config) => set({ wagmiConfig }),
@@ -214,7 +226,10 @@ export const useMainStore = create<MainStoreType>((set) => ({
   },
   resetPayment: () => {
     usePaymentStore.getState().dispatch({ type: 'RESET_PAYMENT_STATE' });
-    set((prevState) => ({ ...prevState, stateKey: prevState.stateKey + 1 }));
+    set((prevState) => ({
+      ...prevState,
+      mainStateKey: prevState.mainStateKey + 1,
+    }));
   },
   resetTransaction: () => set({ transaction: null }),
   resetMainState: () => set({ ...initialState }),

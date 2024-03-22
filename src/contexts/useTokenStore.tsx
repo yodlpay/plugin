@@ -12,15 +12,18 @@ type ContractToRead = {
 };
 
 const initialState = {
+  tokenStateKey: 0,
   exchangeRates: null,
   tokensHeld: null,
   contractsToRead: [] as ContractToRead[],
 };
 
 type TokenStoreType = {
+  tokenStateKey: number;
   exchangeRates: ExchangeRate | null;
   tokensHeld: TokensHeldState | null;
   contractsToRead: ContractToRead[];
+  setTokenStateKey: () => void;
   setExchangeRates: (exchangeRate: ExchangeRate) => void;
   setTokensHeld: (tokensHeld: TokensHeldState) => void;
   setContractsToRead: (contractsToRead: ContractToRead[]) => void;
@@ -29,6 +32,11 @@ type TokenStoreType = {
 
 export const useTokenStore = create<TokenStoreType>((set) => ({
   ...initialState,
+  setTokenStateKey: () =>
+    set((prevState) => ({
+      ...prevState,
+      tokenStateKey: prevState.tokenStateKey + 1,
+    })),
   setExchangeRates: (exchangeRates) => set({ exchangeRates }),
   setTokensHeld: (tokensHeld) => set({ tokensHeld }),
   setContractsToRead: (contractsToRead) => set({ contractsToRead }),

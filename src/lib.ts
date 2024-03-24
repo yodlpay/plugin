@@ -4,6 +4,7 @@ export * from './components';
 export * from './contexts';
 export * from './dialogs';
 export * from './hooks';
+export * from './utils';
 
 export { MainWrapper } from './wrappers/Main';
 export type { MainWrapperProps } from './wrappers/Main';

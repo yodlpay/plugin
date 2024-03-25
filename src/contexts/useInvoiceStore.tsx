@@ -17,12 +17,18 @@ const initialState = {
 type InvoiceStoreType = {
   invoice: Invoice;
   setInvoice: (invoice: Invoice) => void;
+  setInvoiceAmount: (amountInMinor: number) => void;
+  setInvoiceCurrency: (currency: string) => void;
   resetInvoiceState: () => void;
 };
 
 export const useInvoiceStore = create<InvoiceStoreType>((set) => ({
   invoice: initialState,
   setInvoice: (invoice) => set({ invoice }),
+  setInvoiceAmount: (amountInMinor) =>
+    set((prevState) => ({ ...prevState, amountInMinor })),
+  setInvoiceCurrency: (currency) =>
+    set((prevState) => ({ ...prevState, currency })),
   resetInvoiceState: () => set({ invoice: { ...initialState } }),
 }));
 

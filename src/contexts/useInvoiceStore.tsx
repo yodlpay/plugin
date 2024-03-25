@@ -26,9 +26,15 @@ export const useInvoiceStore = create<InvoiceStoreType>((set) => ({
   invoice: initialState,
   setInvoice: (invoice) => set({ invoice }),
   setInvoiceAmount: (amountInMinor) =>
-    set((prevState) => ({ ...prevState, amountInMinor })),
+    set((prevState) => ({
+      ...prevState,
+      invoice: { ...prevState.invoice, amountInMinor },
+    })),
   setInvoiceCurrency: (currency) =>
-    set((prevState) => ({ ...prevState, currency })),
+    set((prevState) => ({
+      ...prevState,
+      invoice: { ...prevState.invoice, currency },
+    })),
   resetInvoiceState: () => set({ invoice: { ...initialState } }),
 }));
 
